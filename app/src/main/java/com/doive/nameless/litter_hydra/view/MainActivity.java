@@ -3,14 +3,13 @@ package com.doive.nameless.litter_hydra.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseActivity;
+import com.doive.nameless.litter_hydra.helper.FragmentHelper;
 
 public class MainActivity
         extends BaseActivity {
@@ -23,13 +22,16 @@ public class MainActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_mine);
+                    mHelper.showFragment(0);
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_video);
+                    mHelper.showFragment(1);
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_video);
+                    mHelper.showFragment(2);
+                    return true;
+                case R.id.navigation_mine:
+                    mHelper.showFragment(3);
                     return true;
             }
             return false;
@@ -37,17 +39,17 @@ public class MainActivity
 
     };
     private FrameLayout mContentView;
+    private FragmentHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        mContentView = (FrameLayout) findViewById(R.id.content_main);
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        //初始化控件
+        BottomNavigationView navigation = getViewbyId(R.id.navigation);
+        mContentView = getViewbyId(R.id.content_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        mHelper = FragmentHelper.getInstance(this, R.id.content_main);
     }
 
     @Override
@@ -57,6 +59,6 @@ public class MainActivity
 
     @Override
     protected boolean enableFullScreen() {
-        return true;
+        return false;
     }
 }
