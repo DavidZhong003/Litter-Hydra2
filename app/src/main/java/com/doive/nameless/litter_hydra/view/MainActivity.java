@@ -1,11 +1,11 @@
 package com.doive.nameless.litter_hydra.view;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseActivity;
@@ -14,13 +14,20 @@ import com.doive.nameless.litter_hydra.helper.FragmentHelper;
 public class MainActivity
         extends BaseActivity {
 
-    private TextView mTextMessage;
 
+    private int mCurrentItemId;//记录当前id,防止重复点击
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
+
+            int id = item.getItemId();
+            if (mCurrentItemId == id) {
+                return false;
+            } else {
+                mCurrentItemId = id;
+            }
+            switch (id) {
                 case R.id.navigation_home:
                     mHelper.showFragment(0);
                     return true;
@@ -38,18 +45,29 @@ public class MainActivity
         }
 
     };
-    private FrameLayout mContentView;
+    private FrameLayout    mContentView;
     private FragmentHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTextMessage = (TextView) findViewById(R.id.message);
         //初始化控件
         BottomNavigationView navigation = getViewbyId(R.id.navigation);
         mContentView = getViewbyId(R.id.content_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        mHelper = FragmentHelper.getInstance(this, R.id.content_main);
+        mHelper = new FragmentHelper(this, R.id.content_main, savedInstanceState);
+        mCurrentItemId = R.id.navigation_home;
+        mHelper.showFragment(0);
+    }
+
+    /**
+     * 当意外销毁时候,存下当前的id 以及Fragment
+     * @param outState
+     * @param outPersistentState
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
@@ -60,5 +78,15 @@ public class MainActivity
     @Override
     protected boolean enableFullScreen() {
         return false;
+    }
+
+    /**
+     * 进行资源释放
+     *
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHelper = null;
     }
 }

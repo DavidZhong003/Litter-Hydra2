@@ -29,8 +29,10 @@ public abstract class BaseFragment
 
     protected Context mContext;
     protected View    mRootView;
-
-    private boolean isViewCreated = false;
+    /**
+     *
+     */
+    protected boolean isViewCreated = false;
 
     @Override
     public void onAttach(Context context) {
@@ -44,7 +46,6 @@ public abstract class BaseFragment
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState)
     {
-        Log.e(TAG, "onCreateView: ///////////////////////////" );
         return inflater.inflate(getLayoutId(), container, false);
     }
 
@@ -53,7 +54,7 @@ public abstract class BaseFragment
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        isViewCreated=true;
+        isViewCreated = true;
         mRootView = view;
         initData();
         initView(view);
@@ -66,6 +67,7 @@ public abstract class BaseFragment
     protected void initData() {
 
     }
+
 
     /**
      * 初始化监听事件
@@ -86,40 +88,63 @@ public abstract class BaseFragment
     public <E extends View> E getViewbyId(@IdRes int id) {
         if (mRootView != null) {
             return (E) mRootView.findViewById(id);
-        }else {
+        } else {
             return null;
         }
     }
 
     /**
-     * 在onCreateView之前调用
+     *
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+        if (getUserVisibleHint()) {
+            onUserVisible();
+        }
+    }
+
+    /**
+     * 改方法在FragmentHelper中被改成是否是当前用户选择的
      * @param isVisibleToUser
      */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.e(TAG, "setUserVisibleHint: ................." );
-        if (isVisibleToUser) {
+        if (isVisibleToUser && isResumed()) {
             onUserVisible();
-        } else {
-            onUserInVisible();
         }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (isHidden()) {
+            onInVisible();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     /**
      * 相当于onPause
+     *
      */
-    protected void onUserInVisible() {
-        Log.e(TAG, "onUserInVisible: 用户看不见" );
+    protected void onInVisible() {
+        Log.e(TAG, "onFirstInVisible: //////////用户不可见");
     }
 
     /**
-     * 相当于onResume,调用时间会比较长
-     * todo  后续优化
+     * 相当于onResume
+     * 用户可见时候
      *
      */
     protected void onUserVisible() {
-        Log.e(TAG, "onUserVisible: ??????????????" );
+        Log.e(TAG, "onUserFirstVisible: 用户可见");
     }
 
     /**
@@ -136,7 +161,8 @@ public abstract class BaseFragment
      * @param msg
      */
     protected void showToast(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT)
+             .show();
     }
 
     protected void showLog(String msg) {
