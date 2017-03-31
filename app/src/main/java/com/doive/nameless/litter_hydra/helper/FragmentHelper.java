@@ -38,6 +38,7 @@ public class FragmentHelper {
         this.mContainerId = containerId;
         this.mFm = activity.getSupportFragmentManager();//其中Fm持有mActivity的引用
         initFragments(savedInstanceState);
+//        LayoutInflater.from().inflate()
     }
 
     /**
@@ -119,7 +120,6 @@ public class FragmentHelper {
         Fragment currentFragment;
         switch (position) {
             case 0:
-                Log.e(TAG, "newFragmentIfNull: ????????????");
                 currentFragment = new NewsFragment();
                 break;
             case 1:

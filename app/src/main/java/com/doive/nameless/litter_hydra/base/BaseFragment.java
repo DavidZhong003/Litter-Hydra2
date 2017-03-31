@@ -8,7 +8,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +98,6 @@ public abstract class BaseFragment
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: ");
         if (getUserVisibleHint()) {
             onUserVisible();
         }
@@ -135,7 +133,7 @@ public abstract class BaseFragment
      *
      */
     protected void onInVisible() {
-        Log.e(TAG, "onFirstInVisible: //////////用户不可见");
+
     }
 
     /**
@@ -144,7 +142,7 @@ public abstract class BaseFragment
      *
      */
     protected void onUserVisible() {
-        Log.e(TAG, "onUserFirstVisible: 用户可见");
+
     }
 
     /**
@@ -165,6 +163,10 @@ public abstract class BaseFragment
              .show();
     }
 
+    /**
+     * 日志打印
+     * @param msg
+     */
     protected void showLog(String msg) {
         Logger.i(msg);
     }
