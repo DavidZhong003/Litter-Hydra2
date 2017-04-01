@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseFragment;
+import com.doive.nameless.litter_hydra.base.mvp.BaseDeatilsContract;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.lcodecore.tkrefreshlayout.footer.LoadingView;
+import com.lcodecore.tkrefreshlayout.footer.BallPulseView;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 
 /**
@@ -17,7 +18,7 @@ import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
  */
 
 public class NewsDetailsFragment
-        extends BaseFragment {
+        extends BaseFragment implements BaseDeatilsContract.View {
     private RecyclerView           mRecyclerview;
     private TwinklingRefreshLayout mRefreshLayout;
 
@@ -31,8 +32,9 @@ public class NewsDetailsFragment
         super.initView(rootView);
         mRefreshLayout = getViewbyId(R.id.refreshLayout);
         mRecyclerview = getViewbyId(R.id.recyclerview);
-        mRefreshLayout.setHeaderView(new SinaRefreshView(getContext()));
-        mRefreshLayout.setBottomView(new LoadingView(getContext()));
+        mRefreshLayout.setHeaderView(new SinaRefreshView(
+                getContext()));
+        mRefreshLayout.setBottomView(new BallPulseView(getContext()));
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerview.setAdapter(new RecyclerView.Adapter() {
             @Override
@@ -54,6 +56,33 @@ public class NewsDetailsFragment
                 return 100;
             }
         });
+        mRefreshLayout.startRefresh();
+        mRefreshLayout.setPureScrollModeOn(false);
     }
 
+    @Override
+    public void showTopLoading() {
+
+    }
+
+    @Override
+    public void hideTopLoading() {
+
+    }
+
+    @Override
+    public void showBottomLoading() {
+
+    }
+
+    @Override
+    public void hideBottomLoading() {
+
+    }
+
+
+    @Override
+    public void setPresenter(Object presenter) {
+
+    }
 }

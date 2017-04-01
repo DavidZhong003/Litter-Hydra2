@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
+import java.util.Objects;
+
 /**
  * Created by Administrator on 2017/3/3.
  * Fragment的基类 todo 以后进行封装
@@ -169,6 +171,15 @@ public abstract class BaseFragment
      */
     protected void showLog(String msg) {
         Logger.i(msg);
+    }
+
+    /**
+     * 判断一个对象是否为空
+     * @return true 不是空
+     *         false 空
+     */
+    protected <E extends Objects> boolean checkNotNull(E obj){
+        return !(obj==null);
     }
 
 }

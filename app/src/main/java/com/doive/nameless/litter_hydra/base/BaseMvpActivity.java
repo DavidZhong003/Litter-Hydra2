@@ -1,5 +1,8 @@
 package com.doive.nameless.litter_hydra.base;
 
+import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
+import com.doive.nameless.litter_hydra.base.mvp.BaseView;
+
 /**
  * Created by Administrator on 2017/3/17.
  *

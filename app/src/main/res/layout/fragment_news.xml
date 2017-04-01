@@ -1,13 +1,43 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.doive.nameless.litter_hydra.ui.news.NewsFragment">
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+             <!--xmlns:tools="http://schemas.android.com/tools"-->
+             <!--android:layout_width="match_parent"-->
+             <!--android:layout_height="match_parent"-->
+             <!--tools:context="com.doive.nameless.litter_hydra.ui.news.NewsFragment">-->
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:text="@string/hello_blank_fragment"/>-->
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:background="#0f0"
+                android:text="asdfadfasd"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"/>
+
+            <TextView
+                android:background="#ff0"
+                android:text="asdfadfasdfasdfsadfasdfsadfsadfsadfsadfasfdsaf"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"/>
+
+            <TextView
+                android:background="#0ff"
+                android:text="asdfadfasdfasdfsadfasdfsadfsadfsadfsadfasfdsaf"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+<!--</FrameLayout>-->

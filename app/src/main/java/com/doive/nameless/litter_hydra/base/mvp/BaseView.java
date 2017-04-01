@@ -1,4 +1,4 @@
-package com.doive.nameless.litter_hydra.base;
+package com.doive.nameless.litter_hydra.base.mvp;
 
 /**
  * Created by Administrator on 2017/3/3.
