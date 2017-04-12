@@ -7,14 +7,14 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
 /**
  * Created by Administrator on 2017/3/17.
- * Retrofit工具类,单例
+ * Retrofit工具类,单例,build()模式
  */
 
 public class RetrofitManager {
     private static volatile RetrofitManager mRetrofitManager;
 
-    private Retrofit mRetrofit;
-    private String   mBaseURl;
+    private Retrofit     mNewsRetrofit;
+    private String       mBaseURl;
     private OkHttpClient mClient;
 
     private RetrofitManager() {
@@ -22,23 +22,24 @@ public class RetrofitManager {
     }
 
     private void initOkHttpClient() {
-        mClient = new OkHttpClient.Builder()
-                .addInterceptor(new CacheInterceptor())
-                .build();
+        mClient = new OkHttpClient.Builder().addInterceptor(new CacheInterceptor())
+                                            .build();
     }
 
-    private void initRetrofit() {
-        if (mRetrofit == null) {
-            mRetrofit = new Retrofit.Builder().baseUrl(ApiService.BASE_URL)
-                                              .addConverterFactory(GsonConverterFactory.create())
-                                              .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                                              .client(mClient)
-                                              .build();
-        }
+    private Retrofit creatRetrofit(String baseURl) {
+        return creatRetrofit(baseURl,mClient);
+    }
+
+    private Retrofit creatRetrofit(String baseURl ,OkHttpClient client) {
+        return new Retrofit.Builder().baseUrl(baseURl)
+                                     .addConverterFactory(GsonConverterFactory.create())
+                                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                                     .client(client)
+                                     .build();
     }
 
 
-    protected static RetrofitManager getInstance() {
+    public static RetrofitManager getInstance() {
         if (mRetrofitManager == null) {
             synchronized (RetrofitManager.class) {
                 if (mRetrofitManager == null) {
@@ -49,8 +50,12 @@ public class RetrofitManager {
         return mRetrofitManager;
     }
 
-    public ApiService creatApiService() {
-        return mRetrofit.create(ApiService.class);
+    public NewsApiService creatNewsApiService() {
+        if (mNewsRetrofit==null){
+            mNewsRetrofit = creatRetrofit(NewsApiService.BASE_NEWS_URL);
+        }
+        return mNewsRetrofit.create(NewsApiService.class);
     }
+
 
 }

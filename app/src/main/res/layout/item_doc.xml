@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/item_margin"
+    >
+
+    <ImageView
+        android:id="@+id/iv_top_img"
+        android:layout_width="120dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        tools:background="#0f0"/>
+
+    <TextView
+        android:id="@+id/tv_top_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_toEndOf="@id/iv_top_img"
+        android:layout_toRightOf="@id/iv_top_img"
+        tools:text="这是测试的新闻标题"
+        android:textColor="@color/top_item_title_textcolor"
+        android:textSize="@dimen/top_item_title_textsize"/>
+
+
+    <TextView
+        android:id="@+id/tv_top_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="150dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:layout_toEndOf="@id/iv_top_img"
+        android:layout_toRightOf="@id/iv_top_img"
+        android:gravity="center"
+        tools:text="新闻来源"
+        android:textColor="@color/top_item_title_textcolor_gray"
+        android:textSize="@dimen/top_item_small_textsize"/>
+
+
+    <TextView
+        android:id="@+id/tv_top_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:layout_marginRight="100dp"
+        android:layout_marginEnd="100dp"
+        android:gravity="center"
+        tools:text="12:13"
+        android:textColor="#66000000"
+        android:textSize="12sp"/>
+
+
+    <TextView
+        android:id="@+id/tv_top_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:gravity="center"
+        tools:text="1234"
+        android:textAlignment="center"
+        android:textColor="#66000000"
+        android:textSize="11sp"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:src="@mipmap/item_comment"/>
+
+
+    <ImageView
+        android:id="@+id/iv_top_del"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:src="@mipmap/item_delete"/>
+
+</RelativeLayout>

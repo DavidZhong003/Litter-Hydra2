@@ -6,4 +6,8 @@
     <color name="tab_indicator">#000</color>
     <color name="tab_text">#0ff</color>
     <color name="tab_selected_text">#0f0</color>
+
+    <color name="top_item_title_textcolor">#f6000000</color>
+    <color name="top_item_title_textcolor_gray">#66000000</color>
+    <color name="item_title_blue">#416cbe</color>
 </resources>
