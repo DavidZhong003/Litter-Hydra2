@@ -22,7 +22,9 @@ public class RetrofitManager {
     }
 
     private void initOkHttpClient() {
-        mClient = new OkHttpClient.Builder().addInterceptor(new CacheInterceptor())
+        mClient = new OkHttpClient.Builder()
+                .addInterceptor(new GzipRequestInterceptor())
+                .addInterceptor(new CacheInterceptor())
                                             .build();
     }
 

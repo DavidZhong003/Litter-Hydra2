@@ -6,7 +6,7 @@ import com.doive.nameless.litter_hydra.R;
 
 import java.util.List;
 
-import recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import rx.Observable;
 import rx.functions.Func1;
 

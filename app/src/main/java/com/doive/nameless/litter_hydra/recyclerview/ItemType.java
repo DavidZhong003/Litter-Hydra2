@@ -1,4 +1,4 @@
-package recyclerview;
+package com.doive.nameless.litter_hydra.recyclerview;
 
 /**
  * Created by Administrator on 2017/4/5.

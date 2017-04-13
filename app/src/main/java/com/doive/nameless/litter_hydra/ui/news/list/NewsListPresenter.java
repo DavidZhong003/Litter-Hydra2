@@ -3,12 +3,11 @@ package com.doive.nameless.litter_hydra.ui.news.list;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.model.ModelFactory;
-import com.doive.nameless.litter_hydra.model.NewsBean;
 
 import java.util.List;
 
-import recyclerview.ItemType;
-import rx.Observable;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

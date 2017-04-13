@@ -1,4 +1,4 @@
-package recyclerview;
+package com.doive.nameless.litter_hydra.recyclerview;
 
 import android.view.View;
 

@@ -1,6 +1,5 @@
 package com.doive.nameless.litter_hydra.ui.news.list;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -19,9 +18,9 @@ import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 
 import java.util.List;
 
-import recyclerview.CommonsRecyclerViewAdapter;
-import recyclerview.ItemType;
-import recyclerview.RecyclerItemDecoration;
+import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
 
 /**
  * Created by Administrator on 2017/4/5.
@@ -30,7 +29,7 @@ import recyclerview.RecyclerItemDecoration;
 
 public class NewsListFragment extends BaseFragment implements NewListContract.View {
 
-    private static final String ARG_PARAM = "COLUMN_CATEGORY";
+    private static final String ARG_PARAM = "NEWS_COLUMN_CATEGORY";
     private RecyclerView mRecyclerView;
     private NewListContract.Presenter mPresenter;
     private TwinklingRefreshLayout    mTwinklingRefreshLayout;

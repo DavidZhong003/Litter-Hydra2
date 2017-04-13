@@ -5,7 +5,7 @@ import com.doive.nameless.litter_hydra.base.mvp.BaseView;
 
 import java.util.List;
 
-import recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 
 /**
  * Created by Administrator on 2017/4/10.

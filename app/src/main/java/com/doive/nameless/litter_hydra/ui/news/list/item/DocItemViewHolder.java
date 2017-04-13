@@ -9,7 +9,7 @@ import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.NewsBean;
 import com.google.gson.Gson;
 
-import recyclerview.BaseViewHolder;
+import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 
 import static com.doive.nameless.litter_hydra.R.id.iv_top_del;
 

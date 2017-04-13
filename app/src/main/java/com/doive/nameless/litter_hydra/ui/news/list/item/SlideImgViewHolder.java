@@ -9,7 +9,7 @@ import com.doive.nameless.litter_hydra.model.NewsBean;
 
 import java.util.List;
 
-import recyclerview.BaseViewHolder;
+import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 
 /**
  * Created by Administrator on 2017/4/12.

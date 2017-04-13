@@ -8,7 +8,7 @@ import com.doive.nameless.litter_hydra.utils.TimestampUtils;
 
 import java.util.List;
 
-import recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import rx.Observable;
 
 /**
