@@ -23,12 +23,14 @@ public interface NewsApiService {
      * 头条新闻
      * @param id
      * @param action
+     * @param screen
      * @param uid
      * @return
      */
     @GET("ClientNews")
     Observable<List<NewsBean>> getData(@Query("id") String id,
                                        @Query("action") String action,
+                                       @Query("screen") String screen,
                                        @Query("uid") String uid);
 
     /**
@@ -43,5 +45,26 @@ public interface NewsApiService {
     Observable<List<NewsBean>> getMoreData(@Query("id") String id,
                                            @Query("action") String action,
                                            @Query("timestamp") String timestamp,
+                                           @Query("screen") String screen,
                                            @Query("uid") String uid);
+
+    //http://api.iclient.ifeng.com/ClientNews?id=YL53,FOCUSYL53&page=3&uid=864394010382135&screen=720x1280
+    //娱乐
+    //http://api.iclient.ifeng.com/ClientNews?id=CJ33,FOCUSCJ33,HNCJ33&page=1&uid=864394010382135&screen=720x1280
+    //财经
+    //http://api.iclient.ifeng.com/ClientNews?id=KJ123,FOCUSKJ123&page=1&gv=5.4.1&av=5.4.1&uid=864394010382135&deviceid=864394010382135&proid=ifengnews&os=android_19&df=androidphone&vt=5&screen=720x1280&publishid=2011&nw=disconnected
+    //科技
+    /**
+     * 列表栏目新闻
+     * @param id
+     * @param page
+     * @param uid
+     * @param screen
+     * @return
+     */
+    @GET("ClientNews")
+    Observable<List<NewsBean>> getColumnData(@Query("id") String id,
+                                             @Query("page") int page,
+                                             @Query("uid") String uid,
+                                             @Query("screen") String screen);
 }

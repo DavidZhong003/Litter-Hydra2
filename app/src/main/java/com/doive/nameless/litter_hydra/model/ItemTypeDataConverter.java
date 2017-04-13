@@ -72,7 +72,7 @@ public class ItemTypeDataConverter {
         //两个数据组合
     }
 
-    public static class ItemTypeDispath {
+    private static class ItemTypeDispath {
         public static int getTypeByNewsData(NewsBean.ItemBean bean) {
             switch (bean.getType()) {
                 case "topic2":

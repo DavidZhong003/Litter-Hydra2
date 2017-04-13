@@ -4,10 +4,22 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="tab_indicator">#000</color>
-    <color name="tab_text">#0ff</color>
-    <color name="tab_selected_text">#0f0</color>
+    <color name="tab_text">@color/md_grey_700</color>
+    <color name="tab_selected_text">#416cbe</color>
 
     <color name="top_item_title_textcolor">#f6000000</color>
     <color name="top_item_title_textcolor_gray">#66000000</color>
     <color name="item_title_blue">#416cbe</color>
+
+    <color name="md_grey_100">#F5F5F5</color>
+    <color name="md_grey_200">#EEEEEE</color>
+    <color name="md_grey_300">#E0E0E0</color>
+    <color name="md_grey_400">#BDBDBD</color>
+    <color name="md_grey_50">#FAFAFA</color>
+    <color name="md_grey_500">#9E9E9E</color>
+    <color name="md_grey_600">#757575</color>
+    <color name="md_grey_700">#616161</color>
+    <color name="md_grey_800">#424242</color>
+    <color name="md_grey_850">#303030</color>
+    <color name="md_grey_900">#212121</color>
 </resources>

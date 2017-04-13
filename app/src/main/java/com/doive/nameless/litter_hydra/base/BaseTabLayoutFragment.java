@@ -24,8 +24,8 @@ import java.lang.reflect.Field;
 
 public abstract class BaseTabLayoutFragment
         extends BaseFragment {
-    private   TabLayout    mTabLayout;
-    private   ViewPager    mViewPager;
+    protected    TabLayout    mTabLayout;
+    protected    ViewPager    mViewPager;
     protected PagerAdapter mPagerAdapter;
     protected String[]     mTitle;//标题
     protected    int          mDuration ;//滑动时候的时长

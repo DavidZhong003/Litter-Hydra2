@@ -1,6 +1,8 @@
 package com.doive.nameless.litter_hydra.ui.news.list;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,12 +30,38 @@ import recyclerview.RecyclerItemDecoration;
 
 public class NewsListFragment extends BaseFragment implements NewListContract.View {
 
-    private RecyclerView              mRecyclerView;
+    private static final String ARG_PARAM = "COLUMN_CATEGORY";
+    private RecyclerView mRecyclerView;
     private NewListContract.Presenter mPresenter;
     private TwinklingRefreshLayout    mTwinklingRefreshLayout;
     private CommonsRecyclerViewAdapter mAdapter;
     private boolean isHidden;
+    private String mColumnCategory;//类别
 
+    public NewsListFragment() {
+
+    }
+
+    /**
+     *
+     * @param columnCategory 类别
+     * @return
+     */
+    public static NewsListFragment newInstance(String columnCategory) {
+        NewsListFragment fragment = new NewsListFragment();
+        Bundle        args     = new Bundle();
+        args.putString(ARG_PARAM, columnCategory);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mColumnCategory = getArguments().getString(ARG_PARAM);
+        }
+    }
 
     @Override
     protected int getLayoutId() {
@@ -48,7 +76,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
         //设置LayoutManager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         //设置分割线
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(3f, Color.GRAY));
+        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(1f, R.color.md_grey_50));
         //设置适配器
         mAdapter = new CommonsRecyclerViewAdapter();
         mRecyclerView.setAdapter(mAdapter);
@@ -62,7 +90,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
     protected void initData() {
         super.initData();
         //初始化控制器
-        setPresenter(new NewsListPresenter(this));
+        setPresenter(new NewsListPresenter(this,mColumnCategory));
         //加载数据
 
     }
@@ -105,8 +133,8 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
         }else {
             hideRefreshView();
         }
-        Snackbar.make(mTwinklingRefreshLayout,"网络错误,刷新一下",3000)
-        .setAction("再试一下", new View.OnClickListener() {
+        Snackbar.make(mTwinklingRefreshLayout, "网络错误,刷新一下", 3000)
+                .setAction("再试一下", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "联网中", Toast.LENGTH_LONG).show();

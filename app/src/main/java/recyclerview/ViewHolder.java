@@ -21,6 +21,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.doive.nameless.litter_hydra.utils.GlideCircleTransform;
+import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 
 public class ViewHolder
         extends RecyclerView.ViewHolder

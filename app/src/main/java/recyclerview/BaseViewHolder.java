@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 
 
 /**
@@ -47,7 +48,7 @@ public class BaseViewHolder<T>
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .placeholder(R.mipmap.item_pic_loading)
-             .fitCenter()
+             .transform(new GlideRoundTransform(iv.getContext(), 3))
              .into(iv);
         return this;
     }
@@ -57,7 +58,7 @@ public class BaseViewHolder<T>
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .placeholder(R.mipmap.item_pic_loading_big)
-             .fitCenter()
+             .transform(new GlideRoundTransform(iv.getContext(),10))
              .into(iv);
         return this;
     }

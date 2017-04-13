@@ -1,4 +1,4 @@
-package recyclerview;
+package com.doive.nameless.litter_hydra.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

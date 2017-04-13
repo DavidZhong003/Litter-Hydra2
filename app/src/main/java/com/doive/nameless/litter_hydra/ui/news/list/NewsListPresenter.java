@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.doive.nameless.litter_hydra.model.ModelFactory;
 import com.doive.nameless.litter_hydra.model.NewsBean;
-import com.doive.nameless.litter_hydra.net.RetrofitManager;
 
 import java.util.List;
 
@@ -23,15 +22,18 @@ import rx.subscriptions.CompositeSubscription;
 public class NewsListPresenter
         implements NewListContract.Presenter {
     private static final String TAG = NewsListPresenter.class.getSimpleName();
+    private final String                mColumnCategory;
     private       NewListContract.View  mView;
     private       CompositeSubscription mSubscriptions;
-    private final RetrofitManager       mRetrofitManager;
-    private Subscription mNetRefreshSubscribe;
+    private Subscription                mNetRefreshSubscribe;
+    private Subscription                mMoreSubscribe;
+    private ModelFactory mModelFactory;
 
-    public NewsListPresenter(NewListContract.View view) {
+    public NewsListPresenter(NewListContract.View view ,String columnCategory) {
         this.mView = view;
         mSubscriptions = new CompositeSubscription();
-        mRetrofitManager = RetrofitManager.getInstance();
+        this.mColumnCategory = columnCategory;
+        mModelFactory = new ModelFactory();
     }
 
     /**
@@ -39,7 +41,6 @@ public class NewsListPresenter
      */
     @Override
     public void subscribe() {
-        Log.e("////", "subscribe: 执行了");
     }
 
     /**
@@ -47,39 +48,29 @@ public class NewsListPresenter
      */
     @Override
     public void unSubscribe() {
-        Log.e("???????????", "unSubscribe: 执行了");
         mSubscriptions.clear();
     }
 
     @Override
     public void onStartRefresh() {
-        //获取原始数据
-        getRefreshData();
+        mNetRefreshSubscribe = mModelFactory.obtainListData(false, mColumnCategory).subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new Subscriber<List<ItemType>>() {
+                                             @Override
+                                             public void onCompleted() {
+                                                 mView.hideRefreshView();
+                                             }
 
-        //数据处理
-        //设置到适配器中
-    }
+                                             @Override
+                                             public void onError(Throwable e) {
+                                                 mView.showNetErrorView(false);
+                                             }
 
-    private void getRefreshData() {
-        Observable<List<ItemType>> observable = new ModelFactory().obtainListData(false,"头条");
-        mNetRefreshSubscribe = observable.subscribeOn(Schedulers.io())
-                                           .observeOn(AndroidSchedulers.mainThread())
-                                           .subscribe(new Subscriber<List<ItemType>>() {
-                                               @Override
-                                               public void onCompleted() {
-                                                   mView.hideRefreshView();
-                                               }
-
-                                               @Override
-                                               public void onError(Throwable e) {
-                                                   mView.showNetErrorView(false);
-                                               }
-
-                                               @Override
-                                               public void onNext(List<ItemType> list) {
-                                                   mView.updateData(false, list);
-                                               }
-                                           });
+                                             @Override
+                                             public void onNext(List<ItemType> list) {
+                                                 mView.updateData(false, list);
+                                             }
+                                         });
         mSubscriptions.add(mNetRefreshSubscribe);
     }
 
@@ -92,32 +83,34 @@ public class NewsListPresenter
     @Override
     public void onStartLoadMore() {
         //加载更多
-        new ModelFactory().obtainListData(true,"头条")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ItemType>>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.hideLoadMoreView();
-                    }
+        mMoreSubscribe = mModelFactory.obtainListData(true, mColumnCategory)
+                                           .subscribeOn(Schedulers.io())
+                                           .observeOn(AndroidSchedulers.mainThread())
+                                           .subscribe(new Subscriber<List<ItemType>>() {
+                                           @Override
+                                           public void onCompleted() {
+                                               mView.hideLoadMoreView();
+                                           }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.showNetErrorView(true);
-                        mView.hideLoadMoreView();
-                    }
+                                           @Override
+                                           public void onError(Throwable e) {
+                                               Log.e(TAG, "onError: "+e );
+                                               mView.showNetErrorView(true);
+                                               mView.hideLoadMoreView();
+                                           }
 
-                    @Override
-                    public void onNext(List<ItemType> list) {
-                        Log.e(TAG, "onNext: "+((NewsBean.ItemBean)list.get(0).bindItemData()).getTitle() );
-                        mView.updateData(true,list);
-                    }
-                });
+                                           @Override
+                                           public void onNext(List<ItemType> list) {
+                                               mView.updateData(true, list);
+                                           }
+                                       });
+        mSubscriptions.add(mMoreSubscribe);
     }
 
 
     @Override
     public void onFinishLoadMore() {
-        Log.e(TAG, "onFinishLoadMore: ");
+        mSubscriptions.remove(mMoreSubscribe);
+        mMoreSubscribe=null;
     }
 }
