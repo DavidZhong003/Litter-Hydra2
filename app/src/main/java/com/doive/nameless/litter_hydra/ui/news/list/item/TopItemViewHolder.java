@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.NewsBean;
@@ -28,13 +29,14 @@ public class TopItemViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
     }
 
     @Override
-    public void bindData(NewsBean.ItemBean bean) {
+    public void bindData(final NewsBean.ItemBean bean) {
         iv_top_title.setText(bean.getTitle());
         setImageWithPlaceHolder(iv_top_top, bean.getThumbnail());
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TOPVH", "onClick: //////////" );
+                Toast.makeText(v.getContext(), bean.getLink().getUrl(), Toast.LENGTH_LONG).show();
+
             }
         });
         iv_top_del.setOnClickListener(new View.OnClickListener() {

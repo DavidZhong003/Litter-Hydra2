@@ -9,20 +9,24 @@ import android.view.View;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseFragment;
 import com.doive.nameless.litter_hydra.base.BaseTabLayoutFragment;
+import com.doive.nameless.litter_hydra.ui.video.list.VideoListFragment;
+
+import static com.doive.nameless.litter_hydra.ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY;
 
 /**
  * Created by Administrator on 2017/3/21.
+ * 视频fragment
  */
 public class VideoFragment
         extends BaseTabLayoutFragment {
 
     @Override
     protected String[] initTitle() {
-        return new String[0];
+        return VIDEO_COLUMN_CATEGORY;
     }
 
     @Override
     protected Fragment initFragmentWithPosition(int position) {
-        return null;
+        return VideoListFragment.newInstance(VIDEO_COLUMN_CATEGORY[position]);
     }
 }

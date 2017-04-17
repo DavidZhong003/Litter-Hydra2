@@ -3,8 +3,10 @@ package com.doive.nameless.litter_hydra.ui.news.list;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -34,7 +36,6 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
     private NewListContract.Presenter mPresenter;
     private TwinklingRefreshLayout    mTwinklingRefreshLayout;
     private CommonsRecyclerViewAdapter mAdapter;
-    private boolean isHidden;
     private String mColumnCategory;//类别
 
     public NewsListFragment() {
@@ -83,6 +84,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
         mTwinklingRefreshLayout.setHeaderView(new SinaRefreshView(mContext));
         //设置脚view
         mTwinklingRefreshLayout.setBottomView(new BallPulseView(mContext));
+        mTwinklingRefreshLayout.setAutoLoadMore(TextUtils.equals("头条",mColumnCategory));
     }
 
     @Override

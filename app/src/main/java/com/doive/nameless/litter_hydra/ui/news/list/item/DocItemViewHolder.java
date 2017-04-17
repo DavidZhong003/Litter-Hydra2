@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.NewsBean;
@@ -44,9 +45,8 @@ public class DocItemViewHolder
     }
 
     @Override
-    public void bindData(NewsBean.ItemBean bean) {
+    public void bindData(final NewsBean.ItemBean bean) {
         Gson gson = new Gson();
-        String s  = gson.toJson(t);
         mTvTopTitle.setText(bean.getTitle());
         setImageWithPlaceHolder(mIvTopImg, bean.getThumbnail());
         mTvTopSource.setText(bean.getSource()==null?"凤凰网":bean.getSource());
@@ -55,13 +55,13 @@ public class DocItemViewHolder
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //跳转
+                Toast.makeText(v.getContext(),bean.getLink().getUrl(),Toast.LENGTH_LONG).show();
             }
         });
         mIvTopDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TOPVH", "onClick: <><><><><><><><><>");
+                Toast.makeText(v.getContext(),bean.getStyle().getBackreason().get(0),Toast.LENGTH_SHORT).show();
             }
         });
     }

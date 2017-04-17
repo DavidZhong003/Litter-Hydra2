@@ -81,6 +81,8 @@ public class CommonsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
         return ViewHolderFactory.createViewHolderByType(viewType, inflate);
     }
 
+
+
     /**
      * 当view 回收时候
      * @param holder
