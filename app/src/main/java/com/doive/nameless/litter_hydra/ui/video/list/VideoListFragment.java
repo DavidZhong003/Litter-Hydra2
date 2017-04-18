@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class VideoListFragment
     @Override
     protected void initRecyclerView(RecyclerView recyclerView) {
         //设置LayoutManager
-        if (!TextUtils.equals(ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY[0],
+        if (TextUtils.equals(ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY[0],
                               mColumnCategory)){
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             //设置分割线

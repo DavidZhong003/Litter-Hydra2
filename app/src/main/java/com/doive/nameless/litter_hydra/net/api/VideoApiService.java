@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.net.api;
 
+import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 
 import retrofit2.http.Field;
@@ -30,10 +31,9 @@ public interface VideoApiService {
                                                      @Query("v") String version,
                                                      @Query("os") int os,
                                                      @Query("ver") int ver,
-                                                     @Query("toid")int toid,
-                                                     @Query("token")String token,
-                                                     @Query("sid")String sid
-                                                     );
+                                                     @Query("toid") int toid,
+                                                     @Query("token") String token,
+                                                     @Query("sid") String sid);
 
     //全部
     //http://www.quanmin.tv/json/play/list.json?04181846&v=3.1.1&os=1&ver=4&toid=0&token&sid
@@ -44,4 +44,25 @@ public interface VideoApiService {
     //全民新秀
     //http://www.quanmin.tv/json/categories/beauty/list.json?04181851=&toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=eebdd9fa8ff075bac7892e1fae208cee&sign=0CA1FA7BCC98828D263F5B99B12FDC48
     //lol overwatch huwai heartstone mobilegame webgame tvagame(单机主机)
+    @GET("json/play/list.json")
+    Observable<VideoAllBean> getAllData(@Query("") String time,
+                                        @Query("v") String version,
+                                        @Query("os") int os,
+                                        @Query("ver") int ver,
+                                        @Query("toid") int toid,
+                                        @Query("token") String token,
+                                        @Query("sid") String sid);
+
+    /**
+     * 获取栏目数据
+     */
+    @GET("json/categories/{categories}/list.json")
+    Observable<VideoAllBean> getCategoriesData(@Path("categories") String categories,
+                                               @Query("") String time,
+                                               @Query("v") String version,
+                                               @Query("os") int os,
+                                               @Query("ver") int ver,
+                                               @Query("toid") int toid,
+                                               @Query("token") String token,
+                                               @Query("sid") String sid);
 }

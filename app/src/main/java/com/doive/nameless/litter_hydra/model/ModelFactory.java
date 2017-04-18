@@ -107,29 +107,77 @@ public class ModelFactory
      * @param isLoadMore
      * @param columnCategory
      */
-    public Observable<List<ItemType>> obtainVideoListData(boolean isLoadMore,
-                                                          String columnCategory)
+    public Observable<List<ItemType>> obtainVideoListData(boolean isLoadMore, String columnCategory)
     {
         switch (columnCategory) {
             case "推荐":
                 return getRecommendData();
             case "全部":
                 return getAllVideoData();
+            case "Showing":
+            case "王者荣耀":
+                return getCategoriesData("wangzhe");
+            case "全民新秀":
+                return getCategoriesData("beauty");
+            case "英雄联盟":
+                return getCategoriesData("lol");
+            case "守望先锋":
+                return getCategoriesData("overwatch");
+            case "全民户外":
+                return getCategoriesData("huwai");
+            case "炉石传说":
+                return getCategoriesData("heartstone");
+            case "手游专区":
+                return getCategoriesData("mobilegame");
+            case "网游竞技":
+                return getCategoriesData("webgame");
+            case "单机主机":
+                return getCategoriesData("tvagame");
             default:
-                return getRecommendData();
+                return getAllVideoData();
         }
     }
 
+    /**
+     * 获取栏目数据
+     * @return
+     */
+    private Observable<List<ItemType>> getCategoriesData(String categories) {
+        return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
+        .getCategoriesData(categories,TimeUtils.getCurrentFormatTime(),
+                           "3.1.1",
+                           1,
+                           4,
+                           0,
+                           null,
+                           null)
+        );
+    }
+
     private Observable<List<ItemType>> getAllVideoData() {
-        mRetrofitManager.creatVideoApiService();
-        // TODO: 2017/4/18 添加全部
-        return null;
+
+
+        return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
+                                                                     .getAllData(TimeUtils.getCurrentFormatTime(),
+                                                                                 "3.1.1",
+                                                                                 1,
+                                                                                 4,
+                                                                                 0,
+                                                                                 null,
+                                                                                 null));
     }
 
     private Observable<List<ItemType>> getRecommendData() {
         return ItemTypeDataConverter.VideoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
-//                        .getRecommendData("json/app/index/recommend/list-android.json?" + time + "&v=3.1.1&os=1&ver=4&toid=0&token&sid")
-                        .getRecommendData2(TimeUtils.getCurrentFormatTime(),"3.1.1",1,4,0,null,null));
+                                                                              //                        .getRecommendData("json/app/index/recommend/list-android.json?" + time + "&v=3.1.1&os=1&ver=4&toid=0&token&sid")
+                                                                              .getRecommendData2(
+                                                                                      TimeUtils.getCurrentFormatTime(),
+                                                                                      "3.1.1",
+                                                                                      1,
+                                                                                      4,
+                                                                                      0,
+                                                                                      null,
+                                                                                      null));
 
     }
 

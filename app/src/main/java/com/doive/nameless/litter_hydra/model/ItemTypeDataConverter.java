@@ -6,6 +6,7 @@ import android.util.Log;
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 
@@ -141,6 +142,37 @@ public class ItemTypeDataConverter {
         //                             Log.e(TAG, "onNext: "+roomBean.getName() );
         //                         }
         //                     });
+    }
+
+    public static Observable<List<ItemType>> VideoDataTranse(Observable<VideoAllBean> allData) {
+        return allData.map(new Func1<VideoAllBean, List<VideoAllBean.DataBeanX>>() {
+            @Override
+            public List<VideoAllBean.DataBeanX> call(VideoAllBean videoAllBean) {
+                return videoAllBean.getData();
+            }
+        })
+               .flatMap(new Func1<List<VideoAllBean.DataBeanX>, Observable<VideoAllBean.DataBeanX>>() {
+                   @Override
+                   public Observable<VideoAllBean.DataBeanX> call(List<VideoAllBean.DataBeanX> dataBeanXes) {
+                       return Observable.from(dataBeanXes.toArray(new VideoAllBean.DataBeanX[]{}));
+                   }
+               }).map(new Func1<VideoAllBean.DataBeanX, ItemType>() {
+            @Override
+            public ItemType call(final VideoAllBean.DataBeanX dataBeanX) {
+                return new ItemType() {
+                    @Override
+                    public int bindItemType() {
+                        return R.layout.item_video_content;
+                    }
+
+                    @Override
+                    public VideoAllBean.DataBeanX bindItemData() {
+                        return dataBeanX;
+                    }
+                };
+            }
+        }).toList();
+
     }
 
     private static class ItemTypeDispath {
