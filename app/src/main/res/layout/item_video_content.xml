@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              android:layout_margin="5dp"
+              android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_marginBottom="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            tools:src="@mipmap/test"
+            android:id="@+id/iv_thumb_content"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="120dp"/>
+
+
+        <LinearLayout
+            android:background="@drawable/jianbian"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            >
+
+            <TextView
+                android:layout_margin="3dp"
+                android:id="@+id/tv_title_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
+                tools:text="这是标题"
+                android:singleLine="true"
+                android:textSize="10sp"
+                android:textColor="#ffffff"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_nick_content"
+            tools:text="全民TV蓝猫"
+            android:textSize="13sp"
+            android:textColor="@color/md_grey_800"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+        <TextView
+            android:id="@+id/tv_view_content"
+            tools:text="69320"
+            android:drawableStart="@mipmap/view_32"
+            android:drawablePadding="3dp"
+            android:textSize="12sp"
+            android:textColor="@color/md_grey_500"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

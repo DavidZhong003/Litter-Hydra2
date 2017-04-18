@@ -1,22 +1,30 @@
 package com.doive.nameless.litter_hydra.model;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 
+import java.util.Arrays;
 import java.util.List;
 
-import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
  * 负责把其他类转为ItemType数据类型
  */
 public class ItemTypeDataConverter {
-    private static final String TAG = "ItemTypeDataConverter";
-
+    private static final String   TAG   = "ItemTypeDataConverter";
+    private static final String[] sName = {"精彩推荐"};
 
     public static Observable<List<ItemType>> TopNewsTranse(Observable<List<NewsBean>> aDefault) {
         return aDefault.flatMap(new Func1<List<NewsBean>, Observable<NewsBean>>() {
@@ -70,6 +78,69 @@ public class ItemTypeDataConverter {
         //获取轮播图数据
         //获取正常的数据
         //两个数据组合
+    }
+
+    /**
+     * 把recommenddataview转为itemtypeview
+     * @param recommendData
+     * @return
+     */
+    public static Observable<List<ItemType>> VideoRecommendDataTranse(Observable<VideoRecommendBean> recommendData) {
+        return recommendData.map(new Func1<VideoRecommendBean, List<VideoRecommendBean.RoomBean>>() {
+            @Override
+            public List<VideoRecommendBean.RoomBean> call(VideoRecommendBean videoRecommendBean) {
+                return videoRecommendBean.getRoom();
+            }
+        })
+                            .flatMap(new Func1<List<VideoRecommendBean.RoomBean>, Observable<VideoRecommendBean.RoomBean>>() {
+                                @Override
+                                public Observable<VideoRecommendBean.RoomBean> call(List<VideoRecommendBean.RoomBean> roomBeen) {
+                                    return Observable.from(roomBeen.toArray(new VideoRecommendBean.RoomBean[]{}));
+                                }
+                            })
+                            .filter(new Func1<VideoRecommendBean.RoomBean, Boolean>() {
+                                @Override
+                                public Boolean call(VideoRecommendBean.RoomBean roomBean) {
+                                    String name = roomBean.getName();
+                                    return ColumnCategoryConstant.getRecommendColumnNameList()
+                                                                 .contains(name);
+                                }
+                            })
+                            .map(new Func1<VideoRecommendBean.RoomBean, ItemType>() {
+                                @Override
+                                public ItemType call(final VideoRecommendBean.RoomBean roomBean) {
+                                    return new ItemType() {
+                                        @Override
+                                        public int bindItemType() {
+                                            return R.layout.item_video_recommend;
+                                        }
+
+                                        @Override
+                                        public VideoRecommendBean.RoomBean bindItemData() {
+                                            return roomBean;
+                                        }
+                                    };
+                                }
+                            })
+                            .toList();
+        //                     .subscribeOn(Schedulers.io())
+        //                     .observeOn(AndroidSchedulers.mainThread())
+        //                     .subscribe(new Subscriber<VideoRecommendBean.RoomBean>() {
+        //                         @Override
+        //                         public void onCompleted() {
+        //
+        //                         }
+        //
+        //                         @Override
+        //                         public void onError(Throwable e) {
+        //
+        //                         }
+        //
+        //                         @Override
+        //                         public void onNext(VideoRecommendBean.RoomBean roomBean) {
+        //                             Log.e(TAG, "onNext: "+roomBean.getName() );
+        //                         }
+        //                     });
     }
 
     private static class ItemTypeDispath {

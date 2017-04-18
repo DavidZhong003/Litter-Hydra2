@@ -1,5 +1,7 @@
 package com.doive.nameless.litter_hydra.net;
 
+import android.util.Log;
+
 import com.doive.nameless.litter_hydra.SettingConfigs;
 import com.doive.nameless.litter_hydra.base.BaseApplication;
 import com.doive.nameless.litter_hydra.utils.NetUtils;
@@ -16,7 +18,10 @@ import okhttp3.Response;
  *
  */
 
-public class CacheInterceptor implements Interceptor {
+public class CacheInterceptor
+        implements Interceptor {
+
+    private static final String TAG = CacheInterceptor.class.getSimpleName();
 
     @Override
     public Response intercept(Chain chain)
@@ -27,15 +32,10 @@ public class CacheInterceptor implements Interceptor {
             return originalResponse.newBuilder()
                                    .removeHeader("Pragma")
                                    .removeHeader("Cache-Control")
-                                   .header("Cache-Control", "public, max-age=" + SettingConfigs.CACHE_TIME_ONLINE)
-                                   .build();
-        } else {
-            return originalResponse.newBuilder()
-                                   .removeHeader("Pragma")
-                                   .removeHeader("Cache-Control")
                                    .header("Cache-Control",
-                                           "public, only-if-cached, max-stale=" + SettingConfigs.CACHE_TIME_OFFLINE)
+                                           "public, max-age=" + SettingConfigs.CACHE_TIME_ONLINE)
                                    .build();
         }
+        return originalResponse;
     }
 }

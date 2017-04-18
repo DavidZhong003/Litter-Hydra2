@@ -1,6 +1,6 @@
-package com.doive.nameless.litter_hydra.net;
+package com.doive.nameless.litter_hydra.net.api;
 
-import com.doive.nameless.litter_hydra.model.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 
 import java.util.List;
 

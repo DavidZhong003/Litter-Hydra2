@@ -8,6 +8,7 @@ import com.doive.nameless.litter_hydra.ui.news.list.item.PhVideoViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.SlideBigImgViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.SlideImgViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.TopItemViewHolder;
+import com.doive.nameless.litter_hydra.ui.video.item.RecommendItemViewHolder;
 
 /**
  * 创建ViewHolder工厂类
@@ -25,6 +26,9 @@ public  class ViewHolderFactory {
                 return new SlideImgViewHolder(inflate);
             case R.layout.item_slid_big:
                 return new SlideBigImgViewHolder(inflate);
+            //视频模块
+            case R.layout.item_video_recommend:
+                return new RecommendItemViewHolder(inflate);
             default:
                  break;
         }

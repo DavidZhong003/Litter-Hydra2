@@ -1,4 +1,4 @@
-package com.doive.nameless.litter_hydra.model;
+package com.doive.nameless.litter_hydra.model.bean;
 
 import java.io.Serializable;
 import java.util.List;

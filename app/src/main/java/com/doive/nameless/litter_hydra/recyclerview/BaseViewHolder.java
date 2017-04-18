@@ -20,6 +20,8 @@ import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 public class BaseViewHolder<T>
         extends RecyclerView.ViewHolder {
 
+    protected String TAG = BaseViewHolder.class.getSimpleName();
+
     private   View              mRootView;
     private   Context           mContext;
     protected T                 t;
@@ -48,6 +50,14 @@ public class BaseViewHolder<T>
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .placeholder(R.mipmap.item_pic_loading)
+             .transform(new GlideRoundTransform(iv.getContext(), 3))
+             .into(iv);
+        return this;
+    }
+    public BaseViewHolder setImage(ImageView iv, String url) {
+        Glide.with(iv.getContext())
+             .load(url)
+             .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .transform(new GlideRoundTransform(iv.getContext(), 3))
              .into(iv);
         return this;

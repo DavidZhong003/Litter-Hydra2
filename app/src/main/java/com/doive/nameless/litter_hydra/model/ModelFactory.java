@@ -3,13 +3,19 @@ package com.doive.nameless.litter_hydra.model;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.base.BaseApplication;
+import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
+import com.doive.nameless.litter_hydra.utils.TimeUtils;
 import com.doive.nameless.litter_hydra.utils.TimestampUtils;
 
 import java.util.List;
 
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -36,39 +42,39 @@ public class ModelFactory
         switch (listType) {
             case "头条":
                 return getTopNews(isLoadMore);
-//                return getEntertainmentNews(isLoadMore,"SYLB10,SYDT10");
+            //                return getEntertainmentNews(isLoadMore,"SYLB10,SYDT10");
             case "娱乐":
-                return getEntertainmentNews(isLoadMore,"YL53,FOCUSYL53");
+                return getEntertainmentNews(isLoadMore, "YL53,FOCUSYL53");
             case "财经":
-                return getEntertainmentNews(isLoadMore,"CJ33,FOCUSCJ33,HNCJ33");
+                return getEntertainmentNews(isLoadMore, "CJ33,FOCUSCJ33,HNCJ33");
             case "科技":
-                return getEntertainmentNews(isLoadMore,"KJ123,FOCUSKJ123");
+                return getEntertainmentNews(isLoadMore, "KJ123,FOCUSKJ123");
             case "社会":
-                return getEntertainmentNews(isLoadMore,"SH133,FOCUSSH133");
+                return getEntertainmentNews(isLoadMore, "SH133,FOCUSSH133");
             case "军事":
-                return getEntertainmentNews(isLoadMore,"JS83,FOCUSJS83");
+                return getEntertainmentNews(isLoadMore, "JS83,FOCUSJS83");
             case "台湾":
-                return getEntertainmentNews(isLoadMore,"TW73");
+                return getEntertainmentNews(isLoadMore, "TW73");
             case "体育":
-                return getEntertainmentNews(isLoadMore,"TY43,FOCUSTY43");
+                return getEntertainmentNews(isLoadMore, "TY43,FOCUSTY43");
             case "历史":
-                return getEntertainmentNews(isLoadMore,"LS153,FOCUSLS153");
+                return getEntertainmentNews(isLoadMore, "LS153,FOCUSLS153");
             default:
-                return getEntertainmentNews(isLoadMore,"KJ123,FOCUSKJ123");
+                return getEntertainmentNews(isLoadMore, "KJ123,FOCUSKJ123");
 
         }
     }
 
-    private Observable<List<ItemType>> getEntertainmentNews(boolean isLoadMore,String columnId) {
-        Log.e(TAG, "getEntertainmentNews: //////////////" );
-        mEntertainmentLoadMorePage = isLoadMore?mEntertainmentLoadMorePage+1:1;
+    private Observable<List<ItemType>> getEntertainmentNews(boolean isLoadMore, String columnId) {
+        Log.e(TAG, "getEntertainmentNews: //////////////");
+        mEntertainmentLoadMorePage = isLoadMore
+                                     ? mEntertainmentLoadMorePage + 1
+                                     : 1;
         return ItemTypeDataConverter.TopNewsTranse(mRetrofitManager.creatNewsApiService()
-                                                            .getColumnData(
-                                                                    columnId,
-                                                                    mEntertainmentLoadMorePage,
-                                                                    BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
-                                                                    BaseApplication.getDeviceId()
-                                                            ));
+                                                                   .getColumnData(columnId,
+                                                                                  mEntertainmentLoadMorePage,
+                                                                                  BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
+                                                                                  BaseApplication.getDeviceId()));
     }
 
     /**
@@ -94,6 +100,37 @@ public class ModelFactory
                                                                                BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
                                                                                BaseApplication.getDeviceId()));
         }
+    }
+
+    /**
+     * 视频模块
+     * @param isLoadMore
+     * @param columnCategory
+     */
+    public Observable<List<ItemType>> obtainVideoListData(boolean isLoadMore,
+                                                          String columnCategory)
+    {
+        switch (columnCategory) {
+            case "推荐":
+                return getRecommendData();
+            case "全部":
+                return getAllVideoData();
+            default:
+                return getRecommendData();
+        }
+    }
+
+    private Observable<List<ItemType>> getAllVideoData() {
+        mRetrofitManager.creatVideoApiService();
+        // TODO: 2017/4/18 添加全部
+        return null;
+    }
+
+    private Observable<List<ItemType>> getRecommendData() {
+        return ItemTypeDataConverter.VideoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
+//                        .getRecommendData("json/app/index/recommend/list-android.json?" + time + "&v=3.1.1&os=1&ver=4&toid=0&token&sid")
+                        .getRecommendData2(TimeUtils.getCurrentFormatTime(),"3.1.1",1,4,0,null,null));
+
     }
 
 

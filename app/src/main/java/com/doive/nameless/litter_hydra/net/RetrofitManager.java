@@ -1,5 +1,17 @@
 package com.doive.nameless.litter_hydra.net;
 
+import com.doive.nameless.litter_hydra.base.BaseApplication;
+import com.doive.nameless.litter_hydra.net.api.NewsApiService;
+import com.doive.nameless.litter_hydra.net.api.VideoApiService;
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -16,23 +28,31 @@ public class RetrofitManager {
     private Retrofit     mNewsRetrofit;
     private String       mBaseURl;
     private OkHttpClient mClient;
+    private Retrofit mVideoRetrofit;
 
     private RetrofitManager() {
         initOkHttpClient();
     }
 
     private void initOkHttpClient() {
-        mClient = new OkHttpClient.Builder()
-                .addInterceptor(new GzipRequestInterceptor())
-                .addInterceptor(new CacheInterceptor())
+        mClient = new OkHttpClient.Builder().retryOnConnectionFailure(true)//连接失败后是否重新连接
+                                            .connectTimeout(15, TimeUnit.SECONDS)
+                                            .writeTimeout(30, TimeUnit.SECONDS)
+                                            .readTimeout(30, TimeUnit.SECONDS)
+                                            .addNetworkInterceptor(new CacheInterceptor())
+                                            .addInterceptor(new GzipRequestInterceptor())
+                                            .cache(new Cache(new File(BaseApplication.getContext()
+                                                                                     .getCacheDir(),
+                                                                      "HttpCache"),
+                                                             10 * 1024 * 1024))
                                             .build();
     }
 
     private Retrofit creatRetrofit(String baseURl) {
-        return creatRetrofit(baseURl,mClient);
+        return creatRetrofit(baseURl, mClient);
     }
 
-    private Retrofit creatRetrofit(String baseURl ,OkHttpClient client) {
+    private Retrofit creatRetrofit(String baseURl, OkHttpClient client) {
         return new Retrofit.Builder().baseUrl(baseURl)
                                      .addConverterFactory(GsonConverterFactory.create())
                                      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -53,11 +73,19 @@ public class RetrofitManager {
     }
 
     public NewsApiService creatNewsApiService() {
-        if (mNewsRetrofit==null){
+        if (mNewsRetrofit == null) {
             mNewsRetrofit = creatRetrofit(NewsApiService.BASE_NEWS_URL);
         }
         return mNewsRetrofit.create(NewsApiService.class);
     }
+
+    public VideoApiService creatVideoApiService() {
+        if (mVideoRetrofit == null) {
+            mVideoRetrofit = creatRetrofit(VideoApiService.BASE_NEWS_URL);
+        }
+        return mVideoRetrofit.create(VideoApiService.class);
+    }
+
 
 
 }

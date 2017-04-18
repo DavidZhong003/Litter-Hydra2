@@ -1,5 +1,8 @@
 package com.doive.nameless.litter_hydra;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/4/13.
  */
@@ -28,4 +31,28 @@ public final class ColumnCategoryConstant {
                                                                       "网游竞技",
                                                                       "单机主机"};
     public static final String COLUMN_ARG_PARAM="column";
+
+    private static List<String> mName = new ArrayList<>();
+
+    /**
+     * 视频推荐页面中所显示的栏目名字集合
+     * @return
+     */
+    public static List<String> getRecommendColumnNameList(){
+        return initNameList();
+    }
+
+    /**
+     * 初始化集合
+     * @return
+     */
+    private static List<String> initNameList() {
+        mName.add("精彩推荐");
+        for (int i = 2; i < VIDEO_COLUMN_CATEGORY.length; i++) {
+            mName.add(VIDEO_COLUMN_CATEGORY[i]);
+        }
+        mName.add("QQ飞车");
+        mName.add("二次元区");
+        return mName;
+    }
 }

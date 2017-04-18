@@ -113,7 +113,6 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
 
             @Override
             public void onFinishRefresh() {
-                Log.e(TAG, "onFinishRefresh: " );
                 if (mPresenter!=null)
                     mPresenter.onFinishRefresh();
             }
@@ -181,10 +180,16 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Log.e(TAG, "setUserVisibleHint: "+mColumnCategory+"/"+isVisibleToUser );
         if (isVisibleToUser&&mPresenter!=null){
             mPresenter.subscribe();
         }else if (!isVisibleToUser&&mPresenter!=null){
             mPresenter.unSubscribe();
         }
+    }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint()&isResumed();
     }
 }

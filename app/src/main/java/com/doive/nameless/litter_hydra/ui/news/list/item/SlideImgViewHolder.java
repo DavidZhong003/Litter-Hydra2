@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
-import com.doive.nameless.litter_hydra.model.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 
 import java.util.List;
 

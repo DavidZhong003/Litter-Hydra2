@@ -7,7 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
-import com.doive.nameless.litter_hydra.model.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 
