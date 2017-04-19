@@ -51,6 +51,11 @@ public class MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void initView(Bundle savedInstanceState) {
         //初始化控件
         BottomNavigationView navigation = getViewbyId(R.id.navigation);
         mContentView = getViewbyId(R.id.content_main);

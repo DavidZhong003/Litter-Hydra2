@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.ui.news.list.item;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.ui.news.details.NewsDocDetailActivity;
 import com.google.gson.Gson;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
@@ -45,7 +47,6 @@ public class DocItemViewHolder
 
     @Override
     public void bindData(final NewsBean.ItemBean bean) {
-        Gson gson = new Gson();
         mTvTopTitle.setText(bean.getTitle());
         setImageWithPlaceHolder(mIvTopImg, bean.getThumbnail());
         mTvTopSource.setText(bean.getSource()==null?"凤凰网":bean.getSource());
@@ -54,6 +55,10 @@ public class DocItemViewHolder
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: 2017/4/19 使用RxBus把事件发送到打开activity
+                Intent intent = new Intent(v.getContext(), NewsDocDetailActivity.class);
+                intent.putExtra("111",bean.getId());
+                v.getContext().startActivity(intent);
                 Toast.makeText(v.getContext(),bean.getLink().getUrl(),Toast.LENGTH_LONG).show();
             }
         });

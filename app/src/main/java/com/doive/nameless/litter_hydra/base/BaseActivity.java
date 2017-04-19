@@ -2,6 +2,7 @@ package com.doive.nameless.litter_hydra.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -28,7 +29,10 @@ public abstract class BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(setLayoutId());
+        initView(savedInstanceState);
     }
+
+    protected abstract void initView(Bundle savedInstanceState);
 
     /**
      * 设置资源id
@@ -112,6 +116,11 @@ public abstract class BaseActivity
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                                      WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
+        }else {
+            //设置statusbar的图标颜色高亮反转
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            //设置statusbar的颜色
+            getWindow().setStatusBarColor(Color.parseColor("#f8f8f8"));
         }
     }
 
