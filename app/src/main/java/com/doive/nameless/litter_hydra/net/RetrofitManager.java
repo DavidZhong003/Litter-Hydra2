@@ -3,12 +3,8 @@ package com.doive.nameless.litter_hydra.net;
 import com.doive.nameless.litter_hydra.base.BaseApplication;
 import com.doive.nameless.litter_hydra.net.api.NewsApiService;
 import com.doive.nameless.litter_hydra.net.api.VideoApiService;
-import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -81,7 +77,7 @@ public class RetrofitManager {
 
     public VideoApiService creatVideoApiService() {
         if (mVideoRetrofit == null) {
-            mVideoRetrofit = creatRetrofit(VideoApiService.BASE_NEWS_URL);
+            mVideoRetrofit = creatRetrofit(VideoApiService.BASE_QUANMING_URL);
         }
         return mVideoRetrofit.create(VideoApiService.class);
     }

@@ -3,6 +3,8 @@ package com.doive.nameless.litter_hydra.net.api;
 import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 
+import okhttp3.Call;
+import okhttp3.Response;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -16,7 +18,8 @@ import rx.Observable;
  */
 
 public interface VideoApiService {
-    String BASE_NEWS_URL = "http://www.quanmin.tv/";
+    String BASE_QUANMING_URL = "http://www.quanmin.tv/";
+    String BASE_SHOWING_URL  = "http://api-shouyin.quanmin.tv/";
 
     //栏目
     //http://www.quanmin.tv/json/app/index/category/info-android.json?04131550=&toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=04fd07d1d956d0e9c05f98fbad6bbdfc&sign=A6C3F3CEFD3F93E30C9B940CAD8AE2C0
@@ -44,6 +47,7 @@ public interface VideoApiService {
     //全民新秀
     //http://www.quanmin.tv/json/categories/beauty/list.json?04181851=&toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=eebdd9fa8ff075bac7892e1fae208cee&sign=0CA1FA7BCC98828D263F5B99B12FDC48
     //lol overwatch huwai heartstone mobilegame webgame tvagame(单机主机)
+    //http://www.quanmin.tv/json/categories/tvgame/list.json?04190930=&toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=8d55c670df90677bbde4fa328a6ac4cb&sign=407D6EF4F33AB42A4B054758BED1367E
     @GET("json/play/list.json")
     Observable<VideoAllBean> getAllData(@Query("") String time,
                                         @Query("v") String version,
@@ -53,6 +57,8 @@ public interface VideoApiService {
                                         @Query("token") String token,
                                         @Query("sid") String sid);
 
+    @GET()
+    Observable<VideoAllBean> getMoreAllData(@Url String url);
     /**
      * 获取栏目数据
      */
@@ -65,4 +71,10 @@ public interface VideoApiService {
                                                @Query("toid") int toid,
                                                @Query("token") String token,
                                                @Query("sid") String sid);
+    @GET()
+    Observable<VideoAllBean> getCategoriesData2(@Url String url);
+    //showing
+    //http://api-shouyin.quanmin.tv/public/live/hot?toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=2aac35a7310e732c160932127cc87e74&sign=A6236A1A77B56857D27DE9F8CD0FF364
+    @GET("http://api-shouyin.quanmin.tv/public/live/hot?toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=4e1b73aba6b9f3d1c1e8cf8c389bc7bd&sign=00725B0F660487B541C02C2A2AA1EF90")
+    Call getShowingData();
 }

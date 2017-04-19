@@ -7,24 +7,20 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
-import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.mvp.BaseListFragment;
 import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
-import com.doive.nameless.litter_hydra.ui.news.list.NewListContract;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.BallPulseView;
-import com.lcodecore.tkrefreshlayout.header.GoogleDotView;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
-import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 
+import java.io.EOFException;
 import java.util.List;
 
 /**
@@ -109,32 +105,45 @@ public class VideoListFragment
                     mPresenter.onFinishLoadMore();
             }
         });
-        mTwinklingRefreshLayout.startRefresh();
+//        if (!getUserVisibleHint()){
+            mTwinklingRefreshLayout.startRefresh();
+//        }else {
+//            if (mPresenter!=null)
+//                mPresenter.onStartRefresh();
+//        }
+
     }
 
     /**
      * 网络错误时候执行
      * @param isLoadMore
+     * @param e
      */
     @Override
-    public void showNetErrorView(final boolean isLoadMore) {
+    public void showNetErrorView(final boolean isLoadMore, Throwable e) {
         if (isLoadMore){
             hideLoadMoreView();
         }else {
             hideRefreshView();
         }
-        Snackbar.make(mTwinklingRefreshLayout, "网络错误,刷新一下", 3000)
-                .setAction("再试一下", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getContext(), "联网中", Toast.LENGTH_LONG).show();
-                        if (isLoadMore){
-                            showLoadMoreView();
-                        }else {
-                            showRefreshView();
+        if (e instanceof EOFException){
+            showToast("没有更多了");
+        }else {
+            Snackbar.make(mTwinklingRefreshLayout, "网络错误,刷新一下", 3000)
+                    .setAction("再试一下", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getContext(), "联网中", Toast.LENGTH_LONG)
+                                 .show();
+                            if (isLoadMore) {
+                                showLoadMoreView();
+                            } else {
+                                showRefreshView();
+                            }
                         }
-                    }
-                }).show();
+                    })
+                    .show();
+        }
     }
 
     @Override
@@ -159,7 +168,7 @@ public class VideoListFragment
 
     @Override
     public void updateData(boolean isLoadMore,List<ItemType> list) {
-        mAdapter.addAllUpdata(isLoadMore,list);
+        mAdapter.addAllUpdate(isLoadMore, list);
     }
 
     @Override

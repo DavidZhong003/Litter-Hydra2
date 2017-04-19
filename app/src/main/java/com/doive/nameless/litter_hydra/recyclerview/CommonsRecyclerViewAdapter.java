@@ -21,11 +21,11 @@ public class CommonsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
     @NonNull
     private List<ItemType> mList = new ArrayList<>();
 
-    public void addAllUpdata(boolean isAdd,List<ItemType> list){
+    public void addAllUpdate(boolean isAdd, List<ItemType> list){
         if (isAdd){
             //添加
             mList.addAll(list);
-            Log.e("//////////////////", "addAllUpdata: "+mList.size() );
+            Log.e("数据条数", "addAllUpdate: "+mList.size() );
         }else {
             //更新
             if (list!=null)

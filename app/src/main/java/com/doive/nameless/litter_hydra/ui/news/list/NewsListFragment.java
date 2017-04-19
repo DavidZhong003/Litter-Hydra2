@@ -3,7 +3,6 @@ package com.doive.nameless.litter_hydra.ui.news.list;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -169,7 +168,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
 
     @Override
     public void updateData(boolean isLoadMore,List<ItemType> list) {
-        mAdapter.addAllUpdata(isLoadMore,list);
+        mAdapter.addAllUpdate(isLoadMore, list);
     }
 
     @Override

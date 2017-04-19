@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface VideoListConstract {
     interface View extends BaseView<Presenter>{
-        void showNetErrorView(boolean isLoadMore);
+        void showNetErrorView(boolean isLoadMore, Throwable e);
         void showRefreshView();
         void showLoadMoreView();
         void hideRefreshView();

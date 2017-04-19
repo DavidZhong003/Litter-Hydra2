@@ -3,19 +3,16 @@ package com.doive.nameless.litter_hydra.model;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.base.BaseApplication;
-import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.utils.TimeUtils;
 import com.doive.nameless.litter_hydra.utils.TimestampUtils;
 
 import java.util.List;
 
-import com.doive.nameless.litter_hydra.recyclerview.ItemType;
-
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
+import static android.R.id.list;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -104,72 +101,109 @@ public class ModelFactory
 
     /**
      * 视频模块
-     * @param isLoadMore
+     * @param loadMoreCount
      * @param columnCategory
      */
-    public Observable<List<ItemType>> obtainVideoListData(boolean isLoadMore, String columnCategory)
+    public Observable<List<ItemType>> obtainVideoListData(int loadMoreCount, String columnCategory)
     {
         switch (columnCategory) {
             case "推荐":
                 return getRecommendData();
             case "全部":
-                return getAllVideoData();
+                return getAllVideoData(loadMoreCount);
             case "Showing":
+                //                return getShowingData();
             case "王者荣耀":
-                return getCategoriesData("wangzhe");
+                return getCategoriesData(loadMoreCount, "wangzhe");
             case "全民新秀":
-                return getCategoriesData("beauty");
+                return getCategoriesData(loadMoreCount, "beauty");
             case "英雄联盟":
-                return getCategoriesData("lol");
+                return getCategoriesData(loadMoreCount, "lol");
             case "守望先锋":
-                return getCategoriesData("overwatch");
+                return getCategoriesData(loadMoreCount, "overwatch");
             case "全民户外":
-                return getCategoriesData("huwai");
+                return getCategoriesData(loadMoreCount, "huwai");
             case "炉石传说":
-                return getCategoriesData("heartstone");
+                return getCategoriesData(loadMoreCount, "heartstone");
             case "手游专区":
-                return getCategoriesData("mobilegame");
+                return getCategoriesData(loadMoreCount, "mobilegame");
             case "网游竞技":
-                return getCategoriesData("webgame");
+                return getCategoriesData(loadMoreCount, "webgame");
             case "单机主机":
-                return getCategoriesData("tvagame");
+                return getCategoriesData(loadMoreCount, "tvgame");
             default:
-                return getAllVideoData();
+                return getAllVideoData(loadMoreCount);
         }
+    }
+
+    /**
+     * 获取showing数据
+     * @return
+     */
+    private Observable<List<ItemType>> getShowingData() {
+        //        OkHttpClient client = new OkHttpClient.Builder().build();
+        //        String url = "http://api-shouyin.quanmin.tv/public/live/hot?toid=0&token&sid&cv=quanmin_3.1.1&ua=htc_m8tl&dev=38D54712C7F50000&conn=WIFI&osversion=android_19&cid=6&nonce=fa196125e3ac60fbbe9297a346b26101&sign=3C7D5CD51465C875D6BA1A4ABDB3F9F7";
+        //        Request r = new Request.Builder().get().url(url).build();
+        //        client.newCall(r).enqueue(new Callback() {
+        //            @Override
+        //            public void onFailure(Call call, IOException e) {
+        //
+        //            }
+        //
+        //            @Override
+        //            public void onResponse(Call call, Response response)
+        //                    throws IOException
+        //            {
+        //                InputStream in = response.body()
+        //                                                  .byteStream();
+        //                InputStreamReader isr = new InputStreamReader(in);
+        //                BufferedReader br = new BufferedReader(isr);
+        //                String str =null;
+        //                if ((str = br.readLine()) != null) {
+        //                    Log.e(TAG, "onResponse: "+str );
+        //                }
+        //                br.close();
+        //                isr.close();
+        //            }
+        //        });
+        // TODO: 2017/4/19 获取showing实际数据
+        return ItemTypeDataConverter.VideoDataTranseFilter(mRetrofitManager.creatVideoApiService()
+                                                                           .getAllData(TimeUtils.getCurrentFormatTime(),
+                                                                                       "3.1.1",
+                                                                                       1,
+                                                                                       4,
+                                                                                       0,
+                                                                                       null,
+                                                                                       null),
+                                                           "Showing");
     }
 
     /**
      * 获取栏目数据
      * @return
      */
-    private Observable<List<ItemType>> getCategoriesData(String categories) {
+    private Observable<List<ItemType>> getCategoriesData(int loadmoreCount, String categories) {
+        String more = loadmoreCount == 0
+                      ? ""
+                      : "_" + loadmoreCount;
+        String url = "json/categories/" + categories + "/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
         return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
-        .getCategoriesData(categories,TimeUtils.getCurrentFormatTime(),
-                           "3.1.1",
-                           1,
-                           4,
-                           0,
-                           null,
-                           null)
-        );
+                                                                     .getCategoriesData2(url));
+
     }
 
-    private Observable<List<ItemType>> getAllVideoData() {
-
-
+    private Observable<List<ItemType>> getAllVideoData(int loadMoreCount) {
+        String more = loadMoreCount == 0
+                      ? ""
+                      : "_" + loadMoreCount;
+        String url = "json/play/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
         return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
-                                                                     .getAllData(TimeUtils.getCurrentFormatTime(),
-                                                                                 "3.1.1",
-                                                                                 1,
-                                                                                 4,
-                                                                                 0,
-                                                                                 null,
-                                                                                 null));
+                                                                     .getMoreAllData(url));
+
     }
 
     private Observable<List<ItemType>> getRecommendData() {
         return ItemTypeDataConverter.VideoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
-                                                                              //                        .getRecommendData("json/app/index/recommend/list-android.json?" + time + "&v=3.1.1&os=1&ver=4&toid=0&token&sid")
                                                                               .getRecommendData2(
                                                                                       TimeUtils.getCurrentFormatTime(),
                                                                                       "3.1.1",
