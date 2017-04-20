@@ -18,6 +18,7 @@ public interface VideoListConstract {
         void hideRefreshView();
         void hideLoadMoreView();
         void updateData(boolean isLoadMore, List<ItemType> list);
+        void showNoMore();
     }
 
     interface Presenter extends BasePresenter{

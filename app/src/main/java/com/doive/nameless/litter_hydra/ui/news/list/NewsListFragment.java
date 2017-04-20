@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseFragment;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.BallPulseView;
@@ -22,6 +23,9 @@ import java.util.List;
 import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
+
+import rx.Subscriber;
+import rx.functions.Action1;
 
 /**
  * Created by Administrator on 2017/4/5.
@@ -84,6 +88,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
         //设置脚view
         mTwinklingRefreshLayout.setBottomView(new BallPulseView(mContext));
         mTwinklingRefreshLayout.setAutoLoadMore(TextUtils.equals("头条",mColumnCategory));
+
     }
 
     @Override
@@ -123,6 +128,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
             }
         });
         showRefreshView();
+
     }
 
     @Override
@@ -179,7 +185,6 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.e(TAG, "setUserVisibleHint: "+mColumnCategory+"/"+isVisibleToUser );
         if (isVisibleToUser&&mPresenter!=null){
             mPresenter.subscribe();
         }else if (!isVisibleToUser&&mPresenter!=null){

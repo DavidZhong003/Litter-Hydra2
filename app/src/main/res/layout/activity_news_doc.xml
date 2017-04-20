@@ -74,6 +74,7 @@
                 </RelativeLayout>
             </LinearLayout>
 
+
         </android.support.v7.widget.Toolbar>
 
 
@@ -90,6 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+
 
             <WebView
                 android:id="@+id/wv_news_details"

@@ -8,8 +8,8 @@ import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.ui.news.details.NewsDocDetailActivity;
-import com.google.gson.Gson;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 
@@ -56,6 +56,7 @@ public class DocItemViewHolder
             @Override
             public void onClick(View v) {
                 // TODO: 2017/4/19 使用RxBus把事件发送到打开activity
+                RxBus.getInstance().sendSticky(1, bean);
                 Intent intent = new Intent(v.getContext(), NewsDocDetailActivity.class);
                 intent.putExtra("111",bean.getId());
                 v.getContext().startActivity(intent);

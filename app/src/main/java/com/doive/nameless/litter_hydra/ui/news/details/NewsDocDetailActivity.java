@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -17,11 +15,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
 import com.doive.nameless.litter_hydra.utils.GlideCircleTransform;
-import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-
-import static android.R.attr.data;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -56,9 +51,23 @@ public class NewsDocDetailActivity
 
         initData();
         initListener();
+
     }
 
     private void initListener() {
+//        RxBus.getInstance().toObservable(NewsBean.ItemBean.class).subscribe(new Action1<NewsBean.ItemBean>() {
+//            @Override
+//            public void call(NewsBean.ItemBean itemBean) {
+//                Log.e(TAG, "call: "+itemBean );
+//            }
+//        });
+//        RxBus.getInstance().toObservableSticky(NewsBean.ItemBean.class).subscribe(new Action1<NewsBean.ItemBean>() {
+//            @Override
+//            public void call(NewsBean.ItemBean itemBean) {
+//                Log.e(TAG, "call:???????????? "+itemBean );
+//            }
+//        });
+
     }
 
     private void initData() {

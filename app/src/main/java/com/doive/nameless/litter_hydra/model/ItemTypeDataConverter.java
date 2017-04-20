@@ -9,6 +9,8 @@ import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.rxbus.RxBus;
+import com.orhanobut.logger.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -144,11 +146,11 @@ public class ItemTypeDataConverter {
         //                     });
     }
 
-    public static Observable<List<ItemType>> VideoDataTranse(Observable<VideoAllBean> allData) {
+    public static Observable<List<ItemType>> VideoDataTranse(final String columnCategory, Observable<VideoAllBean> allData) {
         return allData.map(new Func1<VideoAllBean, List<VideoAllBean.DataBeanX>>() {
             @Override
             public List<VideoAllBean.DataBeanX> call(VideoAllBean videoAllBean) {
-//                videoAllBean.getPageCount();
+                RxBus.getInstance().send(columnCategory,videoAllBean.getPageCount());
                 return videoAllBean.getData();
             }
         })

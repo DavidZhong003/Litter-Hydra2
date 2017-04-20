@@ -63,7 +63,6 @@ public class ModelFactory
     }
 
     private Observable<List<ItemType>> getEntertainmentNews(boolean isLoadMore, String columnId) {
-        Log.e(TAG, "getEntertainmentNews: //////////////");
         mEntertainmentLoadMorePage = isLoadMore
                                      ? mEntertainmentLoadMorePage + 1
                                      : 1;
@@ -110,29 +109,29 @@ public class ModelFactory
             case "推荐":
                 return getRecommendData();
             case "全部":
-                return getAllVideoData(loadMoreCount);
+                return getAllVideoData(columnCategory,loadMoreCount);
             case "Showing":
                 //                return getShowingData();
             case "王者荣耀":
-                return getCategoriesData(loadMoreCount, "wangzhe");
+                return getCategoriesData(columnCategory,loadMoreCount, "wangzhe");
             case "全民新秀":
-                return getCategoriesData(loadMoreCount, "beauty");
+                return getCategoriesData(columnCategory,loadMoreCount, "beauty");
             case "英雄联盟":
-                return getCategoriesData(loadMoreCount, "lol");
+                return getCategoriesData(columnCategory,loadMoreCount, "lol");
             case "守望先锋":
-                return getCategoriesData(loadMoreCount, "overwatch");
+                return getCategoriesData(columnCategory,loadMoreCount, "overwatch");
             case "全民户外":
-                return getCategoriesData(loadMoreCount, "huwai");
+                return getCategoriesData(columnCategory,loadMoreCount, "huwai");
             case "炉石传说":
-                return getCategoriesData(loadMoreCount, "heartstone");
+                return getCategoriesData(columnCategory,loadMoreCount, "heartstone");
             case "手游专区":
-                return getCategoriesData(loadMoreCount, "mobilegame");
+                return getCategoriesData(columnCategory,loadMoreCount, "mobilegame");
             case "网游竞技":
-                return getCategoriesData(loadMoreCount, "webgame");
+                return getCategoriesData(columnCategory,loadMoreCount, "webgame");
             case "单机主机":
-                return getCategoriesData(loadMoreCount, "tvgame");
+                return getCategoriesData(columnCategory,loadMoreCount, "tvgame");
             default:
-                return getAllVideoData(loadMoreCount);
+                return getAllVideoData(columnCategory,loadMoreCount);
         }
     }
 
@@ -182,22 +181,22 @@ public class ModelFactory
      * 获取栏目数据
      * @return
      */
-    private Observable<List<ItemType>> getCategoriesData(int loadmoreCount, String categories) {
+    private Observable<List<ItemType>> getCategoriesData(String columnCategory,int loadmoreCount, String categories) {
         String more = loadmoreCount == 0
                       ? ""
                       : "_" + loadmoreCount;
         String url = "json/categories/" + categories + "/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.VideoDataTranse(columnCategory,mRetrofitManager.creatVideoApiService()
                                                                      .getCategoriesData2(url));
 
     }
 
-    private Observable<List<ItemType>> getAllVideoData(int loadMoreCount) {
+    private Observable<List<ItemType>> getAllVideoData(String columnCategory,int loadMoreCount) {
         String more = loadMoreCount == 0
                       ? ""
                       : "_" + loadMoreCount;
         String url = "json/play/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.VideoDataTranse(columnCategory,mRetrofitManager.creatVideoApiService()
                                                                      .getMoreAllData(url));
 
     }

@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseActivity;
 import com.doive.nameless.litter_hydra.helper.FragmentHelper;
+import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+
+import rx.functions.Action1;
 
 public class MainActivity
         extends BaseActivity {
@@ -51,7 +55,6 @@ public class MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

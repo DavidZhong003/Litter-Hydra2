@@ -28,7 +28,8 @@ import java.util.List;
  */
 
 public class VideoListFragment
-        extends BaseListFragment implements VideoListConstract.View {
+        extends BaseListFragment
+        implements VideoListConstract.View {
 
     private VideoListConstract.Presenter mPresenter;
 
@@ -48,14 +49,14 @@ public class VideoListFragment
     @Override
     protected void initRecyclerView(RecyclerView recyclerView) {
         //设置LayoutManager
-        if (TextUtils.equals(ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY[0],
-                              mColumnCategory)){
+        if (TextUtils.equals(ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY[0], mColumnCategory)) {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             //设置分割线
-            recyclerView.addItemDecoration(new RecyclerItemDecoration(20f, Color.parseColor("#FAFAFA")));
+            recyclerView.addItemDecoration(new RecyclerItemDecoration(20f,
+                                                                      Color.parseColor("#FAFAFA")));
 
-        }else {
-            recyclerView.setLayoutManager(new GridLayoutManager(mContext,2));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         }
 
         //设置适配器
@@ -69,13 +70,13 @@ public class VideoListFragment
         twinklingRefreshLayout.setBottomView(new BallPulseView(mContext));
         //设置是否允许加载更多
         twinklingRefreshLayout.setEnableLoadmore(!TextUtils.equals(ColumnCategoryConstant.VIDEO_COLUMN_CATEGORY[0],
-                                                                  mColumnCategory));
+                                                                   mColumnCategory));
     }
 
     @Override
     protected void initData() {
         super.initData();
-        setPresenter(new VideoListPresenter(this,mColumnCategory));
+        setPresenter(new VideoListPresenter(this, mColumnCategory));
     }
 
     @Override
@@ -83,34 +84,30 @@ public class VideoListFragment
         mTwinklingRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
-                if (mPresenter!=null)
-                    mPresenter.onStartRefresh();
+                if (mPresenter != null) { mPresenter.onStartRefresh(); }
             }
 
             @Override
             public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
-                if (mPresenter!=null)
-                    mPresenter.onStartLoadMore();
+                if (mPresenter != null) { mPresenter.onStartLoadMore(); }
             }
 
             @Override
             public void onFinishRefresh() {
-                if (mPresenter!=null)
-                    mPresenter.onFinishRefresh();
+                if (mPresenter != null) { mPresenter.onFinishRefresh(); }
             }
 
             @Override
             public void onFinishLoadMore() {
-                if (mPresenter!=null)
-                    mPresenter.onFinishLoadMore();
+                if (mPresenter != null) { mPresenter.onFinishLoadMore(); }
             }
         });
-//        if (!getUserVisibleHint()){
-            mTwinklingRefreshLayout.startRefresh();
-//        }else {
-//            if (mPresenter!=null)
-//                mPresenter.onStartRefresh();
-//        }
+        //        if (!getUserVisibleHint()){
+        mTwinklingRefreshLayout.startRefresh();
+        //        }else {
+        //            if (mPresenter!=null)
+        //                mPresenter.onStartRefresh();
+        //        }
 
     }
 
@@ -121,29 +118,26 @@ public class VideoListFragment
      */
     @Override
     public void showNetErrorView(final boolean isLoadMore, Throwable e) {
-        if (isLoadMore){
+        if (isLoadMore) {
             hideLoadMoreView();
-        }else {
+        } else {
             hideRefreshView();
         }
-        if (e instanceof EOFException){
-            showToast("没有更多了");
-        }else {
-            Snackbar.make(mTwinklingRefreshLayout, "网络错误,刷新一下", 3000)
-                    .setAction("再试一下", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getContext(), "联网中", Toast.LENGTH_LONG)
-                                 .show();
-                            if (isLoadMore) {
-                                showLoadMoreView();
-                            } else {
-                                showRefreshView();
-                            }
+
+        Snackbar.make(mTwinklingRefreshLayout, "网络错误,刷新一下", 3000)
+                .setAction("再试一下", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), "联网中", Toast.LENGTH_LONG)
+                             .show();
+                        if (isLoadMore) {
+                            showLoadMoreView();
+                        } else {
+                            showRefreshView();
                         }
-                    })
-                    .show();
-        }
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -167,8 +161,15 @@ public class VideoListFragment
     }
 
     @Override
-    public void updateData(boolean isLoadMore,List<ItemType> list) {
+    public void updateData(boolean isLoadMore, List<ItemType> list) {
         mAdapter.addAllUpdate(isLoadMore, list);
+    }
+
+    @Override
+    public void showNoMore() {
+        //没有更多
+        showToast("再扯也不给你数据,别扯了...T_T");
+        hideLoadMoreView();
     }
 
     @Override
