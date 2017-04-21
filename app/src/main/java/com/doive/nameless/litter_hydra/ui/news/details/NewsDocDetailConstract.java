@@ -15,7 +15,7 @@ public interface NewsDocDetailConstract {
     interface View extends BaseView<Presenter>{
         //显示网络错误的页面
         void showNetErrorView();
-        void showDetailTitleInformation(String title,String cateName,String editTime,String logeUrl);
+        void showDetailTitleInformation(String title,String cateName,String editTime,String logoUrl);
 
         //显示新闻详情页面
         void showWebViewData(String htmlData);

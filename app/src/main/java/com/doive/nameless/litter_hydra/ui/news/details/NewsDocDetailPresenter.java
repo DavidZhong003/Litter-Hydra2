@@ -12,12 +12,14 @@ import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
 
 import okhttp3.OkHttpClient;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Administrator on 2017/4/19.
+ *
  */
 public class NewsDocDetailPresenter
         implements NewsDocDetailConstract.Presenter {
@@ -36,29 +38,37 @@ public class NewsDocDetailPresenter
 
     @Override
     public void subscribe() {
-        RetrofitManager.getInstance().creatNewsApiServiceByDoc().getDocNewsData(mAid)
-                       .subscribeOn(Schedulers.io())
-                       .observeOn(AndroidSchedulers.mainThread())
-                       .subscribe(new Subscriber<DocNewsBean>() {
-                           @Override
-                           public void onCompleted() {
+        mCompositeSubscription.add(RetrofitManager.getInstance()
+                                                .creatNewsApiServiceByDoc()
+                                                .getDocNewsData(mAid)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new Subscriber<DocNewsBean>() {
+                                                    @Override
+                                                    public void onCompleted() {
 
-                           }
+                                                    }
 
-                           @Override
-                           public void onError(Throwable e) {
-                               Log.e(TAG, "onError: "+e );
-                           }
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        mView.showNetErrorView();
+                                                    }
 
-                           @Override
-                           public void onNext(DocNewsBean docNewsBean) {
-                               DocNewsBean.BodyBean body = docNewsBean.body;
-                               mView.showDetailTitleInformation(body.title,body.source,body.editTime,mLogo_url);
-                               Log.e(TAG, "onNext1: "+body.text );
-                               Log.e(TAG, "onNext2: "+HtmlFormatUtils.htmlImageMatchingScreen(body.text));
-                               mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(body.text));
-                           }
-                       });
+                                                    @Override
+                                                    public void onNext(DocNewsBean docNewsBean) {
+                                                        DocNewsBean.BodyBean body = docNewsBean.body;
+                                                        mView.showDetailTitleInformation(body.title,
+                                                                                         body.source,
+                                                                                         body.editTime,
+                                                                                         mLogo_url);
+                                                        Log.e(TAG, "onNext1: " + body.text);
+                                                        Log.e(TAG,
+                                                              "onNext2: " + HtmlFormatUtils.htmlImageMatchingScreen(
+                                                                      body.text));
+                                                        mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
+                                                                body.text));
+                                                    }
+                                                }));
     }
 
     @Override
