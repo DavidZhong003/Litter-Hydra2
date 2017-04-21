@@ -1,12 +1,17 @@
 package com.doive.nameless.litter_hydra.net.api;
 
+import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 
 import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
+
+import static android.R.attr.action;
+import static android.R.attr.id;
 
 /**
  * Created by Administrator on 2017/3/17.
@@ -18,6 +23,8 @@ import rx.Observable;
 public interface NewsApiService {
 
     String BASE_NEWS_URL = "http://api.iclient.ifeng.com/";
+
+    String BASE_DOC_DETAIL_URL = "http://api.3g.ifeng.com/";
 
     /**
      * 头条新闻
@@ -67,4 +74,11 @@ public interface NewsApiService {
                                              @Query("page") int page,
                                              @Query("uid") String uid,
                                              @Query("screen") String screen);
+
+    /**
+     * Doc新闻详情
+     */
+    @GET("ipadtestdoc")
+    Observable<DocNewsBean> getDocNewsData(@Query("aid")String aid);
+
 }

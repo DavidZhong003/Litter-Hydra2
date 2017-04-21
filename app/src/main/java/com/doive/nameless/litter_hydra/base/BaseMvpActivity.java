@@ -1,35 +1,28 @@
 package com.doive.nameless.litter_hydra.base;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
 import com.doive.nameless.litter_hydra.base.mvp.BaseView;
+import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
+import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by Administrator on 2017/3/17.
  *
- * MVP的基类,主要持有控制层的引用在相应的地方进行注册与反注册
+ * MVP的基类
  *
  */
 
-public abstract class BaseMvpActivity<P extends BasePresenter>
-        extends BaseActivity
-        implements BaseView {
+public abstract class BaseMvpActivity
+        extends BaseActivity {
 
-    protected P mPresenter;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mPresenter != null) { mPresenter.subscribe(); }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mPresenter != null) { mPresenter.unSubscribe(); }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 }

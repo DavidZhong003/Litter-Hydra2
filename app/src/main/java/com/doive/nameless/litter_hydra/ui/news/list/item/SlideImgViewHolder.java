@@ -45,8 +45,8 @@ public class SlideImgViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
         List<String> images = mSlideImgBean.getStyle()
                                            .getImages();
         if (images.size()>2){
-            setImageWithPlaceHolder(mIvSlideImgLeft, images.get(0)).
-            setImageWithPlaceHolder(mIvSlideImgCenter, images.get(1)).
+            setImageWithPlaceHolder(mIvSlideImgLeft, images.get(0));
+            setImageWithPlaceHolder(mIvSlideImgCenter, images.get(1));
             setImageWithPlaceHolder(mIvSlideImgRight, images.get(2));
         }
 

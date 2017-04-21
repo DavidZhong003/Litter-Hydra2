@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.utils.GlideCircleTransform;
 import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 
 
@@ -45,32 +46,37 @@ public class BaseViewHolder<T>
      * ===============以下为设置数据方法
      */
 
-    public BaseViewHolder setImageWithPlaceHolder(ImageView iv, String url) {
+    public void setImageWithPlaceHolder(ImageView iv, String url) {
         Glide.with(iv.getContext())
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .placeholder(R.mipmap.item_pic_loading)
              .transform(new GlideRoundTransform(iv.getContext(), 3))
              .into(iv);
-        return this;
     }
-    public BaseViewHolder setImage(ImageView iv, String url) {
+    public void setImage(ImageView iv, String url) {
         Glide.with(iv.getContext())
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .transform(new GlideRoundTransform(iv.getContext(), 3))
              .into(iv);
-        return this;
     }
 
-    protected BaseViewHolder setImageBigPlaceholder(ImageView iv, String url) {
+    protected void setImageBigPlaceholder(ImageView iv, String url) {
         Glide.with(iv.getContext())
              .load(url)
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .placeholder(R.mipmap.item_pic_loading_big)
              .transform(new GlideRoundTransform(iv.getContext(),10))
              .into(iv);
-        return this;
+    }
+
+    protected void setImageCircle(ImageView iv, String url) {
+        Glide.with(iv.getContext())
+             .load(url)
+             .diskCacheStrategy(DiskCacheStrategy.RESULT)
+             .transform(new GlideCircleTransform(iv.getContext()))
+             .into(iv);
     }
 
     /**

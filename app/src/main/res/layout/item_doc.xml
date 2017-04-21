@@ -20,27 +20,33 @@
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
         android:layout_toEndOf="@id/iv_top_img"
-        android:layout_toRightOf="@id/iv_top_img"
-        tools:text="这是测试的新闻标题"
         android:textColor="@color/top_item_title_textcolor"
-        android:textSize="@dimen/top_item_title_textsize"/>
+        android:textSize="@dimen/top_item_title_textsize"
+        tools:text="这是测试的新闻标题"/>
 
+
+    <ImageView
+        android:id="@+id/iv_doc_logo"
+        android:layout_width="@dimen/logo_w_h"
+        android:layout_height="@dimen/logo_w_h"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
+        android:layout_toEndOf="@id/iv_top_img"
+        tools:src="@mipmap/app_icon_3x"/>
 
     <TextView
         android:id="@+id/tv_top_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="150dp"
-        android:layout_marginEnd="150dp"
+        android:layout_marginEnd="155dp"
         android:layout_marginTop="@dimen/item_doc_margin_top"
-        android:layout_toEndOf="@id/iv_top_img"
-        android:layout_toRightOf="@id/iv_top_img"
+        android:layout_toEndOf="@id/iv_doc_logo"
         android:gravity="center"
-        tools:text="新闻来源"
+        android:layout_marginStart="3dp"
         android:textColor="@color/top_item_title_textcolor_gray"
-        android:textSize="@dimen/top_item_small_textsize"/>
+        android:textSize="@dimen/top_item_small_textsize"
+        tools:text="新闻来源"/>
 
 
     <TextView
@@ -48,14 +54,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/item_doc_margin_top"
-        android:layout_marginRight="100dp"
         android:layout_marginEnd="100dp"
+        android:layout_marginTop="@dimen/item_doc_margin_top"
         android:gravity="center"
-        tools:text="12:13"
         android:textColor="#66000000"
-        android:textSize="12sp"/>
+        android:textSize="12sp"
+        tools:text="12:13"/>
 
 
     <TextView
@@ -63,24 +67,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
         android:layout_marginTop="@dimen/item_doc_margin_top"
         android:gravity="center"
-        tools:text="1234"
         android:textAlignment="center"
         android:textColor="#66000000"
-        android:textSize="11sp"/>
+        android:textSize="11sp"
+        tools:text="1234"/>
 
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginEnd="35dp"
-        android:layout_marginRight="35dp"
         android:layout_marginTop="@dimen/item_doc_margin_top"
         android:src="@mipmap/item_comment"/>
 
@@ -90,9 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="@dimen/item_doc_margin_top"
         android:src="@mipmap/item_delete"/>
 

@@ -196,4 +196,11 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
     public boolean getUserVisibleHint() {
         return super.getUserVisibleHint()&isResumed();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPresenter!=null)
+        mPresenter.unSubscribe();
+    }
 }

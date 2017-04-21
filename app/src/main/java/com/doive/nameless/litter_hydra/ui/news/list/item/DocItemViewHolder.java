@@ -1,11 +1,13 @@
 package com.doive.nameless.litter_hydra.ui.news.list.item;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 import com.doive.nameless.litter_hydra.rxbus.RxBus;
@@ -24,11 +26,13 @@ public class DocItemViewHolder
 
     public View      rootView;
     public ImageView mIvTopImg;
+    public ImageView mIvLogoImg;
     public TextView  mTvTopTitle;
     public TextView  mTvTopSource;
     public TextView  mTvTopTime;
     public TextView  mTvTopComment;
     public ImageView mIvTopDel;
+    private String mLogo;
 
     public DocItemViewHolder(View rootView) {
         super(rootView);
@@ -38,6 +42,7 @@ public class DocItemViewHolder
 
     private void initView() {
         this.mIvTopImg = (ImageView) rootView.findViewById(R.id.iv_top_img);
+        this.mIvLogoImg = (ImageView) rootView.findViewById(R.id.iv_doc_logo);
         this.mTvTopTitle = (TextView) rootView.findViewById(R.id.tv_top_title);
         this.mTvTopSource = (TextView) rootView.findViewById(R.id.tv_top_source);
         this.mTvTopTime = (TextView) rootView.findViewById(R.id.tv_top_time);
@@ -49,24 +54,48 @@ public class DocItemViewHolder
     public void bindData(final NewsBean.ItemBean bean) {
         mTvTopTitle.setText(bean.getTitle());
         setImageWithPlaceHolder(mIvTopImg, bean.getThumbnail());
-        mTvTopSource.setText(bean.getSource()==null?"凤凰网":bean.getSource());
+        NewsBean.ItemBean.SubscribeBean subscribe = bean.getSubscribe();
+        if (subscribe!=null){
+            mLogo = subscribe.getLogo();
+        }
+        if (mLogo !=null){
+            setImageCircle(mIvLogoImg, mLogo);
+        }else {
+            mIvLogoImg.setVisibility(View.GONE);
+        }
+        mTvTopSource.setText(bean.getSource() == null
+                             ? "凤凰网"
+                             : bean.getSource());
         mTvTopTime.setText(getFormatTime(bean.getUpdateTime()));
         mTvTopComment.setText(bean.getCommentsall());
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/4/19 使用RxBus把事件发送到打开activity
-                RxBus.getInstance().sendSticky(1, bean);
-                Intent intent = new Intent(v.getContext(), NewsDocDetailActivity.class);
-                intent.putExtra("111",bean.getId());
-                v.getContext().startActivity(intent);
-                Toast.makeText(v.getContext(),bean.getLink().getUrl(),Toast.LENGTH_LONG).show();
+
+                //                RxBus.getInstance().sendSticky("",bean.getLink().getUrl());
+                NewsBean.ItemBean.LinkBean link   = bean.getLink();
+                Intent                     intent = new Intent(v.getContext(),
+                                                               NewsDocDetailActivity.class);
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
+                                bean.getDocumentId());
+
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
+                                mLogo ==null ? "" : mLogo);
+
+                v.getContext()
+                 .startActivity(intent);
+
             }
         });
         mIvTopDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),bean.getStyle().getBackreason().get(0),Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(),
+                               bean.getStyle()
+                                   .getBackreason()
+                                   .get(0),
+                               Toast.LENGTH_SHORT)
+                     .show();
             }
         });
     }

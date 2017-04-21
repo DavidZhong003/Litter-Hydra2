@@ -29,10 +29,15 @@ public abstract class BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(setLayoutId());
-        initView(savedInstanceState);
+        initData(savedInstanceState);
+        initView();
     }
 
-    protected abstract void initView(Bundle savedInstanceState);
+    protected void initData(Bundle savedInstanceState) {
+
+    }
+
+    protected abstract void initView();
 
     /**
      * 设置资源id

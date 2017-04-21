@@ -52,18 +52,19 @@ public class MainActivity
     private FrameLayout    mContentView;
     private FragmentHelper mHelper;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initData(Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        mHelper = new FragmentHelper(this, R.id.content_main, savedInstanceState);
     }
 
     @Override
-    protected void initView(Bundle savedInstanceState) {
+    protected void initView() {
         //初始化控件
         BottomNavigationView navigation = getViewbyId(R.id.navigation);
         mContentView = getViewbyId(R.id.content_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        mHelper = new FragmentHelper(this, R.id.content_main, savedInstanceState);
         mCurrentItemId = R.id.navigation_home;
         mHelper.showFragment(0);
     }

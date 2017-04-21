@@ -55,4 +55,12 @@ public final class ColumnCategoryConstant {
         mName.add("二次元区");
         return mName;
     }
+
+    /**
+     * 跳转的name
+     */
+    public  interface IntentArgName{
+        String ITEM_BEAN_DOCUMENT_ID = "item_bean_DocumentId";
+        String DOC_ITEM_LOGO         = "item_bean_logo";
+    }
 }

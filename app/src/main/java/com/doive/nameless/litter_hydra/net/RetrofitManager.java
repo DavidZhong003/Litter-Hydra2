@@ -13,6 +13,8 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by Administrator on 2017/3/17.
  * Retrofit工具类,单例,build()模式
@@ -25,6 +27,7 @@ public class RetrofitManager {
     private String       mBaseURl;
     private OkHttpClient mClient;
     private Retrofit mVideoRetrofit;
+    private Retrofit mRetrofit;
 
     private RetrofitManager() {
         initOkHttpClient();
@@ -55,7 +58,11 @@ public class RetrofitManager {
                                      .client(client)
                                      .build();
     }
-
+    private Retrofit creatRetrofit() {
+        return new Retrofit.Builder().addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
 
     public static RetrofitManager getInstance() {
         if (mRetrofitManager == null) {
@@ -82,6 +89,15 @@ public class RetrofitManager {
         return mVideoRetrofit.create(VideoApiService.class);
     }
 
+    public NewsApiService creatNewsApiServiceByDoc() {
+        return createApiService(NewsApiService.BASE_DOC_DETAIL_URL,NewsApiService.class);
+    }
 
+    public <T> T createApiService(String baseUrl,Class<T> tClass){
+        return creatRetrofit(baseUrl).create(tClass);
+    }
 
+    public <T> T createApiService(Class<T> tClass){
+        return creatRetrofit().create(tClass);
+    }
 }
