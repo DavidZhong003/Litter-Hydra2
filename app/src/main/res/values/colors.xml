@@ -11,6 +11,8 @@
     <color name="top_item_title_textcolor_gray">#66000000</color>
     <color name="item_title_blue">#416cbe</color>
 
+    <color name="news_bg">@color/md_white_1000</color>
+
     <color name="md_white_50">#f8f8f8</color>
     <color name="md_white">#ffffff</color>
 

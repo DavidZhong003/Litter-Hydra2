@@ -1,36 +1,23 @@
 package com.doive.nameless.litter_hydra.ui.news.details;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.webkit.DownloadListener;
-import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
-import com.doive.nameless.litter_hydra.rxbus.RxBus;
-import com.doive.nameless.litter_hydra.utils.GlideCircleTransform;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
-import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
+import com.doive.nameless.litter_hydra.widget.ErrorView;
+import com.doive.nameless.litter_hydra.widget.LoadingTopView;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-
-import rx.functions.Action1;
-
-import static android.view.View.Z;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -40,15 +27,22 @@ import static android.view.View.Z;
 public class NewsDocDetailActivity
         extends BaseMvpActivity
         implements NewsDocDetailConstract.View {
+    public  LoadingTopView                   mLtvLoading;
+    public  ErrorView                        mErrorView;
     public  TextView                         mTvNewsTitle;
     public  ImageView                        mIvCateLogo;
     public  TextView                         mTvCateName;
     public  TextView                         mTvEditTime;
-    public  Toolbar                          mToolbar;
     public  WebView                          mWvNewsDetails;
-    public  RecyclerView                     mRvLinkComment;
+    public  RecyclerView                     mRvComment;
     public  TwinklingRefreshLayout           mTrlContent;
+    public  ScrollView                       mScrollView;
     private NewsDocDetailConstract.Presenter mPresenter;
+
+    @Override
+    protected int setLayoutId() {
+        return R.layout.activity_news_doc;
+    }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
@@ -65,57 +59,49 @@ public class NewsDocDetailActivity
         this.mTvCateName = getViewbyId(R.id.tv_cate_name);
         this.mTvEditTime = getViewbyId(R.id.tv_edit_time);
         this.mWvNewsDetails = getViewbyId(R.id.wv_news_details);
-//        this.mRvLinkComment = getViewbyId(R.id.rv_comment);
-//        this.mTrlContent = getViewbyId(R.id.trl_content);
-        setSupportActionBar(mToolbar);
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setDisplayShowTitleEnabled(false);
-        }
+        this.mTrlContent = getViewbyId(R.id.trl_content);
+        this.mLtvLoading = getViewbyId(R.id.ltv_loading);
+        this.mErrorView = getViewbyId(R.id.error_view);
+        this.mRvComment = getViewbyId(R.id.rv_comment);
+        this.mScrollView = getViewbyId(R.id.scl_content);
+
         WebSettings settings = mWvNewsDetails.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        mWvNewsDetails.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                Log.e(TAG, "onPageFinished: " + url);
-            }
-
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                super.onLoadResource(view, url);
-                Log.e(TAG, "onLoadResource: " + url);
-            }
-        });
-
-        mWvNewsDetails.setWebChromeClient(new WebChromeClient() {});
-
-        mWvNewsDetails.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url,
-                                        String userAgent,
-                                        String contentDisposition,
-                                        String mimetype,
-                                        long contentLength)
-            {
-                Log.d(TAG, "URL:" + url);
-            }
-        });
         mPresenter.subscribe();
+    }
 
+    @Override
+    protected void initListener() {
+        mErrorView.setOnErrorClickListeren(new ErrorView.OnErrorClickListeren() {
+            @Override
+            public void onClick() {
+                mPresenter.loadData();
+            }
+        });
     }
 
 
     @Override
-    protected int setLayoutId() {
-        return R.layout.activity_news_doc;
+    public void showLoadingView() {
+        mLtvLoading.setVisibility(View.VISIBLE);
+        mErrorView.setVisibility(View.GONE);
+        mScrollView.setVisibility(View.GONE);
     }
 
     @Override
     public void showNetErrorView() {
+        mLtvLoading.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+        mScrollView.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void showContentView() {
+        mLtvLoading.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+        mScrollView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -124,8 +110,6 @@ public class NewsDocDetailActivity
                                            String editTime,
                                            String logoUrl)
     {
-        Log.e(TAG,
-              "showDetailTitleInformation: " + title + "///" + cateName + "///" + editTime + "///" + logoUrl);
         mTvNewsTitle.setText(title);
         mTvCateName.setText(cateName);
         mTvEditTime.setText(editTime);
@@ -140,7 +124,6 @@ public class NewsDocDetailActivity
     public void showWebViewData(String htmlData) {
         Log.e(TAG, "showWebViewData: " + htmlData);
         mWvNewsDetails.loadDataWithBaseURL(null, htmlData, null, "utf-8", null);
-        //        mWvNewsDetails.loadData(htmlData,null,"utf-8");
     }
 
     @Override
@@ -168,16 +151,15 @@ public class NewsDocDetailActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause: ");
-        mPresenter.unSubscribe();
+        if (mPresenter != null) { mPresenter.unSubscribe(); }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "onDestroy: ");
         if (mWvNewsDetails != null) {
             mWvNewsDetails.clearHistory();
         }
     }
+
 }

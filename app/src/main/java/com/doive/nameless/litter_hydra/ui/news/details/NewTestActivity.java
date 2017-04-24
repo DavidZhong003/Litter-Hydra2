@@ -2,8 +2,10 @@ package com.doive.nameless.litter_hydra.ui.news.details;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.webkit.ClientCertRequest;
+import android.webkit.DownloadListener;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -40,8 +42,18 @@ public class NewTestActivity extends BaseActivity {
                                   .getString("test");
         final WebView wb = getViewbyId(R.id.webview);
         setWebViewSetting(wb.getSettings());
-        initWebViewClient();
         wb.setWebViewClient(new MyWebViewClient());
+        wb.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url,
+                                        String userAgent,
+                                        String contentDisposition,
+                                        String mimetype,
+                                        long contentLength)
+            {
+                Log.e(TAG, "onDownloadStart: "+url );
+            }
+        });
         wb.loadUrl(webUrl);
 //        OkHttpClient client = new OkHttpClient.Builder().build();
 //        Request request = new Request.Builder().get().url(webUrl)
@@ -68,22 +80,11 @@ public class NewTestActivity extends BaseActivity {
 //        });
     }
 
-    private void initWebViewClient() {
-
-    }
-
     private static class MyWebViewClient extends WebViewClient{
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            Log.e(TAG, "onPageStarted: "+url );
             super.onPageStarted(view, url, favicon);
-        }
-
-
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                          WebResourceRequest request)
-        {
-            return super.shouldInterceptRequest(view, request);
         }
 
         @Override
@@ -94,8 +95,17 @@ public class NewTestActivity extends BaseActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            Log.e(TAG, "shouldOverrideUrlLoading: "+request );
             return super.shouldOverrideUrlLoading(view, request);
+        }
+
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view,
+                                                          WebResourceRequest request)
+        {
+            Uri url = request.getUrl();
+            Log.e(TAG, "shouldInterceptRequest: "+ url);
+            return super.shouldInterceptRequest(view, request);
         }
     }
 

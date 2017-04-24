@@ -1,131 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="3dp"
-    android:layout_marginRight="3dp"
-    android:fitsSystemWindows="true">-->
-
-<!--<android.support.design.widget.AppBarLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--app:elevation="0dp">-->
-
-<!--<android.support.v7.widget.Toolbar-->
-<!--android:id="@+id/toolbar"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:background="@color/md_light_appbar"-->
-<!--app:contentInsetStart="0dp"-->
-<!--app:layout_scrollFlags="scroll|enterAlways">-->
-
-
-<!--</android.support.v7.widget.Toolbar>-->
-
-
-<!--</android.support.design.widget.AppBarLayout>-->
-
-
-<!--主要内容-->
-<android.support.v4.widget.NestedScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <com.doive.nameless.litter_hydra.widget.LoadingTopView
+        android:id="@+id/ltv_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:visibility="visible"/>
 
+    <com.doive.nameless.litter_hydra.widget.ErrorView
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/scl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_white_1000"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_news_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/md_grey_900"
-                android:textSize="24sp"
-                tools:text="这是标题"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="15dp">
-
-                <ImageView
-                    android:id="@+id/iv_cate_logo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"
-                    tools:ignore="ContentDescription"
-                    tools:src="@mipmap/item_atlas"/>
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_cate_name"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_news_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="35dp"
-                    android:textColor="@color/md_blue_grey_500"
-                    android:textSize="16sp"
-                    tools:text="中国新闻网"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/md_grey_900"
+                    android:textSize="24sp"
+                    tools:text="这是标题"/>
 
-                <TextView
-                    android:id="@+id/tv_edit_time"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="50dp"
-                    android:layout_toEndOf="@+id/tv_cate_name"
-                    android:textSize="16sp"
-                    tools:text="2017/04/19 11:08:10"/>
-            </RelativeLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/iv_cate_logo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription"
+                        tools:src="@mipmap/item_atlas"/>
+
+                    <TextView
+                        android:id="@+id/tv_cate_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="35dp"
+                        android:textColor="@color/md_blue_grey_500"
+                        android:textSize="16sp"
+                        tools:text="中国新闻网"/>
+
+                    <TextView
+                        android:id="@+id/tv_edit_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="50dp"
+                        android:layout_toEndOf="@+id/tv_cate_name"
+                        android:textSize="16sp"
+                        tools:text="2017/04/19 11:08:10"/>
+                </RelativeLayout>
+            </LinearLayout>
+
 
             <WebView
                 android:id="@+id/wv_news_details"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scrollbars="vertical"/>
+
+            <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+                android:id="@+id/trl_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
         </LinearLayout>
 
 
-        <!--<com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout-->
-        <!--android:id="@+id/trl_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
+    </ScrollView>
 
-        <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/rv_comment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-        <!--</com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>-->
-
-    </LinearLayout>
-
-
-</android.support.v4.widget.NestedScrollView>
-
-    <!--
-        </android.support.design.widget.CoordinatorLayout>-->
+</FrameLayout>

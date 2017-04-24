@@ -31,6 +31,11 @@ public abstract class BaseActivity
         setContentView(setLayoutId());
         initData(savedInstanceState);
         initView();
+        initListener();
+    }
+
+    protected void initListener() {
+
     }
 
     protected void initData(Bundle savedInstanceState) {

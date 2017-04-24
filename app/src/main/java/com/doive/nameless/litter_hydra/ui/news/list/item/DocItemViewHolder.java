@@ -74,20 +74,20 @@ public class DocItemViewHolder
             public void onClick(View v) {
 
                 //                RxBus.getInstance().sendSticky("",bean.getLink().getUrl());
-//                NewsBean.ItemBean.LinkBean link   = bean.getLink();
-//                Intent                     intent = new Intent(v.getContext(),
-//                                                               NewsDocDetailActivity.class);
-//                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
-//                                bean.getDocumentId());
-//
-//                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
-//                                mLogo ==null ? "" : mLogo);
-//
-//                v.getContext().startActivity(intent);
+                NewsBean.ItemBean.LinkBean link   = bean.getLink();
+                Intent                     intent = new Intent(v.getContext(),
+                                                               NewsDocDetailActivity.class);
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
+                                bean.getDocumentId());
 
-                Intent intent = new Intent(v.getContext(), NewTestActivity.class);
-                intent.putExtra("test",bean.getLink().getWeburl());
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
+                                mLogo ==null ? "" : mLogo);
+
                 v.getContext().startActivity(intent);
+
+//                Intent intent = new Intent(v.getContext(), NewTestActivity.class);
+//                intent.putExtra("test",bean.getLink().getWeburl());
+//                v.getContext().startActivity(intent);
 
             }
         });

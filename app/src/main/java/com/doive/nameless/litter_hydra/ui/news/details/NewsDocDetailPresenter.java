@@ -39,37 +39,7 @@ public class NewsDocDetailPresenter
 
     @Override
     public void subscribe() {
-        mCompositeSubscription.add(RetrofitManager.getInstance()
-                                                .creatNewsApiServiceByDoc()
-                                                .getDocNewsData(mAid)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new Subscriber<DocNewsBean>() {
-                                                    @Override
-                                                    public void onCompleted() {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        mView.showNetErrorView();
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(DocNewsBean docNewsBean) {
-                                                        DocNewsBean.BodyBean body = docNewsBean.body;
-                                                        mView.showDetailTitleInformation(body.title,
-                                                                                         body.source,
-                                                                                         body.editTime,
-                                                                                         mLogo_url);
-//                                                        Log.e(TAG, "onNext1: " + body.text);
-//                                                        Log.e(TAG,"onNext2: " + HtmlFormatUtils.htmlImageMatchingScreen(
-//                                                                      body.text));
-                                                        mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
-                                                                body.text));
-
-                                                    }
-                                                }));
+        loadData();
     }
 
     @Override
@@ -78,8 +48,36 @@ public class NewsDocDetailPresenter
     }
 
     @Override
-    public void initData() {
+    public void loadData() {
+        mView.showLoadingView();
+        mCompositeSubscription.add(RetrofitManager.getInstance()
+                                                  .creatNewsApiServiceByDoc()
+                                                  .getDocNewsData(mAid)
+                                                  .subscribeOn(Schedulers.io())
+                                                  .observeOn(AndroidSchedulers.mainThread())
+                                                  .subscribe(new Subscriber<DocNewsBean>() {
+                                                      @Override
+                                                      public void onCompleted() {
+                                                          mView.showContentView();
+                                                      }
 
+                                                      @Override
+                                                      public void onError(Throwable e) {
+                                                          mView.showNetErrorView();
+                                                      }
+
+                                                      @Override
+                                                      public void onNext(DocNewsBean docNewsBean) {
+                                                          DocNewsBean.BodyBean body = docNewsBean.body;
+                                                          mView.showDetailTitleInformation(body.title,
+                                                                                           body.source,
+                                                                                           body.editTime,
+                                                                                           mLogo_url);
+                                                          mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
+                                                                  body.text));
+
+                                                      }
+                                                  }));
     }
 
     @Override

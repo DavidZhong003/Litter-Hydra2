@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <declare-styleable name="errorView">
+        <attr name="textAndImgColor" format="color"/>
+    </declare-styleable>
+
 </resources>
