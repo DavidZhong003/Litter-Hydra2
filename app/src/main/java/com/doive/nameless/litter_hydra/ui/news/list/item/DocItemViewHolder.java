@@ -11,6 +11,7 @@ import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 import com.doive.nameless.litter_hydra.rxbus.RxBus;
+import com.doive.nameless.litter_hydra.ui.news.details.NewTestActivity;
 import com.doive.nameless.litter_hydra.ui.news.details.NewsDocDetailActivity;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
@@ -73,17 +74,20 @@ public class DocItemViewHolder
             public void onClick(View v) {
 
                 //                RxBus.getInstance().sendSticky("",bean.getLink().getUrl());
-                NewsBean.ItemBean.LinkBean link   = bean.getLink();
-                Intent                     intent = new Intent(v.getContext(),
-                                                               NewsDocDetailActivity.class);
-                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
-                                bean.getDocumentId());
+//                NewsBean.ItemBean.LinkBean link   = bean.getLink();
+//                Intent                     intent = new Intent(v.getContext(),
+//                                                               NewsDocDetailActivity.class);
+//                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
+//                                bean.getDocumentId());
+//
+//                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
+//                                mLogo ==null ? "" : mLogo);
+//
+//                v.getContext().startActivity(intent);
 
-                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
-                                mLogo ==null ? "" : mLogo);
-
-                v.getContext()
-                 .startActivity(intent);
+                Intent intent = new Intent(v.getContext(), NewTestActivity.class);
+                intent.putExtra("test",bean.getLink().getWeburl());
+                v.getContext().startActivity(intent);
 
             }
         });

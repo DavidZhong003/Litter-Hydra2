@@ -8,6 +8,7 @@ import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
 import com.doive.nameless.litter_hydra.net.api.NewsApiService;
+import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
 
 import okhttp3.OkHttpClient;
@@ -61,12 +62,12 @@ public class NewsDocDetailPresenter
                                                                                          body.source,
                                                                                          body.editTime,
                                                                                          mLogo_url);
-                                                        Log.e(TAG, "onNext1: " + body.text);
-                                                        Log.e(TAG,
-                                                              "onNext2: " + HtmlFormatUtils.htmlImageMatchingScreen(
-                                                                      body.text));
+//                                                        Log.e(TAG, "onNext1: " + body.text);
+//                                                        Log.e(TAG,"onNext2: " + HtmlFormatUtils.htmlImageMatchingScreen(
+//                                                                      body.text));
                                                         mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
                                                                 body.text));
+
                                                     }
                                                 }));
     }

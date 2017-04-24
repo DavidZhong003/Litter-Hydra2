@@ -9,8 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.DownloadListener;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,10 +22,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
+import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.utils.GlideCircleTransform;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+
+import rx.functions.Action1;
 
 import static android.view.View.Z;
 
@@ -31,7 +38,8 @@ import static android.view.View.Z;
  */
 
 public class NewsDocDetailActivity
-        extends BaseMvpActivity implements NewsDocDetailConstract.View {
+        extends BaseMvpActivity
+        implements NewsDocDetailConstract.View {
     public  TextView                         mTvNewsTitle;
     public  ImageView                        mIvCateLogo;
     public  TextView                         mTvCateName;
@@ -57,15 +65,46 @@ public class NewsDocDetailActivity
         this.mTvCateName = getViewbyId(R.id.tv_cate_name);
         this.mTvEditTime = getViewbyId(R.id.tv_edit_time);
         this.mWvNewsDetails = getViewbyId(R.id.wv_news_details);
-        this.mRvLinkComment = getViewbyId(R.id.rv_comment);
-        this.mTrlContent = getViewbyId(R.id.trl_content);
+//        this.mRvLinkComment = getViewbyId(R.id.rv_comment);
+//        this.mTrlContent = getViewbyId(R.id.trl_content);
         setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayShowTitleEnabled(false);
         }
-        mWvNewsDetails.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = mWvNewsDetails.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        mWvNewsDetails.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.e(TAG, "onPageFinished: " + url);
+            }
+
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+                Log.e(TAG, "onLoadResource: " + url);
+            }
+        });
+
+        mWvNewsDetails.setWebChromeClient(new WebChromeClient() {});
+
+        mWvNewsDetails.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url,
+                                        String userAgent,
+                                        String contentDisposition,
+                                        String mimetype,
+                                        long contentLength)
+            {
+                Log.d(TAG, "URL:" + url);
+            }
+        });
         mPresenter.subscribe();
+
     }
 
 
@@ -85,20 +124,23 @@ public class NewsDocDetailActivity
                                            String editTime,
                                            String logoUrl)
     {
-        Log.e(TAG, "showDetailTitleInformation: "+title+"///"+cateName+"///"+editTime+"///"+logoUrl );
+        Log.e(TAG,
+              "showDetailTitleInformation: " + title + "///" + cateName + "///" + editTime + "///" + logoUrl);
         mTvNewsTitle.setText(title);
         mTvCateName.setText(cateName);
         mTvEditTime.setText(editTime);
-        if (!TextUtils.equals(logoUrl,"")){
+        if (!TextUtils.equals(logoUrl, "")) {
             mIvCateLogo.setVisibility(View.VISIBLE);
-            GlideManager.getInstance().setImageWithCircleTransForm(mIvCateLogo,logoUrl);
+            GlideManager.getInstance()
+                        .setImageWithCircleTransForm(mIvCateLogo, logoUrl);
         }
     }
 
     @Override
     public void showWebViewData(String htmlData) {
-        Log.e(TAG, "showWebViewData: "+htmlData );
-        mWvNewsDetails.loadDataWithBaseURL(null,htmlData,null,"utf-8",null);
+        Log.e(TAG, "showWebViewData: " + htmlData);
+        mWvNewsDetails.loadDataWithBaseURL(null, htmlData, null, "utf-8", null);
+        //        mWvNewsDetails.loadData(htmlData,null,"utf-8");
     }
 
     @Override
@@ -117,8 +159,25 @@ public class NewsDocDetailActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+        if (mWvNewsDetails != null) { mWvNewsDetails.reload(); }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        Log.e(TAG, "onPause: ");
         mPresenter.unSubscribe();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: ");
+        if (mWvNewsDetails != null) {
+            mWvNewsDetails.clearHistory();
+        }
     }
 }

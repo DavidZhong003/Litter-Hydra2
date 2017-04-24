@@ -17,8 +17,7 @@ import rx.subjects.Subject;
  * 单例
  */
 
-public class RxBus
-        implements BusInterface {
+public class RxBus  implements BusInterface {
     private static volatile RxBus sInstance;
 
     private final Subject<Object, Object> mSubject;
