@@ -92,18 +92,15 @@
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"/>
 
-            <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
-                android:id="@+id/trl_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_relate_doc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_height="wrap_content"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

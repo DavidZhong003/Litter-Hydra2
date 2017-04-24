@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:padding="5dp"
+                android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_alignParentStart="true"
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="100dp"
+        android:src="@mipmap/test"
+        android:layout_height="60dp"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        tools:text="委内瑞拉反对党支持者“静默游行”"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="16sp"
+        android:textColor="@color/md_grey_600"
+        android:layout_toEndOf="@+id/iv_thumbnail"
+        android:layout_marginStart="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_source"
+        tools:text="adsfasdfasdfasfd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/md_grey_300"
+        android:layout_alignBottom="@+id/iv_thumbnail"
+        android:layout_alignStart="@+id/tv_title"/>
+</RelativeLayout>

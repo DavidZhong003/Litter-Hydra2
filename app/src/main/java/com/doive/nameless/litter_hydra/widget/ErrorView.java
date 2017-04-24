@@ -23,7 +23,7 @@ public class ErrorView
     private static String DEF_COLOR = "#000000";//默认黑色
     private ImageView iv_error_page;
     private TextView  tv_error;
-    private int mColor;
+    private int       mColor;
 
     public ErrorView(Context context) {
         this(context, null);
@@ -62,8 +62,13 @@ public class ErrorView
 
     }
 
+    public void setText(String text) {
+        if (text!=null)
+        tv_error.setText(text);
+    }
 
-    public void setColor(@ColorInt int color){
+
+    public void setColor(@ColorInt int color) {
         iv_error_page.setColorFilter(color);
         tv_error.setTextColor(color);
     }

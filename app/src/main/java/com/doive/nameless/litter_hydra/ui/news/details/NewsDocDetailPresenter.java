@@ -4,16 +4,11 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
-import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
-import com.doive.nameless.litter_hydra.net.api.NewsApiService;
-import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
 
-import okhttp3.OkHttpClient;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -49,6 +44,7 @@ public class NewsDocDetailPresenter
 
     @Override
     public void loadData() {
+        Log.e(TAG, "loadData: "+mAid );
         mView.showLoadingView();
         mCompositeSubscription.add(RetrofitManager.getInstance()
                                                   .creatNewsApiServiceByDoc()
@@ -63,18 +59,22 @@ public class NewsDocDetailPresenter
 
                                                       @Override
                                                       public void onError(Throwable e) {
+                                                          Log.e(TAG, "onError: "+e );
                                                           mView.showNetErrorView();
                                                       }
 
                                                       @Override
                                                       public void onNext(DocNewsBean docNewsBean) {
-                                                          DocNewsBean.BodyBean body = docNewsBean.body;
-                                                          mView.showDetailTitleInformation(body.title,
-                                                                                           body.source,
-                                                                                           body.editTime,
+                                                          DocNewsBean.BodyBean body = docNewsBean.getBody();
+                                                          //设置标题
+                                                          mView.showDetailTitleInformation(body.getTitle(),
+                                                                                           body.getSource(),
+                                                                                           body.getEditTime(),
                                                                                            mLogo_url);
+                                                          //webView数据
                                                           mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
-                                                                  body.text));
+                                                                  body.getText()));
+                                                          Log.e(TAG, "onNext: "+body.getRelateDocs() );
 
                                                       }
                                                   }));

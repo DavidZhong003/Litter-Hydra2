@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="loadtopview">
+        <attr name="leftPointColor" format="color"/>
+        <attr name="centerPointColor" format="color"/>
+        <attr name="rightPointColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="errorView">
+        <attr name="textAndImgColor" format="color"/>
+    </declare-styleable>
+</resources>

@@ -2,6 +2,7 @@ package com.doive.nameless.litter_hydra.ui.news.details;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,10 +15,10 @@ import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
+import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 import com.doive.nameless.litter_hydra.widget.ErrorView;
 import com.doive.nameless.litter_hydra.widget.LoadingTopView;
-import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -35,9 +36,10 @@ public class NewsDocDetailActivity
     public  TextView                         mTvEditTime;
     public  WebView                          mWvNewsDetails;
     public  RecyclerView                     mRvComment;
-    public  TwinklingRefreshLayout           mTrlContent;
+    public  RecyclerView                     mRvRelateDoc;
     public  ScrollView                       mScrollView;
     private NewsDocDetailConstract.Presenter mPresenter;
+    private CommonsRecyclerViewAdapter mAdapter;
 
     @Override
     protected int setLayoutId() {
@@ -59,7 +61,7 @@ public class NewsDocDetailActivity
         this.mTvCateName = getViewbyId(R.id.tv_cate_name);
         this.mTvEditTime = getViewbyId(R.id.tv_edit_time);
         this.mWvNewsDetails = getViewbyId(R.id.wv_news_details);
-        this.mTrlContent = getViewbyId(R.id.trl_content);
+        this.mRvRelateDoc = getViewbyId(R.id.rv_relate_doc);
         this.mLtvLoading = getViewbyId(R.id.ltv_loading);
         this.mErrorView = getViewbyId(R.id.error_view);
         this.mRvComment = getViewbyId(R.id.rv_comment);
@@ -69,7 +71,14 @@ public class NewsDocDetailActivity
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+        initRecyclerView(mRvComment);
         mPresenter.subscribe();
+    }
+
+    private void initRecyclerView(RecyclerView rvComment) {
+        mRvComment.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new CommonsRecyclerViewAdapter();
+        mRvComment.setAdapter(mAdapter);
     }
 
     @Override
@@ -80,6 +89,7 @@ public class NewsDocDetailActivity
                 mPresenter.loadData();
             }
         });
+
     }
 
 

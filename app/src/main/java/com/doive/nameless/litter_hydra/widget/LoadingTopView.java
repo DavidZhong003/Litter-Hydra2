@@ -2,6 +2,7 @@ package com.doive.nameless.litter_hydra.widget;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,6 +12,8 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import com.doive.nameless.litter_hydra.R;
 
 /**
  * todo:自定义属性,改变三个园的大小,颜色,以及速度
@@ -43,14 +46,16 @@ public class LoadingTopView
 
     public LoadingTopView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.loadtopview);
+        mLeftColor=typedArray.getColor(R.styleable.loadtopview_leftPointColor,Color.RED);
+        mCenterColor=typedArray.getColor(R.styleable.loadtopview_centerPointColor,Color.BLUE);
+        mRightColor=typedArray.getColor(R.styleable.loadtopview_rightPointColor,Color.YELLOW);
+        typedArray.recycle();
         mLeftPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mLeftColor = Color.RED;
         mLeftPaint.setColor(mLeftColor);
         mCenterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mCenterColor = Color.BLUE;
         mCenterPaint.setColor(mCenterColor);
         mRightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mRightColor = Color.YELLOW;
         mRightPaint.setColor(mRightColor);
 
     }
