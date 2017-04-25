@@ -4,6 +4,9 @@ import android.content.Intent;
 
 import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
 import com.doive.nameless.litter_hydra.base.mvp.BaseView;
+import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/4/20.
@@ -32,7 +35,7 @@ public interface NewsDocDetailConstract {
         void showCommentData();
 
         //显示相关新闻内容
-        void showSimilarContent();
+        void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean);
     }
 
     interface Presenter

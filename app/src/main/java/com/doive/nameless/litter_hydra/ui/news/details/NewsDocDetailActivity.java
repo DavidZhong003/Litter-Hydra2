@@ -5,20 +5,28 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
+import com.doive.nameless.litter_hydra.helper.TransitionHelper;
+import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 import com.doive.nameless.litter_hydra.widget.ErrorView;
 import com.doive.nameless.litter_hydra.widget.LoadingTopView;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -40,6 +48,7 @@ public class NewsDocDetailActivity
     public  ScrollView                       mScrollView;
     private NewsDocDetailConstract.Presenter mPresenter;
     private CommonsRecyclerViewAdapter mAdapter;
+    private NewsRelateDocAdapter mNewsRelateDocAdapter;
 
     @Override
     protected int setLayoutId() {
@@ -71,11 +80,25 @@ public class NewsDocDetailActivity
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        initRecyclerView(mRvComment);
+        mWvNewsDetails.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (mRvRelateDoc.getVisibility()!=View.VISIBLE){
+                    mRvRelateDoc.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        initRecyclerView();
         mPresenter.subscribe();
     }
 
-    private void initRecyclerView(RecyclerView rvComment) {
+    private void initRecyclerView() {
+        //相关新闻
+        mRvRelateDoc.setLayoutManager(new LinearLayoutManager(this));
+        mNewsRelateDocAdapter = new NewsRelateDocAdapter();
+        mRvRelateDoc.setAdapter(mNewsRelateDocAdapter);
+        //评论
         mRvComment.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new CommonsRecyclerViewAdapter();
         mRvComment.setAdapter(mAdapter);
@@ -123,7 +146,7 @@ public class NewsDocDetailActivity
         mTvNewsTitle.setText(title);
         mTvCateName.setText(cateName);
         mTvEditTime.setText(editTime);
-        if (!TextUtils.equals(logoUrl, "")) {
+        if (logoUrl!=null&&!TextUtils.equals(logoUrl, "")) {
             mIvCateLogo.setVisibility(View.VISIBLE);
             GlideManager.getInstance()
                         .setImageWithCircleTransForm(mIvCateLogo, logoUrl);
@@ -132,7 +155,9 @@ public class NewsDocDetailActivity
 
     @Override
     public void showWebViewData(String htmlData) {
-        Log.e(TAG, "showWebViewData: " + htmlData);
+        if (htmlData==null){
+            return;
+        }
         mWvNewsDetails.loadDataWithBaseURL(null, htmlData, null, "utf-8", null);
     }
 
@@ -142,8 +167,9 @@ public class NewsDocDetailActivity
     }
 
     @Override
-    public void showSimilarContent() {
+    public void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean) {
 
+        mNewsRelateDocAdapter.setDocsBeen(bean);
     }
 
     @Override

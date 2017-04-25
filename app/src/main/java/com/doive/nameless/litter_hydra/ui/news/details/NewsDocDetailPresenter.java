@@ -48,7 +48,7 @@ public class NewsDocDetailPresenter
         mView.showLoadingView();
         mCompositeSubscription.add(RetrofitManager.getInstance()
                                                   .creatNewsApiServiceByDoc()
-                                                  .getDocNewsData(mAid)
+                                                  .getDocNewsData(mAid,"android_23","5.4.1")
                                                   .subscribeOn(Schedulers.io())
                                                   .observeOn(AndroidSchedulers.mainThread())
                                                   .subscribe(new Subscriber<DocNewsBean>() {
@@ -60,6 +60,7 @@ public class NewsDocDetailPresenter
                                                       @Override
                                                       public void onError(Throwable e) {
                                                           Log.e(TAG, "onError: "+e );
+                                                          Log.e(TAG, "onError: "+mAid+"///"+mLogo_url );
                                                           mView.showNetErrorView();
                                                       }
 
@@ -74,7 +75,8 @@ public class NewsDocDetailPresenter
                                                           //webView数据
                                                           mView.showWebViewData(HtmlFormatUtils.htmlImageMatchingScreen(
                                                                   body.getText()));
-                                                          Log.e(TAG, "onNext: "+body.getRelateDocs() );
+                                                          //相关新闻数据
+                                                          mView.showSimilarContent(body.getRelateDocs());
 
                                                       }
                                                   }));

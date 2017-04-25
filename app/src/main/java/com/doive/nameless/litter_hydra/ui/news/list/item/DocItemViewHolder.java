@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.ui.news.list.item;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.Toast;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
+import com.doive.nameless.litter_hydra.helper.TransitionHelper;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.ui.news.details.NewTestActivity;
@@ -75,6 +78,8 @@ public class DocItemViewHolder
 
                 //                RxBus.getInstance().sendSticky("",bean.getLink().getUrl());
                 NewsBean.ItemBean.LinkBean link   = bean.getLink();
+                Log.e(TAG, "onClick: linkUrl:"+bean.getLink().getUrl() );
+                Log.e(TAG, "onClick: WebUrl"+bean.getLink().getWeburl() );
                 Intent                     intent = new Intent(v.getContext(),
                                                                NewsDocDetailActivity.class);
                 intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,

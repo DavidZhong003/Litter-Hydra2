@@ -3,6 +3,7 @@ package com.doive.nameless.litter_hydra.helper;
 import android.app.Activity;
 import android.transition.Slide;
 import android.transition.Transition;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 
@@ -14,6 +15,8 @@ import com.doive.nameless.litter_hydra.R;
  */
 
 public class TransitionHelper {
+
+    private static final String TAG = "TransitionHelper";
 
     private TransitionHelper() {
 
@@ -27,14 +30,14 @@ public class TransitionHelper {
     public static void setupWindowTransition(Window window) {
         Slide slideTransition = new Slide();
         //默认方向
-        slideTransition.setSlideEdge(Gravity.LEFT);
+        slideTransition.setSlideEdge(Gravity.START);
         //默认时长
         slideTransition.setDuration(window.getContext()
                                           .getResources()
                                           .getInteger(R.integer.anim_duration_long));
         //从其他activity返回的过度动画
         setupWindowReenterTransition(window, slideTransition);
-        //离开改activity的动画
+        //离开该activity的动画
         setupWindowExitTransition(window, slideTransition);
     }
 

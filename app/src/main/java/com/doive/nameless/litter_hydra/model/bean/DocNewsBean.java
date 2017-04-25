@@ -110,7 +110,7 @@ public class DocNewsBean {
         private String               shareurl;
         private String               commentsUrl;
         private String               text;
-        private int                  commentCount;
+        private String                  commentCount;
         private String               commentType;
         private SubscribeBean        subscribe;
         private String               praise;
@@ -178,9 +178,9 @@ public class DocNewsBean {
 
         public void setText(String text) { this.text = text;}
 
-        public int getCommentCount() { return commentCount;}
+        public String getCommentCount() { return commentCount;}
 
-        public void setCommentCount(int commentCount) { this.commentCount = commentCount;}
+        public void setCommentCount(String commentCount) { this.commentCount = commentCount;}
 
         public String getCommentType() { return commentType;}
 

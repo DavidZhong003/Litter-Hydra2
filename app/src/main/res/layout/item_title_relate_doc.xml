@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/md_blue_grey_100"
+          android:background="@color/md_grey_100"
           android:text="@string/relate_news"
           android:paddingStart="5dp"
           android:paddingTop="10dp"

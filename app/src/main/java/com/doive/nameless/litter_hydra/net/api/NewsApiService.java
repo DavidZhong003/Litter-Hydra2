@@ -79,6 +79,6 @@ public interface NewsApiService {
      * Doc新闻详情
      */
     @GET("ipadtestdoc")
-    Observable<DocNewsBean> getDocNewsData(@Query("aid")String aid);
+    Observable<DocNewsBean> getDocNewsData(@Query("aid")String aid,@Query("os")String os,@Query("gv")String gv);
 
 }
