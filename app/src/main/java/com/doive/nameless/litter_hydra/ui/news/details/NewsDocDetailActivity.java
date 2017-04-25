@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -19,9 +16,10 @@ import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
-import com.doive.nameless.litter_hydra.helper.TransitionHelper;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 import com.doive.nameless.litter_hydra.widget.ErrorView;
 import com.doive.nameless.litter_hydra.widget.LoadingTopView;
@@ -161,14 +159,18 @@ public class NewsDocDetailActivity
         mWvNewsDetails.loadDataWithBaseURL(null, htmlData, null, "utf-8", null);
     }
 
+    /**
+     * 评论数据
+     * @param newsCommentBean
+     */
     @Override
-    public void showCommentData() {
-
+    public void showCommentData(List<ItemType> list) {
+        ;
+        mAdapter.addAllUpdate(true, list);
     }
 
     @Override
     public void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean) {
-
         mNewsRelateDocAdapter.setDocsBeen(bean);
     }
 

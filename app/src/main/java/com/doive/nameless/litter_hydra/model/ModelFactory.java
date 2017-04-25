@@ -3,16 +3,23 @@ package com.doive.nameless.litter_hydra.model;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.base.BaseApplication;
+import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
+import com.doive.nameless.litter_hydra.net.api.NewsApiService;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.utils.TimeUtils;
-import com.doive.nameless.litter_hydra.utils.TimestampUtils;
+import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 import rx.Observable;
-
-import static android.R.id.list;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -84,7 +91,7 @@ public class ModelFactory
             return ItemTypeDataConverter.TopNewsTranse(mRetrofitManager.creatNewsApiService()
                                                                        .getMoreData("SYLB10,SYDT10",
                                                                                     "up",
-                                                                                    TimestampUtils.getTimestamp(
+                                                                                    StringTransformUtils.getTimestamp(
                                                                                             mForwardHour++),
                                                                                     BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
                                                                                     BaseApplication.getDeviceId()));
@@ -109,29 +116,29 @@ public class ModelFactory
             case "推荐":
                 return getRecommendData();
             case "全部":
-                return getAllVideoData(columnCategory,loadMoreCount);
+                return getAllVideoData(columnCategory, loadMoreCount);
             case "Showing":
                 //                return getShowingData();
             case "王者荣耀":
-                return getCategoriesData(columnCategory,loadMoreCount, "wangzhe");
+                return getCategoriesData(columnCategory, loadMoreCount, "wangzhe");
             case "全民新秀":
-                return getCategoriesData(columnCategory,loadMoreCount, "beauty");
+                return getCategoriesData(columnCategory, loadMoreCount, "beauty");
             case "英雄联盟":
-                return getCategoriesData(columnCategory,loadMoreCount, "lol");
+                return getCategoriesData(columnCategory, loadMoreCount, "lol");
             case "守望先锋":
-                return getCategoriesData(columnCategory,loadMoreCount, "overwatch");
+                return getCategoriesData(columnCategory, loadMoreCount, "overwatch");
             case "全民户外":
-                return getCategoriesData(columnCategory,loadMoreCount, "huwai");
+                return getCategoriesData(columnCategory, loadMoreCount, "huwai");
             case "炉石传说":
-                return getCategoriesData(columnCategory,loadMoreCount, "heartstone");
+                return getCategoriesData(columnCategory, loadMoreCount, "heartstone");
             case "手游专区":
-                return getCategoriesData(columnCategory,loadMoreCount, "mobilegame");
+                return getCategoriesData(columnCategory, loadMoreCount, "mobilegame");
             case "网游竞技":
-                return getCategoriesData(columnCategory,loadMoreCount, "webgame");
+                return getCategoriesData(columnCategory, loadMoreCount, "webgame");
             case "单机主机":
-                return getCategoriesData(columnCategory,loadMoreCount, "tvgame");
+                return getCategoriesData(columnCategory, loadMoreCount, "tvgame");
             default:
-                return getAllVideoData(columnCategory,loadMoreCount);
+                return getAllVideoData(columnCategory, loadMoreCount);
         }
     }
 
@@ -181,22 +188,27 @@ public class ModelFactory
      * 获取栏目数据
      * @return
      */
-    private Observable<List<ItemType>> getCategoriesData(String columnCategory,int loadmoreCount, String categories) {
+    private Observable<List<ItemType>> getCategoriesData(String columnCategory,
+                                                         int loadmoreCount,
+                                                         String categories)
+    {
         String more = loadmoreCount == 0
                       ? ""
                       : "_" + loadmoreCount;
         String url = "json/categories/" + categories + "/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(columnCategory,mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.VideoDataTranse(columnCategory,
+                                                     mRetrofitManager.creatVideoApiService()
                                                                      .getCategoriesData2(url));
 
     }
 
-    private Observable<List<ItemType>> getAllVideoData(String columnCategory,int loadMoreCount) {
+    private Observable<List<ItemType>> getAllVideoData(String columnCategory, int loadMoreCount) {
         String more = loadMoreCount == 0
                       ? ""
                       : "_" + loadMoreCount;
         String url = "json/play/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(columnCategory,mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.VideoDataTranse(columnCategory,
+                                                     mRetrofitManager.creatVideoApiService()
                                                                      .getMoreAllData(url));
 
     }
@@ -212,6 +224,48 @@ public class ModelFactory
                                                                                       null,
                                                                                       null));
 
+    }
+
+    /**
+     * 获取新闻详情
+     */
+    public Observable<DocNewsBean> obtainNewsDocDetail(String aid) {
+        return RetrofitManager.getInstance()
+                              .creatNewsApiServiceByDoc()
+                              .getDocNewsData(aid, "android_23", "5.4.1");
+    }
+
+    public Observable<NewsCommentBean> obtainNewsComment(Observable<DocNewsBean> docNewsBeanObservable) {
+
+       return Observable.concat(docNewsBeanObservable.map(new Func1<DocNewsBean, String>() {
+            @Override
+            public String call(DocNewsBean docNewsBean) {
+                return StringTransformUtils.commentUrlTransform(docNewsBean.getBody()
+                                                                           .getCommentsUrl());
+            }
+        }).map(new Func1<String, Observable<NewsCommentBean>>() {
+
+                                                         @Override
+                                                         public Observable<NewsCommentBean> call(
+                                                                 String s)
+                                                         {
+                                                             return obtainNewsComment(s, "all");
+                                                         }
+                                                     }));
+    }
+
+    /**
+     *
+     * @param formantUrl  替换后的url地址
+     * @param type all , host ,new
+     * @return
+     */
+    public Observable<NewsCommentBean> obtainNewsComment(String formantUrl, String type) {
+
+        return RetrofitManager.getInstance()
+                              .createApiService(NewsApiService.BASE_COMMENT_URL,
+                                                NewsApiService.class)
+                              .getCommentData(formantUrl, type);
     }
 
 

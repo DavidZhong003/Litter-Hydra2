@@ -2,6 +2,7 @@ package com.doive.nameless.litter_hydra.net.api;
 
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface NewsApiService {
     String BASE_NEWS_URL = "http://api.iclient.ifeng.com/";
 
     String BASE_DOC_DETAIL_URL = "http://api.3g.ifeng.com/";
+
+    String BASE_COMMENT_URL = "http://icomment.ifeng.com/";
 
     /**
      * 头条新闻
@@ -80,5 +83,12 @@ public interface NewsApiService {
      */
     @GET("ipadtestdoc")
     Observable<DocNewsBean> getDocNewsData(@Query("aid")String aid,@Query("os")String os,@Query("gv")String gv);
+
+    /**
+     * 新闻评论url
+     * http://icomment.ifeng.com/geti.php?pagesize=20&p=0&docurl=http%3A%2F%2Fent.ifeng.com%2Fa%2F20170425%2F42913555_0.shtml&type=all
+     */
+    @GET("geti.php")
+    Observable<NewsCommentBean> getCommentData(@Query("docurl")String formatDocUrl,@Query("type")String type);
 
 }

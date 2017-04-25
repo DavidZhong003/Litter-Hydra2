@@ -6,6 +6,7 @@ import android.util.Log;
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
@@ -221,7 +222,6 @@ public class ItemTypeDataConverter {
                       .toList();
 
     }
-
 
 
     private static class ItemTypeDispath {

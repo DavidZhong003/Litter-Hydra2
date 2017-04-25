@@ -5,6 +5,8 @@ import android.content.Intent;
 import com.doive.nameless.litter_hydra.base.mvp.BasePresenter;
 import com.doive.nameless.litter_hydra.base.mvp.BaseView;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
+import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public interface NewsDocDetailConstract {
         void showWebViewData(String htmlData);
 
         //显示评论页面
-        void showCommentData();
+        void showCommentData(List<ItemType> list);
 
         //显示相关新闻内容
         void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean);
@@ -41,18 +43,11 @@ public interface NewsDocDetailConstract {
     interface Presenter
             extends BasePresenter {
         void loadData();
-
         //初始化从主activity的数据
         void initDataFromIntent(Intent intent);
-
-        //获取新闻详情数据
-        String getNewsDetailData();
-
         //获取评论数据
         void getCommentData();
 
-        //获取相关新闻数据
-        void getSimilarContent();
         //取消关联到view
     }
 }

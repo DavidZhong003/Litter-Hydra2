@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
+import com.doive.nameless.litter_hydra.model.ItemTypeDataConverter;
+import com.doive.nameless.litter_hydra.model.ModelFactory;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
-import com.doive.nameless.litter_hydra.net.RetrofitManager;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.utils.HtmlFormatUtils;
+import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -25,10 +29,14 @@ public class NewsDocDetailPresenter
     private CompositeSubscription mCompositeSubscription;
     private String mAid;
     private String mLogo_url;
+    private final ModelFactory mModelFactory;
+    //新闻评论
+    private String mCommentUrlTransform;
 
     public NewsDocDetailPresenter(NewsDocDetailConstract.View view) {
         mView = view;
         mCompositeSubscription = new CompositeSubscription();
+        mModelFactory = new ModelFactory();
     }
 
 
@@ -46,10 +54,7 @@ public class NewsDocDetailPresenter
     public void loadData() {
         Log.e(TAG, "loadData: "+mAid );
         mView.showLoadingView();
-        mCompositeSubscription.add(RetrofitManager.getInstance()
-                                                  .creatNewsApiServiceByDoc()
-                                                  .getDocNewsData(mAid,"android_23","5.4.1")
-                                                  .subscribeOn(Schedulers.io())
+        mCompositeSubscription.add(mModelFactory.obtainNewsDocDetail(mAid).subscribeOn(Schedulers.io())
                                                   .observeOn(AndroidSchedulers.mainThread())
                                                   .subscribe(new Subscriber<DocNewsBean>() {
                                                       @Override
@@ -77,9 +82,12 @@ public class NewsDocDetailPresenter
                                                                   body.getText()));
                                                           //相关新闻数据
                                                           mView.showSimilarContent(body.getRelateDocs());
-
+                                                          //使用RxBus
+                                                          mCommentUrlTransform = StringTransformUtils.commentUrlTransform(
+                                                                  body.getCommentsUrl());
                                                       }
                                                   }));
+
     }
 
     @Override
@@ -89,17 +97,10 @@ public class NewsDocDetailPresenter
     }
 
     @Override
-    public String getNewsDetailData() {
-        return null;
-    }
-
-    @Override
     public void getCommentData() {
+        mModelFactory.obtainNewsComment(mModelFactory.obtainNewsDocDetail(
+                mAid));
 
     }
-
-    @Override
-    public void getSimilarContent() {
-
-    }
+    
 }
