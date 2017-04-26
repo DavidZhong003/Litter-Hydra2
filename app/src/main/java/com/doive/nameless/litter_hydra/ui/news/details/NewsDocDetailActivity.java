@@ -85,15 +85,14 @@ public class NewsDocDetailActivity
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        mWvNewsDetails.setWebViewClient(new WebViewClient(){
+        mWvNewsDetails.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (mRvRelateDoc.getVisibility()!=View.VISIBLE){
+                if (mRvRelateDoc.getVisibility() != View.VISIBLE) {
                     mRvRelateDoc.setVisibility(View.VISIBLE);
                 }
-                if (mPresenter!=null)
-                mPresenter.getCommentData();
+                if (mPresenter != null) { mPresenter.getCommentData(); }
             }
         });
         initRecyclerView();
@@ -102,16 +101,57 @@ public class NewsDocDetailActivity
 
     private void initRecyclerView() {
         //相关新闻
-        mRvRelateDoc.setLayoutManager(new LinearLayoutManager(this){
+        mRvRelateDoc.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         });
+        mRvRelateDoc.addItemDecoration(new RecyclerView.ItemDecoration() {
+            public Paint paint = new Paint();
+            public float dividerSize = 1f;
+
+            @Override
+            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                if (!parent.isAnimating()) {
+                    final int                        childCount = parent.getChildCount();
+                    final RecyclerView.LayoutManager lm         = parent.getLayoutManager();
+                    paint.setColor(Color.parseColor("#BDBDBD"));
+                    paint.setStyle(Paint.Style.FILL);
+                    if (childCount > 2) {
+                        for (int i = 1; i < childCount - 1; i++) {
+                            View child     = parent.getChildAt(i);
+                            View nextChild = parent.getChildAt(i + 1);
+                            //这里要考虑margin值
+                            ViewGroup.LayoutParams cLp          = child.getLayoutParams();
+                            int                    bottomMargin = 0;
+                            int                    topMargin    = 0;
+                            if (cLp instanceof LinearLayout.LayoutParams) {
+                                bottomMargin = ((LinearLayout.LayoutParams) cLp).bottomMargin;
+                            }
+
+                            //两个View的间距
+                            int   i1     = lm.getDecoratedTop(nextChild) + topMargin - (lm.getDecoratedBottom(
+                                    child) - bottomMargin);
+                            float bottom = lm.getDecoratedBottom(child) - bottomMargin + i1 / 2 + dividerSize / 2;
+                            float top    = bottom - dividerSize;
+                            c.drawRect(parent.getPaddingLeft(),
+                                       top,
+                                       parent.getRight(),
+                                       bottom,
+                                       paint);
+
+                        }
+                    }
+
+                }
+
+            }
+        });
         mNewsRelateDocAdapter = new NewsRelateDocAdapter();
         mRvRelateDoc.setAdapter(mNewsRelateDocAdapter);
         //评论
-        mRvComment.setLayoutManager(new LinearLayoutManager(this){
+        mRvComment.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -165,7 +205,7 @@ public class NewsDocDetailActivity
         mTvCateName.setText(cateName);
         mTvEditTime.setText(editTime);
 
-        if (logoUrl!=null&&!TextUtils.equals(logoUrl, "")) {
+        if (logoUrl != null && !TextUtils.equals(logoUrl, "")) {
             GlideManager.getInstance()
                         .setImageWithCircleTransForm(mIvCateLogo, logoUrl);
         }
@@ -174,7 +214,7 @@ public class NewsDocDetailActivity
 
     @Override
     public void showWebViewData(String htmlData) {
-        if (htmlData==null){
+        if (htmlData == null) {
             return;
         }
         mWvNewsDetails.loadDataWithBaseURL(null, htmlData, null, "utf-8", null);

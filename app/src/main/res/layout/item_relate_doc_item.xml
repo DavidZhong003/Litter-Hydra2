@@ -3,15 +3,17 @@
                 android:layout_width="match_parent"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content">
 
     <ImageView
         android:layout_alignParentStart="true"
         android:id="@+id/iv_thumbnail"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:scaleType="fitXY"
         android:src="@mipmap/test"
-        android:layout_height="60dp"/>
+        android:layout_height="80dp"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -20,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="16sp"
-        android:textColor="@color/md_grey_600"
+        android:textColor="@color/md_grey_800"
         android:layout_toEndOf="@+id/iv_thumbnail"
         android:layout_marginStart="20dp"/>
 
@@ -30,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="@color/md_grey_300"
+        android:textColor="@color/md_grey_500"
         android:layout_alignBottom="@+id/iv_thumbnail"
         android:layout_alignStart="@+id/tv_title"/>
 </RelativeLayout>
