@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.doive.nameless.litter_hydra.view.MainActivity">
+    tools:context="com.doive.nameless.litter_hydra.ui.MainActivity">
 
     <FrameLayout
         android:id="@+id/content_main"

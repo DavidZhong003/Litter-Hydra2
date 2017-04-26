@@ -62,5 +62,8 @@ public final class ColumnCategoryConstant {
     public  interface IntentArgName{
         String ITEM_BEAN_DOCUMENT_ID = "item_bean_DocumentId";
         String DOC_ITEM_LOGO         = "item_bean_logo";
+
+        String TOP_ITEM_ID = "TOP_ITEM_ID";
+        String TOP_ITEM_COMMENTURL         = "TOP_ITEM_COMMENTURL";
     }
 }

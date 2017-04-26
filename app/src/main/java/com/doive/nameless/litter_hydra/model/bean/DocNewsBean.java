@@ -46,7 +46,7 @@ public class DocNewsBean {
         private String documentId;
         @SerializedName("class")
         private String classX;
-        private int    o;
+        private String    o;
 
         public String getId() { return id;}
 
@@ -64,9 +64,9 @@ public class DocNewsBean {
 
         public void setClassX(String classX) { this.classX = classX;}
 
-        public int getO() { return o;}
+        public String getO() { return o;}
 
-        public void setO(int o) { this.o = o;}
+        public void setO(String o) { this.o = o;}
     }
 
     public static class BodyBean {
@@ -230,8 +230,8 @@ public class DocNewsBean {
             private String logo;
             private String description;
             private String api;
-            private int    show_link;
-            private int    status;
+            private String    show_link;
+            private String    status;
 
             public String getType() { return type;}
 
@@ -269,13 +269,13 @@ public class DocNewsBean {
 
             public void setApi(String api) { this.api = api;}
 
-            public int getShow_link() { return show_link;}
+            public String getShow_link() { return show_link;}
 
-            public void setShow_link(int show_link) { this.show_link = show_link;}
+            public void setShow_link(String show_link) { this.show_link = show_link;}
 
-            public int getStatus() { return status;}
+            public String getStatus() { return status;}
 
-            public void setStatus(int status) { this.status = status;}
+            public void setStatus(String status) { this.status = status;}
         }
 
         public static class ImgBean {

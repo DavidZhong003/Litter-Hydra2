@@ -11,7 +11,7 @@
         android:layout_alignParentStart="true"
         android:id="@+id/iv_thumbnail"
         android:layout_width="120dp"
-        android:scaleType="fitXY"
+
         android:src="@mipmap/test"
         android:layout_height="80dp"/>
 

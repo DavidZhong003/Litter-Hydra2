@@ -3,6 +3,8 @@ package com.doive.nameless.litter_hydra.net;
 import com.doive.nameless.litter_hydra.base.BaseApplication;
 import com.doive.nameless.litter_hydra.net.api.NewsApiService;
 import com.doive.nameless.litter_hydra.net.api.VideoApiService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -12,8 +14,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by Administrator on 2017/3/17.
@@ -52,8 +52,11 @@ public class RetrofitManager {
     }
 
     private Retrofit creatRetrofit(String baseURl, OkHttpClient client) {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         return new Retrofit.Builder().baseUrl(baseURl)
-                                     .addConverterFactory(GsonConverterFactory.create())
+                                     .addConverterFactory(GsonConverterFactory.create(gson))
                                      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                                      .client(client)
                                      .build();

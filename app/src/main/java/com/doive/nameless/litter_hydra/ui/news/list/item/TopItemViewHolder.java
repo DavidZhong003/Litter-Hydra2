@@ -1,15 +1,17 @@
 package com.doive.nameless.litter_hydra.ui.news.list.item;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
+import com.doive.nameless.litter_hydra.ui.news.top.TopNewsActivity;
 
 /**
  * Created by Administrator on 2017/4/12.
@@ -35,14 +37,22 @@ public class TopItemViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), bean.getLink().getUrl(), Toast.LENGTH_LONG).show();
+                //把id和评论的url地址传递
+                Intent intent = new Intent(v.getContext(),TopNewsActivity.class);
+                String id = bean.getId();
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.TOP_ITEM_ID,id);
+                String commentsUrl = bean.getCommentsUrl();
+                intent.putExtra(ColumnCategoryConstant.IntentArgName.TOP_ITEM_COMMENTURL,
+                                commentsUrl);
+
+                v.getContext().startActivity(intent);
 
             }
         });
         iv_top_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TOPVH", "onClick: <><><><><><><><><>" );
+                Log.e("TOPVH", "onClick: <><><><><><><><><>"+bean.getId() );
             }
         });
     }

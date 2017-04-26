@@ -80,6 +80,7 @@ public interface NewsApiService {
 
     /**
      * Doc新闻详情
+     * http://api.3g.ifeng.com/ipadtestdoc?aid=cmpp_030180050996690&os=android_23&gv=5.4.1
      */
     @GET("ipadtestdoc")
     Observable<DocNewsBean> getDocNewsData(@Query("aid")String aid,@Query("os")String os,@Query("gv")String gv);
@@ -93,5 +94,9 @@ public interface NewsApiService {
 
     //用户等级
     //http://cdn.user.iclient.ifeng.com/api_user_exp/list/10xbtq-17fezz-whn4a-tkfu4-13jo48.v2.html
+
+    //专题
+    //http://api.iclient.ifeng.com/TopicApiForCmpp?topicid=391&json=y&ad=y&gv=5.4.1&av=5.4.1&uid=864394010382135&deviceid=864394010382135&proid=ifengnews&os=android_19&df=androidphone&vt=5&screen=720x1280&publishid=2011&nw=wifi
+
 
 }

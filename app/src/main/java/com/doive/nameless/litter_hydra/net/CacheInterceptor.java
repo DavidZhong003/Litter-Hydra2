@@ -28,14 +28,15 @@ public class CacheInterceptor
             throws IOException
     {
         Response originalResponse = chain.proceed(chain.request());
-        if (NetUtils.isNetWorkAvailable(BaseApplication.getContext())) {
-            return originalResponse.newBuilder()
-                                   .removeHeader("Pragma")
-                                   .removeHeader("Cache-Control")
-                                   .header("Cache-Control",
-                                           "public, max-age=" + SettingConfigs.CACHE_TIME_ONLINE)
-                                   .build();
-        }
-        return originalResponse;
+
+        int time = NetUtils.isNetWorkAvailable(BaseApplication.getContext())
+                   ? SettingConfigs.CACHE_TIME_ONLINE
+                   : SettingConfigs.CACHE_TIME_OFFLINE;
+        return originalResponse.newBuilder()
+                               .removeHeader("Pragma")
+                               .removeHeader("Cache-Control")
+                               .header("Cache-Control", "public, max-age=" + time)
+                               .build();
+
     }
 }

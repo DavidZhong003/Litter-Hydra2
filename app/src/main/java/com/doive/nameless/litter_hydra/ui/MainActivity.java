@@ -1,4 +1,4 @@
-package com.doive.nameless.litter_hydra.view;
+package com.doive.nameless.litter_hydra.ui;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
