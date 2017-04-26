@@ -180,6 +180,7 @@ public class NewsRelateDocAdapter
         public TextView    mTvTitle;
         public TextView    mTvChannelName;
 
+
         public PH_VH(View rootView) {
             super(rootView);
             this.rootView = rootView;
@@ -187,6 +188,7 @@ public class NewsRelateDocAdapter
             this.mFlThumbnail = (FrameLayout) rootView.findViewById(R.id.fl_thumbnail);
             this.mTvTitle = (TextView) rootView.findViewById(R.id.tv_title);
             this.mTvChannelName = (TextView) rootView.findViewById(R.id.tv_channel_name);
+
         }
 
         public PH_VH setImageView(String url) {

@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.ui.news.list;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -79,7 +80,7 @@ public class NewsListFragment extends BaseFragment implements NewListContract.Vi
         //设置LayoutManager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         //设置分割线
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(1f, R.color.md_grey_50));
+        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(1f, Color.parseColor("#9E9E9E")));
         //设置适配器
         mAdapter = new CommonsRecyclerViewAdapter();
         mRecyclerView.setAdapter(mAdapter);

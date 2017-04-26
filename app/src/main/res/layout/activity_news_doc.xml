@@ -55,11 +55,12 @@
 
                     <ImageView
                         android:id="@+id/iv_cate_logo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:visibility="gone"
+                        android:src="@mipmap/circular_face"
                         tools:ignore="ContentDescription"
                         tools:src="@mipmap/item_atlas"/>
 
@@ -68,7 +69,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="35dp"
+                        android:layout_marginStart="45dp"
                         android:textColor="@color/md_blue_grey_500"
                         android:textSize="16sp"
                         tools:text="中国新闻网"/>
@@ -78,6 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="50dp"
                         android:layout_toEndOf="@+id/tv_cate_name"
                         android:textSize="16sp"

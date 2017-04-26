@@ -91,4 +91,7 @@ public interface NewsApiService {
     @GET("geti.php")
     Observable<NewsCommentBean> getCommentData(@Query("docurl")String formatDocUrl,@Query("type")String type);
 
+    //用户等级
+    //http://cdn.user.iclient.ifeng.com/api_user_exp/list/10xbtq-17fezz-whn4a-tkfu4-13jo48.v2.html
+
 }

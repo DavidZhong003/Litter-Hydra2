@@ -34,7 +34,7 @@ public interface NewsDocDetailConstract {
         void showWebViewData(String htmlData);
 
         //显示评论页面
-        void showCommentData(List<ItemType> list);
+        void showCommentData(NewsCommentBean newsCommentBean);
 
         //显示相关新闻内容
         void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean);

@@ -1,49 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_marginStart="5dp"
-              android:layout_marginEnd="5dp"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
+
+    <!--<com.doive.nameless.litter_hydra.widget.RoundImageView-->
+    <!--android:src="@mipmap/useface_default"-->
+    <!--android:id="@+id/iv_useface"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"/>-->
 
     <ImageView
-        android:src="@mipmap/test"
-        android:layout_width="30dp"
-        android:layout_height="30dp"/>
+        android:id="@+id/iv_useface"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@mipmap/useface_default"/>
 
     <LinearLayout
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="15dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/tv_uname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/md_blue_grey_700"
+                android:textSize="14sp"
+                tools:text="吃我一斤翔"/>
 
-            <!--todo
-            https://github.com/whyalwaysmea/floorView
-            模仿盖楼效果
-            -->
+            <!--点赞数-->
+            <TextView
+                android:id="@+id/tv_uptimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:drawableEnd="@mipmap/uptimes_32"
+                android:drawablePadding="3dp"
+                android:textColor="@color/md_blue_grey_600"
+                android:textSize="12sp"
+                tools:text="81"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
-            android:text="adfasdfasdf"
+            android:id="@+id/tv_ip_from"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/md_grey_400"
+            android:textSize="12sp"
+            tools:text="广东深圳网友"/>
 
         <TextView
-            android:text="adsfasdfasdfa"
+            android:id="@+id/tv_comment_contents"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/md_grey_900"
+            android:textSize="16sp"
+            tools:text="这是评论的内容"/>
+
+
+        <View
+            android:id="@+id/v_item_decoration"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/md_grey_100"/>
 
     </LinearLayout>
+
 
 </LinearLayout>

@@ -56,7 +56,6 @@ public class RecyclerItemDecoration
             for (int i = 0; i < childCount - 1; i++) {
                 View                   child        = parent.getChildAt(i);
                 View                   nextChild    = parent.getChildAt(i + 1);
-                ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                 //这里要考虑margin值
                 ViewGroup.LayoutParams cLp          = child.getLayoutParams();
                 ViewGroup.LayoutParams nLp          = nextChild.getLayoutParams();

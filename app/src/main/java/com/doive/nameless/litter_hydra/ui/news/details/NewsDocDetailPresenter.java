@@ -14,6 +14,7 @@ import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -60,6 +61,7 @@ public class NewsDocDetailPresenter
                                                       @Override
                                                       public void onCompleted() {
                                                           mView.showContentView();
+//                                                          getCommentData();
                                                       }
 
                                                       @Override
@@ -99,7 +101,14 @@ public class NewsDocDetailPresenter
     @Override
     public void getCommentData() {
         mModelFactory.obtainNewsComment(mModelFactory.obtainNewsDocDetail(
-                mAid));
+                mAid)).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<NewsCommentBean>() {
+                    @Override
+                    public void call(NewsCommentBean newsCommentBean) {
+                        mView.showCommentData(newsCommentBean);
+                    }
+                });
 
     }
     

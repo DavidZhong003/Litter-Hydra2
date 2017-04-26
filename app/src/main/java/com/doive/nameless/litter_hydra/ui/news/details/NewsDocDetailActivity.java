@@ -1,16 +1,22 @@
 package com.doive.nameless.litter_hydra.ui.news.details;
 
 import android.annotation.SuppressLint;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -18,13 +24,14 @@ import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
-import com.doive.nameless.litter_hydra.recyclerview.CommonsRecyclerViewAdapter;
-import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 import com.doive.nameless.litter_hydra.widget.ErrorView;
 import com.doive.nameless.litter_hydra.widget.LoadingTopView;
 
 import java.util.List;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -45,8 +52,8 @@ public class NewsDocDetailActivity
     public  RecyclerView                     mRvRelateDoc;
     public  ScrollView                       mScrollView;
     private NewsDocDetailConstract.Presenter mPresenter;
-    private CommonsRecyclerViewAdapter mAdapter;
-    private NewsRelateDocAdapter mNewsRelateDocAdapter;
+    private NewsCommentAdapter               mCommentAdapter;
+    private NewsRelateDocAdapter             mNewsRelateDocAdapter;
 
     @Override
     protected int setLayoutId() {
@@ -85,6 +92,8 @@ public class NewsDocDetailActivity
                 if (mRvRelateDoc.getVisibility()!=View.VISIBLE){
                     mRvRelateDoc.setVisibility(View.VISIBLE);
                 }
+                if (mPresenter!=null)
+                mPresenter.getCommentData();
             }
         });
         initRecyclerView();
@@ -93,13 +102,24 @@ public class NewsDocDetailActivity
 
     private void initRecyclerView() {
         //相关新闻
-        mRvRelateDoc.setLayoutManager(new LinearLayoutManager(this));
+        mRvRelateDoc.setLayoutManager(new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         mNewsRelateDocAdapter = new NewsRelateDocAdapter();
         mRvRelateDoc.setAdapter(mNewsRelateDocAdapter);
         //评论
-        mRvComment.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CommonsRecyclerViewAdapter();
-        mRvComment.setAdapter(mAdapter);
+        mRvComment.setLayoutManager(new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
+        mCommentAdapter = new NewsCommentAdapter();
+        mRvComment.setAdapter(mCommentAdapter);
     }
 
     @Override
@@ -110,7 +130,7 @@ public class NewsDocDetailActivity
                 mPresenter.loadData();
             }
         });
-
+        //scrollview监听滑动到最后
     }
 
 
@@ -144,11 +164,12 @@ public class NewsDocDetailActivity
         mTvNewsTitle.setText(title);
         mTvCateName.setText(cateName);
         mTvEditTime.setText(editTime);
+
         if (logoUrl!=null&&!TextUtils.equals(logoUrl, "")) {
-            mIvCateLogo.setVisibility(View.VISIBLE);
             GlideManager.getInstance()
                         .setImageWithCircleTransForm(mIvCateLogo, logoUrl);
         }
+        mIvCateLogo.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -164,9 +185,8 @@ public class NewsDocDetailActivity
      * @param newsCommentBean
      */
     @Override
-    public void showCommentData(List<ItemType> list) {
-        ;
-        mAdapter.addAllUpdate(true, list);
+    public void showCommentData(NewsCommentBean newsCommentBean) {
+        mCommentAdapter.setData(newsCommentBean);
     }
 
     @Override
