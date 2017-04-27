@@ -14,7 +14,8 @@ import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.top.TopNewsActivity;
 
 /**
- * Created by Administrator on 2017/4/12.
+ * Created by Administrator on 2017/4/12.\
+ *
  */
 
 public class TopItemViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
@@ -44,7 +45,7 @@ public class TopItemViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
                 String commentsUrl = bean.getCommentsUrl();
                 intent.putExtra(ColumnCategoryConstant.IntentArgName.TOP_ITEM_COMMENTURL,
                                 commentsUrl);
-
+                Log.e(TAG, "onClick: "+id );
                 v.getContext().startActivity(intent);
 
             }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/tv_title_top"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:textSize="14sp"
+          android:layout_marginTop="40dp"
+          android:layout_marginLeft="40dp"
+          android:layout_marginRight="40dp"
+          android:layout_marginBottom="40dp"
+          android:textColor="@color/md_grey_500"
+          android:layout_height="wrap_content"/>
+

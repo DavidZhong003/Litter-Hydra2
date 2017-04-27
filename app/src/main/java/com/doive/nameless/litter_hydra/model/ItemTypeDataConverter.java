@@ -6,21 +6,16 @@ import android.util.Log;
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
-import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
+import com.doive.nameless.litter_hydra.model.bean.TopNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.rxbus.RxBus;
-import com.orhanobut.logger.Logger;
 
-import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -30,7 +25,7 @@ public class ItemTypeDataConverter {
     private static final String   TAG   = "ItemTypeDataConverter";
     private static final String[] sName = {"精彩推荐"};
 
-    public static Observable<List<ItemType>> TopNewsTranse(Observable<List<NewsBean>> aDefault) {
+    public static Observable<List<ItemType>> newsTranse(Observable<List<NewsBean>> aDefault) {
         return aDefault.flatMap(new Func1<List<NewsBean>, Observable<NewsBean>>() {
             @Override
             public Observable<NewsBean> call(List<NewsBean> newsBeen) {
@@ -89,7 +84,7 @@ public class ItemTypeDataConverter {
      * @param recommendData
      * @return
      */
-    public static Observable<List<ItemType>> VideoRecommendDataTranse(Observable<VideoRecommendBean> recommendData) {
+    public static Observable<List<ItemType>> videoRecommendDataTranse(Observable<VideoRecommendBean> recommendData) {
         return recommendData.map(new Func1<VideoRecommendBean, List<VideoRecommendBean.RoomBean>>() {
             @Override
             public List<VideoRecommendBean.RoomBean> call(VideoRecommendBean videoRecommendBean) {
@@ -147,11 +142,14 @@ public class ItemTypeDataConverter {
         //                     });
     }
 
-    public static Observable<List<ItemType>> VideoDataTranse(final String columnCategory, Observable<VideoAllBean> allData) {
+    public static Observable<List<ItemType>> videoDataTranse(final String columnCategory,
+                                                             Observable<VideoAllBean> allData)
+    {
         return allData.map(new Func1<VideoAllBean, List<VideoAllBean.DataBeanX>>() {
             @Override
             public List<VideoAllBean.DataBeanX> call(VideoAllBean videoAllBean) {
-                RxBus.getInstance().send(columnCategory,videoAllBean.getPageCount());
+                RxBus.getInstance()
+                     .send(columnCategory, videoAllBean.getPageCount());
                 return videoAllBean.getData();
             }
         })
@@ -164,7 +162,7 @@ public class ItemTypeDataConverter {
                       .map(new Func1<VideoAllBean.DataBeanX, ItemType>() {
                           @Override
                           public ItemType call(final VideoAllBean.DataBeanX dataBeanX) {
-//                              Log.e(TAG, "call: "+dataBeanX.getCategory_name() );
+                              //                              Log.e(TAG, "call: "+dataBeanX.getCategory_name() );
                               return new ItemType() {
                                   @Override
                                   public int bindItemType() {
@@ -182,7 +180,7 @@ public class ItemTypeDataConverter {
 
     }
 
-    public static Observable<List<ItemType>> VideoDataTranseFilter(Observable<VideoAllBean> allData,
+    public static Observable<List<ItemType>> videoDataTranseFilter(Observable<VideoAllBean> allData,
                                                                    final String categoryName)
     {
         return allData.map(new Func1<VideoAllBean, List<VideoAllBean.DataBeanX>>() {
@@ -200,7 +198,7 @@ public class ItemTypeDataConverter {
                       .filter(new Func1<VideoAllBean.DataBeanX, Boolean>() {
                           @Override
                           public Boolean call(VideoAllBean.DataBeanX dataBeanX) {
-                              return TextUtils.equals(dataBeanX.getCategory_name(),categoryName);
+                              return TextUtils.equals(dataBeanX.getCategory_name(), categoryName);
                           }
                       })
                       .map(new Func1<VideoAllBean.DataBeanX, ItemType>() {
@@ -221,6 +219,41 @@ public class ItemTypeDataConverter {
                       })
                       .toList();
 
+    }
+
+    public static Observable<List<ItemType>> topNewsConver(Observable<TopNewsBean> observable) {
+        return observable.map(new Func1<TopNewsBean, List<TopNewsBean.BodyBean.SubjectsBean>>() {
+            @Override
+            public List<TopNewsBean.BodyBean.SubjectsBean> call(TopNewsBean topNewsBean) {
+                return topNewsBean.getBody()
+                                  .getSubjects();
+            }
+        })
+                         .flatMap(new Func1<List<TopNewsBean.BodyBean.SubjectsBean>, Observable<TopNewsBean.BodyBean.SubjectsBean>>() {
+
+                             @Override
+                             public Observable<TopNewsBean.BodyBean.SubjectsBean> call(List<TopNewsBean.BodyBean.SubjectsBean> subjectsBeen) {
+                                 return Observable.from(subjectsBeen);
+                             }
+                         })
+                         .map(new Func1<TopNewsBean.BodyBean.SubjectsBean, ItemType>() {
+                             @Override
+                             public ItemType call(final TopNewsBean.BodyBean.SubjectsBean subjectsBean) {
+
+                                 return new ItemType() {
+                                     @Override
+                                     public int bindItemType() {
+                                         return ItemTypeDispath.getTypeBsubjectsBean(subjectsBean);
+                                     }
+
+                                     @Override
+                                     public TopNewsBean.BodyBean.SubjectsBean bindItemData() {
+                                         return subjectsBean;
+                                     }
+                                 };
+                             }
+                         })
+                         .toList();
     }
 
 
@@ -243,6 +276,20 @@ public class ItemTypeDataConverter {
                     return R.layout.item_doc;
             }
 
+        }
+
+        public static int getTypeBsubjectsBean(TopNewsBean.BodyBean.SubjectsBean subjectsBean) {
+            switch (subjectsBean.getView()) {
+                case "multiTitle":
+                    return R.layout.item_top_multititle;
+                case "text":
+                    return R.layout.item_top_text;
+                case "slider":
+                    return R.layout.item_top_slider;
+                case "list":
+                    return R.layout.item_top_list;
+            }
+            return 0;
         }
     }
 }

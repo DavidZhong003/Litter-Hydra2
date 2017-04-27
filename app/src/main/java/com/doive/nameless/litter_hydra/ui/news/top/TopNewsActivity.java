@@ -1,6 +1,7 @@
 package com.doive.nameless.litter_hydra.ui.news.top;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -32,6 +33,9 @@ public class TopNewsActivity
     @Override
     protected void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        //创建P层
+        setPresenter(new TopNewsPresenter(this));
+        mPresenter.getDataFromIntent(getIntent());
     }
 
     @Override
@@ -42,47 +46,17 @@ public class TopNewsActivity
         mErrorView = getViewbyId(R.id.error_view);
         //设置适配器
         mAdapter = new CommonsRecyclerViewAdapter();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
 
         mTwinklingRefreshLayout.setEnableLoadmore(false);
         mTwinklingRefreshLayout.setPureScrollModeOn();
-
-        //        mRefreshLayou
-        //        Intent intent     = getIntent();
-        //        String id         = intent.getStringExtra(ColumnCategoryConstant.IntentArgName.TOP_ITEM_ID);
-        //        String commenturl = intent.getStringExtra(ColumnCategoryConstant.IntentArgName.TOP_ITEM_COMMENTURL);
-        //        Log.e(TAG, "initView: " + id);
-        //        RxOkHttpManager.getInstance()
-        //                       .get(id, TopNewsBean.class)
-        //                       .subscribeOn(Schedulers.io())
-        //                       .observeOn(AndroidSchedulers.mainThread())
-        //                       .subscribe(new Subscriber<TopNewsBean>() {
-        //                           @Override
-        //                           public void onCompleted() {
-        //
-        //                           }
-        //
-        //                           @Override
-        //                           public void onError(Throwable e) {
-        //
-        //                           }
-        //
-        //                           @Override
-        //                           public void onNext(TopNewsBean topNewsBean) {
-        //                               Log.e(TAG,
-        //                                     "onNext: " + topNewsBean.getBody()
-        //                                                             .getSubjects()
-        //                                                             .get(0)
-        //                                                             .getContent()
-        //                                                             .getCustomBanner());
-        //                           }
-        //                       });
-
+        mPresenter.subscribe();
     }
 
     @Override
     protected int setLayoutId() {
-        return R.layout.top_news_activity;
+        return R.layout.activity_top_news;
     }
 
     @Override
@@ -105,11 +79,19 @@ public class TopNewsActivity
     }
 
     @Override
-    public void showContentView(List<ItemType> list) {
+    public void showContentView() {
         mLtvLoading.setVisibility(View.GONE);
         mErrorView.setVisibility(View.GONE);
         mTwinklingRefreshLayout.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void loadData(List<ItemType> list) {
+        mAdapter.addAllUpdate(false, list);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

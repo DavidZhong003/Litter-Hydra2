@@ -31,8 +31,6 @@ public class NewsDocDetailPresenter
     private String mAid;
     private String mLogo_url;
     private final ModelFactory mModelFactory;
-    //新闻评论
-    private String mCommentUrlTransform;
 
     public NewsDocDetailPresenter(NewsDocDetailConstract.View view) {
         mView = view;
@@ -85,8 +83,8 @@ public class NewsDocDetailPresenter
                                                           //相关新闻数据
                                                           mView.showSimilarContent(body.getRelateDocs());
                                                           //使用RxBus
-                                                          mCommentUrlTransform = StringTransformUtils.commentUrlTransform(
-                                                                  body.getCommentsUrl());
+//                                                          mCommentUrlTransform = StringTransformUtils.commentUrlTransform(
+//                                                                  body.getCommentsUrl());
                                                       }
                                                   }));
 
@@ -100,7 +98,7 @@ public class NewsDocDetailPresenter
 
     @Override
     public void getCommentData() {
-        mModelFactory.obtainNewsComment(mModelFactory.obtainNewsDocDetail(
+        mCompositeSubscription.add(mModelFactory.obtainNewsComment(mModelFactory.obtainNewsDocDetail(
                 mAid)).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<NewsCommentBean>() {
@@ -108,7 +106,7 @@ public class NewsDocDetailPresenter
                     public void call(NewsCommentBean newsCommentBean) {
                         mView.showCommentData(newsCommentBean);
                     }
-                });
+                }));
 
     }
     

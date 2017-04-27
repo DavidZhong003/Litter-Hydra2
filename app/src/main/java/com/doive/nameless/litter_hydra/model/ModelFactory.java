@@ -1,25 +1,20 @@
 package com.doive.nameless.litter_hydra.model;
 
-import android.util.Log;
-
 import com.doive.nameless.litter_hydra.base.BaseApplication;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
+import com.doive.nameless.litter_hydra.model.bean.TopNewsBean;
 import com.doive.nameless.litter_hydra.net.RetrofitManager;
+import com.doive.nameless.litter_hydra.net.RxOkHttpManager;
 import com.doive.nameless.litter_hydra.net.api.NewsApiService;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.utils.TimeUtils;
 import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -73,8 +68,8 @@ public class ModelFactory
         mEntertainmentLoadMorePage = isLoadMore
                                      ? mEntertainmentLoadMorePage + 1
                                      : 1;
-        return ItemTypeDataConverter.TopNewsTranse(mRetrofitManager.creatNewsApiService()
-                                                                   .getColumnData(columnId,
+        return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
+                                                                .getColumnData(columnId,
                                                                                   mEntertainmentLoadMorePage,
                                                                                   BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
                                                                                   BaseApplication.getDeviceId()));
@@ -88,16 +83,16 @@ public class ModelFactory
         //先获取原始数据
         if (isLoadMore) {
             //获取时间戳
-            return ItemTypeDataConverter.TopNewsTranse(mRetrofitManager.creatNewsApiService()
-                                                                       .getMoreData("SYLB10,SYDT10",
+            return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
+                                                                    .getMoreData("SYLB10,SYDT10",
                                                                                     "up",
                                                                                     StringTransformUtils.getTimestamp(
                                                                                             mForwardHour++),
                                                                                     BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
                                                                                     BaseApplication.getDeviceId()));
         } else {
-            return ItemTypeDataConverter.TopNewsTranse(mRetrofitManager.creatNewsApiService()
-                                                                       .getData(
+            return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
+                                                                    .getData(
                                                                                "SYLB10,SYDT10,SYRECOMMEND",
                                                                                "default",
                                                                                BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
@@ -173,7 +168,7 @@ public class ModelFactory
         //            }
         //        });
         // TODO: 2017/4/19 获取showing实际数据
-        return ItemTypeDataConverter.VideoDataTranseFilter(mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.videoDataTranseFilter(mRetrofitManager.creatVideoApiService()
                                                                            .getAllData(TimeUtils.getCurrentFormatTime(),
                                                                                        "3.1.1",
                                                                                        1,
@@ -196,7 +191,7 @@ public class ModelFactory
                       ? ""
                       : "_" + loadmoreCount;
         String url = "json/categories/" + categories + "/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(columnCategory,
+        return ItemTypeDataConverter.videoDataTranse(columnCategory,
                                                      mRetrofitManager.creatVideoApiService()
                                                                      .getCategoriesData2(url));
 
@@ -207,14 +202,14 @@ public class ModelFactory
                       ? ""
                       : "_" + loadMoreCount;
         String url = "json/play/list" + more + ".json?" + TimeUtils.getCurrentFormatTime() + "&v=3.1.1&os=1&ver=4&toid=0&token&sid";
-        return ItemTypeDataConverter.VideoDataTranse(columnCategory,
+        return ItemTypeDataConverter.videoDataTranse(columnCategory,
                                                      mRetrofitManager.creatVideoApiService()
                                                                      .getMoreAllData(url));
 
     }
 
     private Observable<List<ItemType>> getRecommendData() {
-        return ItemTypeDataConverter.VideoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
+        return ItemTypeDataConverter.videoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
                                                                               .getRecommendData2(
                                                                                       TimeUtils.getCurrentFormatTime(),
                                                                                       "3.1.1",
@@ -269,4 +264,15 @@ public class ModelFactory
     }
 
 
+    /**
+     *
+     * @param idUrl
+     * @return
+     */
+    public Observable<List<ItemType>> ObtainTopNews(String idUrl) {
+        Observable<TopNewsBean> newsBeanObservable = RxOkHttpManager.getInstance()
+                                                                       .get(idUrl,
+                                                                            TopNewsBean.class);
+        return ItemTypeDataConverter.topNewsConver(newsBeanObservable);
+    }
 }

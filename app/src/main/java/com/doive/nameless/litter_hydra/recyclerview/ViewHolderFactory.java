@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.recyclerview;
 
+import android.util.Log;
 import android.view.View;
 
 import com.doive.nameless.litter_hydra.R;
@@ -8,6 +9,10 @@ import com.doive.nameless.litter_hydra.ui.news.list.item.PhVideoViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.SlideBigImgViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.SlideImgViewHolder;
 import com.doive.nameless.litter_hydra.ui.news.list.item.TopItemViewHolder;
+import com.doive.nameless.litter_hydra.ui.news.top.TopListVH;
+import com.doive.nameless.litter_hydra.ui.news.top.TopMultiTitleVH;
+import com.doive.nameless.litter_hydra.ui.news.top.TopSliderVH;
+import com.doive.nameless.litter_hydra.ui.news.top.TopTextVH;
 import com.doive.nameless.litter_hydra.ui.video.item.NormalItemViewHolder;
 import com.doive.nameless.litter_hydra.ui.video.item.RecommendItemViewHolder;
 
@@ -32,6 +37,15 @@ public  class ViewHolderFactory {
                 return new RecommendItemViewHolder(inflate);
             case R.layout.item_video_content:
                 return new NormalItemViewHolder(inflate);
+            //头条新闻模块
+            case R.layout.item_top_multititle:
+                return new TopMultiTitleVH(inflate);
+            case R.layout.item_top_text:
+                return new TopTextVH(inflate);
+            case R.layout.item_top_slider:
+                return new TopSliderVH(inflate);
+            case R.layout.item_top_list:
+                return new TopListVH(inflate);
             default:
                  break;
         }

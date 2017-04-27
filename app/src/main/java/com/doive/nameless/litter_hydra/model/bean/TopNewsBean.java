@@ -161,7 +161,16 @@ public class TopNewsBean {
             public void setPodItems(List<?> podItems) { this.podItems = podItems;}
 
             public static class ContentBeanX {
+                public String getIntro() {
+                    return intro;
+                }
+
+                public void setIntro(String intro) {
+                    this.intro = intro;
+                }
+
                 /**
+                 * intro :
                  * subTitle :
                  * title :
                  * borderColor : #0094dc
@@ -172,7 +181,7 @@ public class TopNewsBean {
                  * bgImage : http://p3.ifengimg.com/a/2016_50/d960e1b390208cd_size21_w640_h100.jpg
                  * customBanner : http://d.ifengimg.com/w640_h100/p3.ifengimg.com/a/2016_50/d960e1b390208cd_size21_w640_h100.jpg
                  */
-
+                private String intro;
                 private String subTitle;
                 private String title;
                 private String borderColor;

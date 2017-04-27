@@ -21,11 +21,18 @@ public class CommonsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
     @NonNull
     private List<ItemType> mList = new ArrayList<>();
 
+    public CommonsRecyclerViewAdapter(@NonNull List<ItemType> list) {
+        mList = list;
+    }
+
+    public CommonsRecyclerViewAdapter() {
+    }
+
     public void addAllUpdate(boolean isAdd, List<ItemType> list){
         if (isAdd){
             //添加
             mList.addAll(list);
-            Log.e("数据条数", "addAllUpdate: "+mList.size() );
+//            Log.e("数据条数", "addAllUpdate: "+mList.size() );
         }else {
             //更新
             if (list!=null)
@@ -77,7 +84,6 @@ public class CommonsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext())
                                      .inflate(viewType, parent, false);
-
         return ViewHolderFactory.createViewHolderByType(viewType, inflate);
     }
 
