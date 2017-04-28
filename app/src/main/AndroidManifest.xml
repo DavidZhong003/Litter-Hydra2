@@ -42,6 +42,14 @@
         <activity android:name=".ui.news.top.TopNewsActivity">
 
         </activity>
+
+        <activity android:name=".ui.video.test.TvActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        </activity>
     </application>
 
 </manifest>

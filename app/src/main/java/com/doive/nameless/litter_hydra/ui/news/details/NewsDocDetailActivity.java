@@ -132,7 +132,7 @@ public class NewsDocDetailActivity
                             }
 
                             //两个View的间距
-                            int   i1     = lm.getDecoratedTop(nextChild) + topMargin - (lm.getDecoratedBottom(
+                            int i1 = lm.getDecoratedTop(nextChild) + topMargin - (lm.getDecoratedBottom(
                                     child) - bottomMargin);
                             float bottom = lm.getDecoratedBottom(child) - bottomMargin + i1 / 2 + dividerSize / 2;
                             float top    = bottom - dividerSize;
@@ -238,7 +238,7 @@ public class NewsDocDetailActivity
     @Override
     public void turnToWebActivity(String aid) {
         OpenActivityHelper.getInstance()
-                .OpenNewsWebActivity(this,aid);
+                          .OpenNewsWebActivity(this, aid);
         finish();
     }
 
@@ -254,11 +254,6 @@ public class NewsDocDetailActivity
         if (mWvNewsDetails != null) { mWvNewsDetails.reload(); }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mPresenter != null) { mPresenter.unSubscribe(); }
-    }
 
     @Override
     protected void onDestroy() {
@@ -266,6 +261,7 @@ public class NewsDocDetailActivity
         if (mWvNewsDetails != null) {
             mWvNewsDetails.clearHistory();
         }
+        if (mPresenter != null) { mPresenter.unSubscribe(); }
     }
 
 }

@@ -41,4 +41,6 @@ dependencies {
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.9'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.9'
 }

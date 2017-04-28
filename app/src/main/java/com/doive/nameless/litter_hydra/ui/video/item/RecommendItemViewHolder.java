@@ -1,5 +1,6 @@
 package com.doive.nameless.litter_hydra.ui.video.item;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,9 +16,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
+import com.doive.nameless.litter_hydra.ui.video.test.TvActivity;
 import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 
 import java.util.List;
@@ -139,6 +142,9 @@ public class RecommendItemViewHolder
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(),"uid"+listBean.getUid(),Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(v.getContext(), TvActivity.class);
+                    intent.putExtra("test_url","http://flv.quanmin.tv/live/"+listBean.getUid()+".flv");
+                    OpenActivityHelper.getInstance().OpenActivity(v.getContext(), intent);
                 }
             });
         }
