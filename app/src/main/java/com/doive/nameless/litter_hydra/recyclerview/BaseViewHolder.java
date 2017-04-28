@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -21,7 +22,7 @@ import com.doive.nameless.litter_hydra.utils.GlideRoundTransform;
 public class BaseViewHolder<T>
         extends RecyclerView.ViewHolder {
 
-    protected String TAG = BaseViewHolder.class.getSimpleName();
+    protected String TAG = this.getClass().getSimpleName();
 
     private   View              mRootView;
     private   Context           mContext;
@@ -60,6 +61,12 @@ public class BaseViewHolder<T>
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .transform(new GlideRoundTransform(iv.getContext(), 3))
              .into(iv);
+    }
+
+    public void setText(TextView tv, String text) {
+        if (tv!=null){
+            tv.setText(text);
+        }
     }
 
     protected void setImageBigPlaceholder(ImageView iv, String url) {

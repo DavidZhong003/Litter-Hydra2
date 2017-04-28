@@ -65,5 +65,8 @@ public final class ColumnCategoryConstant {
 
         String TOP_ITEM_ID = "TOP_ITEM_ID";
         String TOP_ITEM_COMMENTURL         = "TOP_ITEM_COMMENTURL";
+
+        String WEB_ITEM_URL ="web_url";
+
     }
 }

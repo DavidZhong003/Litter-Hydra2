@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/iv_slider_vp_thumbnail"
+        tools:src="@mipmap/test"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tv_slide_vp_title"
+        android:background="@drawable/jianbian"
+        android:layout_gravity="bottom"
+        android:textColor="@color/md_blue_grey_100"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_gravity="bottom|end"
+        android:id="@+id/tv_slide_vp_position"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="inherit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</FrameLayout>

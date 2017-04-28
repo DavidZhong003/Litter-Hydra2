@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
+import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
 import com.doive.nameless.litter_hydra.model.ItemTypeDataConverter;
 import com.doive.nameless.litter_hydra.model.ModelFactory;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
@@ -31,6 +32,7 @@ public class NewsDocDetailPresenter
     private String mAid;
     private String mLogo_url;
     private final ModelFactory mModelFactory;
+    private String mWebUrl;
 
     public NewsDocDetailPresenter(NewsDocDetailConstract.View view) {
         mView = view;
@@ -59,20 +61,24 @@ public class NewsDocDetailPresenter
                                                       @Override
                                                       public void onCompleted() {
                                                           mView.showContentView();
-//                                                          getCommentData();
                                                       }
 
                                                       @Override
                                                       public void onError(Throwable e) {
                                                           Log.e(TAG, "onError: "+e );
-                                                          Log.e(TAG, "onError: "+mAid+"///"+mLogo_url );
-                                                          mView.showNetErrorView();
+                                                          if (e instanceof NullPointerException){
+                                                              mView.turnToWebActivity(mAid);
+                                                          }else {
+                                                              mView.showNetErrorView();
+                                                          }
+
                                                       }
 
                                                       @Override
                                                       public void onNext(DocNewsBean docNewsBean) {
                                                           DocNewsBean.BodyBean body = docNewsBean.getBody();
                                                           //设置标题
+
                                                           mView.showDetailTitleInformation(body.getTitle(),
                                                                                            body.getSource(),
                                                                                            body.getEditTime(),
@@ -94,6 +100,8 @@ public class NewsDocDetailPresenter
     public void initDataFromIntent(Intent intent) {
         mAid = intent.getStringExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID);
         mLogo_url = intent.getStringExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO);
+        mWebUrl = intent.getStringExtra(ColumnCategoryConstant.IntentArgName.WEB_ITEM_URL);
+        Log.e(TAG, "initDataFromIntent: "+mAid+"\n"+mWebUrl );
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
+import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 
@@ -80,18 +81,14 @@ public class NewsRelateDocAdapter
 
                                  @Override
                                  public void onClick(View v) {
-                                     Intent intent = new Intent(v.getContext(),
-                                                                NewsDocDetailActivity.class);
-                                     intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
-                                                     bean.getDocumentId());
-                                     String logo = bean.getSubscribe()!=null?bean.getSubscribe().getLogo():null;
-                                     intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
-                                                     logo == null
-                                                     ? ""
-                                                     : logo);
-
-                                     v.getContext()
-                                      .startActivity(intent);
+                                     String logo = bean.getSubscribe() != null
+                                                   ? bean.getSubscribe()
+                                                         .getLogo()
+                                                   : null;
+                                     OpenActivityHelper.getInstance()
+                                                       .OpenNewsDocActivity(v.getContext(),
+                                                                            bean.getDocumentId(),
+                                                                            logo);
                                  }
                              });
             } else if (holder instanceof PH_VH) {

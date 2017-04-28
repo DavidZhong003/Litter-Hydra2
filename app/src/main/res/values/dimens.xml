@@ -14,4 +14,5 @@
     <dimen name="item_margin">6dp</dimen>
     <dimen name="item_doc_margin_top">80dp</dimen>
     <dimen name="logo_w_h">15dp</dimen>
+    <dimen name="top_news_normal_marin_12">12dp</dimen>
 </resources>

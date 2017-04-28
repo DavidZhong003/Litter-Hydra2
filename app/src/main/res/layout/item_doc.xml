@@ -12,6 +12,7 @@
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:scaleType="fitXY"
+        android:src="@mipmap/useface_default"
         tools:background="#0f0"/>
 
     <TextView
@@ -29,10 +30,10 @@
         android:id="@+id/iv_doc_logo"
         android:layout_width="@dimen/logo_w_h"
         android:layout_height="@dimen/logo_w_h"
+        android:src="@mipmap/useface_default"
         android:layout_marginStart="6dp"
         android:layout_marginTop="@dimen/item_doc_margin_top"
-        android:layout_toEndOf="@id/iv_top_img"
-        tools:src="@mipmap/app_icon_3x"/>
+        android:layout_toEndOf="@id/iv_top_img"/>
 
     <TextView
         android:id="@+id/tv_top_source"

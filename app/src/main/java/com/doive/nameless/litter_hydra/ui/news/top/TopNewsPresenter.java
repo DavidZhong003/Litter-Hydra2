@@ -5,10 +5,13 @@ import android.util.Log;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.model.ModelFactory;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
+import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -43,31 +46,34 @@ public class TopNewsPresenter
 
     @Override
     public void subscribe() {
-        mModelFactory.ObtainTopNews(mIdUrl)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ItemType>>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.showContentView();
-                    }
+        Observable<ItemType> itemTypeObservable = mModelFactory.obtainNewsComment(mCommentUrl);
+        mCompositeSubscription.add(itemTypeObservable.startWith(mModelFactory.ObtainTopNews(mIdUrl))
+        .toList()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<List<ItemType>>() {
+            @Override
+            public void onCompleted() {
+                mView.showContentView();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: "+e );
-                        mView.showErrorView();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: "+e );
+                mView.showErrorView();
+            }
 
-                    @Override
-                    public void onNext(List<ItemType> list) {
-                        mView.loadData(list);
-                    }
-                });
+            @Override
+            public void onNext(List<ItemType> list) {
+                mView.loadData(list);
+            }
+        }));
+
     }
 
     @Override
     public void unSubscribe() {
-
+        mCompositeSubscription.clear();
     }
 
 

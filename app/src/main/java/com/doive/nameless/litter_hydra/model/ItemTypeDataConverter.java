@@ -1,17 +1,18 @@
 package com.doive.nameless.litter_hydra.model;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
+import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.model.bean.TopNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoAllBean;
 import com.doive.nameless.litter_hydra.model.bean.VideoRecommendBean;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
 import com.doive.nameless.litter_hydra.rxbus.RxBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -221,7 +222,7 @@ public class ItemTypeDataConverter {
 
     }
 
-    public static Observable<List<ItemType>> topNewsConver(Observable<TopNewsBean> observable) {
+    public static Observable<ItemType> topNewsConver(Observable<TopNewsBean> observable) {
         return observable.map(new Func1<TopNewsBean, List<TopNewsBean.BodyBean.SubjectsBean>>() {
             @Override
             public List<TopNewsBean.BodyBean.SubjectsBean> call(TopNewsBean topNewsBean) {
@@ -243,7 +244,7 @@ public class ItemTypeDataConverter {
                                  return new ItemType() {
                                      @Override
                                      public int bindItemType() {
-                                         return ItemTypeDispath.getTypeBsubjectsBean(subjectsBean);
+                                         return ItemTypeDispath.getTypeBySubjectsBean(subjectsBean);
                                      }
 
                                      @Override
@@ -253,7 +254,87 @@ public class ItemTypeDataConverter {
                                  };
                              }
                          })
-                         .toList();
+                         .filter(new Func1<ItemType, Boolean>() {
+                             @Override
+                             public Boolean call(ItemType itemType) {
+                                 return itemType.bindItemType() != 0;
+                             }
+                         });
+    }
+
+    public static Observable<ItemType> newsCommentConver(Observable<NewsCommentBean> observable) {
+        return observable.map(new Func1<NewsCommentBean, NewsCommentBean.CommentsBean>() {
+            @Override
+            public NewsCommentBean.CommentsBean call(NewsCommentBean newsCommentBean) {
+                return newsCommentBean.getComments();
+            }
+        })
+                  .map(new Func1<NewsCommentBean.CommentsBean, List<ItemType>>() {
+                      @Override
+                      public List<ItemType> call(NewsCommentBean.CommentsBean commentsBean) {
+                          List<ItemType>                                 list   = new ArrayList<ItemType>();
+                          List<NewsCommentBean.CommentsBean.HottestBean> hottest = commentsBean.getHottest();
+                          if (hottest != null && hottest.size() > 0) {
+                              list.add(new ItemType() {
+                                  @Override
+                                  public int bindItemType() {
+                                      return R.layout.item_title_relate_doc;
+                                  }
+
+                                  @Override
+                                  public String bindItemData() {
+                                      return "最热评论";
+                                  }
+                              });
+                              for (final NewsCommentBean.CommentsBean.HottestBean bean : hottest) {
+                                  list.add(new ItemType() {
+                                      @Override
+                                      public int bindItemType() {
+                                          return R.layout.item_comment;
+                                      }
+
+                                      @Override
+                                      public NewsCommentBean.CommentsBean.HottestBean bindItemData() {
+                                          return bean;
+                                      }
+                                  });
+                              }
+                          }
+                          List<NewsCommentBean.CommentsBean.NewestBean> newest = commentsBean.getNewest();
+                          if (newest != null && newest.size() > 0) {
+                              list.add(new ItemType() {
+                                  @Override
+                                  public int bindItemType() {
+                                      return R.layout.item_title_relate_doc;
+                                  }
+
+                                  @Override
+                                  public String bindItemData() {
+                                      return "最热评论";
+                                  }
+                              });
+                              for (final NewsCommentBean.CommentsBean.NewestBean bean : newest) {
+                                  list.add(new ItemType() {
+                                      @Override
+                                      public int bindItemType() {
+                                          return R.layout.item_comment;
+                                      }
+
+                                      @Override
+                                      public NewsCommentBean.CommentsBean.NewestBean bindItemData() {
+                                          return bean;
+                                      }
+                                  });
+                              }
+                          }
+                          return list;
+                      }
+                  }).flatMap(new Func1<List<ItemType>, Observable<ItemType>>() {
+            @Override
+            public Observable<ItemType> call(List<ItemType> list) {
+                return Observable.from(list);
+            }
+        });
     }
 
 
@@ -278,7 +359,7 @@ public class ItemTypeDataConverter {
 
         }
 
-        public static int getTypeBsubjectsBean(TopNewsBean.BodyBean.SubjectsBean subjectsBean) {
+        public static int getTypeBySubjectsBean(TopNewsBean.BodyBean.SubjectsBean subjectsBean) {
             switch (subjectsBean.getView()) {
                 case "multiTitle":
                     return R.layout.item_top_multititle;

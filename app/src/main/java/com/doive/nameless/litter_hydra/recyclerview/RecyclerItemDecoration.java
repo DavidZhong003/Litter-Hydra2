@@ -24,13 +24,18 @@ public class RecyclerItemDecoration
         extends RecyclerView.ItemDecoration {
     private final float dividerSize;
     private final Paint paint;
+    private int mStartPosition;
 
     public RecyclerItemDecoration(float dividerSize, @ColorInt int dividerColor) {
+        this(dividerSize,dividerColor,0);
+    }
 
+    public RecyclerItemDecoration(float dividerSize, @ColorInt int dividerColor,int startPositon) {
         this.dividerSize = dividerSize;
         paint = new Paint();
         paint.setColor(dividerColor);
         paint.setStyle(Paint.Style.FILL);
+        mStartPosition=startPositon;
     }
 
     public RecyclerItemDecoration(@NonNull Context context,
@@ -53,7 +58,7 @@ public class RecyclerItemDecoration
         if (!parent.isAnimating()) {
             final int                        childCount = parent.getChildCount();
             final RecyclerView.LayoutManager lm         = parent.getLayoutManager();
-            for (int i = 0; i < childCount - 1; i++) {
+            for (int i = mStartPosition; i < childCount - 1; i++) {
                 View                   child        = parent.getChildAt(i);
                 View                   nextChild    = parent.getChildAt(i + 1);
                 //这里要考虑margin值

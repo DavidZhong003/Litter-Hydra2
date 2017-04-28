@@ -1,21 +1,14 @@
 package com.doive.nameless.litter_hydra.ui.news.list.item;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doive.nameless.litter_hydra.ColumnCategoryConstant;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
-import com.doive.nameless.litter_hydra.helper.TransitionHelper;
 import com.doive.nameless.litter_hydra.model.bean.NewsBean;
-import com.doive.nameless.litter_hydra.rxbus.RxBus;
-import com.doive.nameless.litter_hydra.ui.news.details.NewTestActivity;
-import com.doive.nameless.litter_hydra.ui.news.details.NewsDocDetailActivity;
 
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 
@@ -28,15 +21,15 @@ import static com.doive.nameless.litter_hydra.R.id.iv_top_del;
 public class DocItemViewHolder
         extends BaseViewHolder<NewsBean.ItemBean> {
 
-    public View      rootView;
-    public ImageView mIvTopImg;
-    public ImageView mIvLogoImg;
-    public TextView  mTvTopTitle;
-    public TextView  mTvTopSource;
-    public TextView  mTvTopTime;
-    public TextView  mTvTopComment;
-    public ImageView mIvTopDel;
-    private String mLogo;
+    public  View      rootView;
+    public  ImageView mIvTopImg;
+    public  ImageView mIvLogoImg;
+    public  TextView  mTvTopTitle;
+    public  TextView  mTvTopSource;
+    public  TextView  mTvTopTime;
+    public  TextView  mTvTopComment;
+    public  ImageView mIvTopDel;
+    private String    mLogo;
 
     public DocItemViewHolder(View rootView) {
         super(rootView);
@@ -59,12 +52,12 @@ public class DocItemViewHolder
         mTvTopTitle.setText(bean.getTitle());
         setImageWithPlaceHolder(mIvTopImg, bean.getThumbnail());
         NewsBean.ItemBean.SubscribeBean subscribe = bean.getSubscribe();
-        if (subscribe!=null){
+        if (subscribe != null) {
             mLogo = subscribe.getLogo();
         }
-        if (mLogo !=null){
+        if (mLogo != null) {
             setImageCircle(mIvLogoImg, mLogo);
-        }else {
+        } else {
             mIvLogoImg.setVisibility(View.GONE);
         }
         mTvTopSource.setText(bean.getSource() == null
@@ -77,22 +70,20 @@ public class DocItemViewHolder
             public void onClick(View v) {
 
                 //                RxBus.getInstance().sendSticky("",bean.getLink().getUrl());
-                NewsBean.ItemBean.LinkBean link   = bean.getLink();
-                Log.e(TAG, "onClick: linkUrl:"+bean.getLink().getUrl() );
-                Log.e(TAG, "onClick: WebUrl"+bean.getLink().getWeburl() );
-                Intent                     intent = new Intent(v.getContext(),
-                                                               NewsDocDetailActivity.class);
-                intent.putExtra(ColumnCategoryConstant.IntentArgName.ITEM_BEAN_DOCUMENT_ID,
-                                bean.getDocumentId());
+                NewsBean.ItemBean.LinkBean link = bean.getLink();
+                Log.e(TAG,
+                      "onClick: linkUrl:" + bean.getLink()
+                                                .getUrl());
+                Log.e(TAG,
+                      "onClick: WebUrl" + bean.getLink()
+                                              .getWeburl());
+                OpenActivityHelper.getInstance()
+                                  .OpenNewsDocActivity(v.getContext(),
+                                                       bean.getDocumentId(),
+                                                       mLogo == null
+                                                       ? ""
+                                                       : mLogo,bean.getLink().getWeburl());
 
-                intent.putExtra(ColumnCategoryConstant.IntentArgName.DOC_ITEM_LOGO,
-                                mLogo ==null ? "" : mLogo);
-
-                v.getContext().startActivity(intent);
-
-//                Intent intent = new Intent(v.getContext(), NewTestActivity.class);
-//                intent.putExtra("test",bean.getLink().getWeburl());
-//                v.getContext().startActivity(intent);
 
             }
         });

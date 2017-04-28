@@ -263,13 +263,19 @@ public class ModelFactory
                               .getCommentData(formantUrl, type);
     }
 
+    public Observable<ItemType> obtainNewsComment(String url) {
+        Observable<NewsCommentBean> observable = obtainNewsComment(StringTransformUtils.commentUrlTransform(
+                url), "all");
+        return ItemTypeDataConverter.newsCommentConver(observable);
+    }
+
 
     /**
      *
      * @param idUrl
      * @return
      */
-    public Observable<List<ItemType>> ObtainTopNews(String idUrl) {
+    public Observable<ItemType> ObtainTopNews(String idUrl) {
         Observable<TopNewsBean> newsBeanObservable = RxOkHttpManager.getInstance()
                                                                        .get(idUrl,
                                                                             TopNewsBean.class);

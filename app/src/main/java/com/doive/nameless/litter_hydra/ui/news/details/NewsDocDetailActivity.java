@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
+import com.doive.nameless.litter_hydra.helper.OpenActivityHelper;
 import com.doive.nameless.litter_hydra.model.bean.DocNewsBean;
 import com.doive.nameless.litter_hydra.model.bean.NewsCommentBean;
 import com.doive.nameless.litter_hydra.recyclerview.RecyclerItemDecoration;
@@ -232,6 +233,13 @@ public class NewsDocDetailActivity
     @Override
     public void showSimilarContent(List<DocNewsBean.BodyBean.RelateDocsBean> bean) {
         mNewsRelateDocAdapter.setDocsBeen(bean);
+    }
+
+    @Override
+    public void turnToWebActivity(String aid) {
+        OpenActivityHelper.getInstance()
+                .OpenNewsWebActivity(this,aid);
+        finish();
     }
 
     @Override
