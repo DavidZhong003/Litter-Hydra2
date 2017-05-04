@@ -49,7 +49,12 @@ public class SlideImgViewHolder extends BaseViewHolder<NewsBean.ItemBean> {
             setImageWithPlaceHolder(mIvSlideImgCenter, images.get(1));
             setImageWithPlaceHolder(mIvSlideImgRight, images.get(2));
         }
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
         mTvSlideSource.setText(mSlideImgBean.getSource());
         mTvImgCount.setText(String.valueOf(mSlideImgBean.getStyle().getSlideCount()));
         mTvTopComment.setText(mSlideImgBean.getCommentsall());

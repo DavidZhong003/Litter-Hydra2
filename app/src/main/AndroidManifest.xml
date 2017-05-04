@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 
     <application
@@ -16,8 +16,8 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:launchMode="singleTask"
-            android:name=".ui.MainActivity">
+            android:name=".ui.MainActivity"
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -29,9 +29,9 @@
 
         <activity android:name=".ui.news.details.NewsDocDetailActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
+            <!--<action android:name="android.intent.action.MAIN"/>-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
             <!--</intent-filter>-->
         </activity>
 
@@ -43,13 +43,23 @@
 
         </activity>
 
+        <activity android:name=".ui.news.pic.PictureDetailActivity"/>
+
         <activity android:name=".ui.video.test.TvActivity">
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN"/>-->
+
+            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".ui.video.live.VideoLiveActivity">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN"/>-->
 
                 <!--<category android:name="android.intent.category.LAUNCHER"/>-->
             <!--</intent-filter>-->
         </activity>
+
     </application>
 
 </manifest>
