@@ -1,17 +1,11 @@
 package com.doive.nameless.litter_hydra.widget;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.doive.nameless.litter_hydra.ui.news.list.item.SlideImgViewHolder;
 
 import java.io.IOException;
 
@@ -46,6 +40,7 @@ public class LiveView
         mSurfaceView = new SurfaceView(context);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                ViewGroup.LayoutParams.MATCH_PARENT);
+        mSurfaceView.setTag(TAG);
         addView(mSurfaceView, 0, params);
         mIjkMediaPlayer = new IjkMediaPlayer();
     }
@@ -55,7 +50,6 @@ public class LiveView
         if (mIjkMediaPlayer!=null&&!mIjkMediaPlayer.isPlaying()){
             mIjkMediaPlayer.reset();
             try {
-                Log.e("///////", "setPlayUrl: "+url );
                 mIjkMediaPlayer.setDataSource(url);
                 mIjkMediaPlayer.prepareAsync();
                 mIjkMediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
@@ -88,7 +82,6 @@ public class LiveView
         if (mIjkMediaPlayer!=null&&mIjkMediaPlayer.isPlaying()){
             mIjkMediaPlayer.pause();
         }else if (mIjkMediaPlayer!=null&&!mIjkMediaPlayer.isPlaying()){
-            Log.e(TAG, "pause: ?????????沒有播放" );
             mIjkMediaPlayer.start();
         }
         return this;

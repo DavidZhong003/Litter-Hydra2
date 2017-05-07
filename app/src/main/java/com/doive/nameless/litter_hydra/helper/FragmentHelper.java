@@ -64,7 +64,13 @@ public class FragmentHelper {
                 //取出保存的Fragment put到集合
                 for (Fragment fra : mFm.getFragments()) {
                     Log.e(TAG, "initFragments: " + fra.getTag());
-                    mFragments.put(Integer.parseInt(fra.getTag()),fra);
+                    try {
+                        mFragments.put(Integer.parseInt(fra.getTag()),fra);
+                    }catch (NumberFormatException e){
+                        //处理在使用Glide时候,创建相关的FrameLayout时候string TAG无法转为int类型
+                        Log.e(TAG, "initFragments: ",e );
+                    }
+
                 }
             }
         }

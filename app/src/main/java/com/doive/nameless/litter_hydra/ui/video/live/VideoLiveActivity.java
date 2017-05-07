@@ -1,13 +1,15 @@
 package com.doive.nameless.litter_hydra.ui.video.live;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
-import com.doive.nameless.litter_hydra.widget.LiveView;
-
-import static rx.schedulers.Schedulers.start;
+import com.doive.nameless.litter_hydra.ui.MainActivity;
+import com.doive.nameless.litter_hydra.widget.LiveVideoView;
+import com.doive.nameless.litter_hydra.widget.LiveViewState;
 
 /**
  * Created by Administrator on 2017/5/2.
@@ -15,16 +17,58 @@ import static rx.schedulers.Schedulers.start;
 
 public class VideoLiveActivity extends BaseMvpActivity {
 
-    private LiveView mLiveView;
-    private Button   mStart , mPause, mStop;
+    private LiveVideoView mLiveView;
+    private Button        mStart , mPause, mStop , mRecovery;
 
     @Override
     protected void initView() {
         mLiveView = getViewbyId(R.id.lv_video);
         mStart = getViewbyId(R.id.btn_start);
         mPause =getViewbyId(R.id.btn_pause);
+        mRecovery = getViewbyId(R.id.btn_recovery);
         mStop = getViewbyId(R.id.btn_end);
-        mLiveView.setPlayUrl("http://ips.ifeng.com/video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
+        mLiveView.setLivePath("http://ips.ifeng.com/video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
+        mLiveView.setStateListener(new LiveViewState.onLiveStateListener() {
+            @Override
+            public void onIdle() {
+                Log.e(TAG, "onIdle: " );
+            }
+
+            @Override
+            public void onPreparing() {
+                Log.e(TAG, "onPreparing: " );
+            }
+
+            @Override
+            public void onPrepared() {
+                Log.e(TAG, "onPrepared: " );
+            }
+
+            @Override
+            public void onPlaying() {
+                Log.e(TAG, "onPlaying: " );
+            }
+
+            @Override
+            public void onPause() {
+                Log.e(TAG, "onPause: " );
+            }
+
+            @Override
+            public void onPlayCompleted() {
+                Log.e(TAG, "onPlayCompleted: " );
+            }
+
+            @Override
+            public void onStop() {
+                Log.e(TAG, "onStop: " );
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "onError: " );
+            }
+        });
     }
 
     @Override
@@ -32,7 +76,8 @@ public class VideoLiveActivity extends BaseMvpActivity {
         mStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLiveView.setPlayUrl("http://flv.quanmin.tv/live/1939881.flv");
+                mLiveView.setLivePath("http://ips.ifeng.com/video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
+                mLiveView.play();
             }
         });
 
@@ -43,10 +88,17 @@ public class VideoLiveActivity extends BaseMvpActivity {
             }
         });
 
+        mRecovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLiveView.recovery();
+            }
+        });
         mStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mLiveView.stop();
+                startActivity(new Intent(VideoLiveActivity.this, MainActivity.class));
             }
         });
     }
@@ -54,5 +106,18 @@ public class VideoLiveActivity extends BaseMvpActivity {
     @Override
     protected int setLayoutId() {
         return R.layout.activity_video_live;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause: " );
+        mLiveView.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLiveView.recovery();
     }
 }
