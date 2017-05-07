@@ -45,8 +45,8 @@ public class VideoLiveActivity extends BaseMvpActivity {
             }
 
             @Override
-            public void onPlaying() {
-                Log.e(TAG, "onPlaying: " );
+            public void onPlaying(int progress) {
+                Log.e(TAG, "onPlaying: "+progress );
             }
 
             @Override
@@ -111,7 +111,6 @@ public class VideoLiveActivity extends BaseMvpActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause: " );
         mLiveView.pause();
     }
 
@@ -119,5 +118,11 @@ public class VideoLiveActivity extends BaseMvpActivity {
     protected void onResume() {
         super.onResume();
         mLiveView.recovery();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLiveView.destroy();
     }
 }

@@ -20,9 +20,11 @@ public interface ILiveViewOperation {
     void setLiveUri(String path,  Map<String, String> headers);
     //播放
     void play();
-    //拖动到某个位置
+    //拖动到某个时间点
     void seekTo(long msec);
     void seekTo(long msec,boolean autoPlay);
+    void seekTo(int progress);
+    void seekTo(int progress,boolean autoPlay);
     //暂停
     void pause();
     //恢复

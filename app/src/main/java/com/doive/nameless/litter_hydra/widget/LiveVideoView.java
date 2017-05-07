@@ -14,11 +14,7 @@ import android.widget.FrameLayout;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -37,7 +33,8 @@ import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_STOP;
  *  @文件名:   LiveVideoView
  *  @创建者:   zhong
  *  @创建时间:  2017/5/7 14:05
- *  @描述：    TODO
+ *  @描述：    TODO 播放进度回调 ,定制底部控制栏,小窗口模式,全屏模式切换
+ *
  */
 public class LiveVideoView
         extends FrameLayout
@@ -53,6 +50,29 @@ public class LiveVideoView
     private IjkMediaPlayer      mIjkMediaPlayer;
     private String              mLivePath;//直播路径
     private Map<String, String> mLiveHeaders;//播直播请求头
+    //    //播放状态观察者
+    //    private Observable<Integer> mStateObservable= Observable.interval(1, TimeUnit.SECONDS)
+    //                                                            .map(new Func1<Long, Integer>() {
+    //                                                                @Override
+    //                                                                public Integer call(Long aLong) {
+    //                                                                    return mCurrentState;
+    //                                                                }
+    //                                                            })
+    //                                                            .filter(new Func1<Integer, Boolean>() {
+    //                                                                @Override
+    //                                                                public Boolean call(Integer integer) {
+    //                                                                    //过滤没有状态改变情况(播放状态依然有)
+    //                                                                    return integer == STATE_PLAYING || mCurrentState != integer;
+    //                                                                }
+    //                                                            })
+    //                                                            .observeOn(AndroidSchedulers.mainThread());;
+    //    private Action1<Integer> mStateOnNext= new Action1<Integer>() {
+    //        @Override
+    //        public void call(Integer integer) {
+    //            notifyListenerCurrentStateChange(integer);
+    //        }
+    //    };
+
 
     public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
@@ -73,43 +93,12 @@ public class LiveVideoView
         //添加surfaceview
         mContext = context;
         initSurfaceView();
-        //todo 播放进度
-        Observable.interval(1,TimeUnit.SECONDS)
-                .map(new Func1<Long, Integer>() {
-                    @Override
-                    public Integer call(Long aLong) {
-                        return mCurrentState;
-                    }
-                })
-                .filter(new Func1<Integer, Boolean>() {
-                      @Override
-                      public Boolean call(Integer integer) {
-                          return integer==STATE_PLAYING||mCurrentState!=integer;
-                      }
-                  })
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-                        getCurrentProgress();
-                    }
-                });
-
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.e(TAG, "onDetachedFromWindow: 从窗口移除了" );
+        Log.e(TAG, "onDetachedFromWindow: 从窗口移除了");
     }
 
     private void initSurfaceView() {
@@ -151,7 +140,7 @@ public class LiveVideoView
             mIjkMediaPlayer._prepareAsync();
             //设置状态
             mCurrentState = STATE_PREPARING;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
             mTargetState = STATE_PREPARING;
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
@@ -190,39 +179,74 @@ public class LiveVideoView
             mIjkMediaPlayer.start();
             //设置状态
             mCurrentState = LiveViewState.STATE_PLAYING;
-            notifyListenerCurrentState();
-            //if (mStateListener != null) { mStateListener.onPlaying(getCurrentProgress()); }
+            notifyListenerCurrentStateChange();
         }
         mTargetState = LiveViewState.STATE_PLAYING;
     }
 
-    private void notifyListenerCurrentState() {
-        if (mStateListener!=null)
-        switch (mCurrentState) {
-            case STATE_ERROR:
-                mStateListener.onError();
-                 break;
-            case STATE_IDLE:
-                mStateListener.onIdle();
-                break;
-            case STATE_PREPARING:
-                mStateListener.onPreparing();
-                break;
-            case STATE_PREPARED:
-                mStateListener.onPrepared();
-                break;
-            case STATE_PLAYING:
-                mStateListener.onPlaying();
-                break;
-            case STATE_PAUSED:
-                mStateListener.onPause();
-                break;
-            case STATE_PLAYBACK_COMPLETED:
-                mStateListener.onPlayCompleted();
-                break;
-            case STATE_STOP:
-                mStateListener.onStop();
-                break;
+    private void notifyListenerCurrentStateChange() {
+        if (mStateListener != null) {
+            switch (mCurrentState) {
+                case STATE_ERROR:
+                    mStateListener.onError();
+                    break;
+                case STATE_IDLE:
+                    mStateListener.onIdle();
+                    break;
+                case STATE_PREPARING:
+                    mStateListener.onPreparing();
+                    break;
+                case STATE_PREPARED:
+                    mStateListener.onPrepared();
+                    break;
+                case STATE_PLAYING:
+                    mStateListener.onPlaying(getCurrentProgress());
+                    break;
+                case STATE_PAUSED:
+                    mStateListener.onPause();
+                    break;
+                case STATE_PLAYBACK_COMPLETED:
+                    mStateListener.onPlayCompleted();
+                    break;
+                case STATE_STOP:
+                    mStateListener.onStop();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 状态改变
+     * @param state
+     */
+    private void notifyListenerCurrentStateChange(int state) {
+        if (mStateListener != null) {
+            switch (state) {
+                case STATE_ERROR:
+                    mStateListener.onError();
+                    break;
+                case STATE_IDLE:
+                    mStateListener.onIdle();
+                    break;
+                case STATE_PREPARING:
+                    mStateListener.onPreparing();
+                    break;
+                case STATE_PREPARED:
+                    mStateListener.onPrepared();
+                    break;
+                case STATE_PLAYING:
+                    mStateListener.onPlaying(getCurrentProgress());
+                    break;
+                case STATE_PAUSED:
+                    mStateListener.onPause();
+                    break;
+                case STATE_PLAYBACK_COMPLETED:
+                    mStateListener.onPlayCompleted();
+                    break;
+                case STATE_STOP:
+                    mStateListener.onStop();
+                    break;
+            }
         }
     }
 
@@ -230,14 +254,27 @@ public class LiveVideoView
      * 获取当前播放的百分比
      * @return
      */
-    private int getCurrentProgress() {
+    public int getCurrentProgress() {
+        if (mIjkMediaPlayer != null &&
+                mCurrentState != LiveViewState.STATE_ERROR &&
+                mIjkMediaPlayer.getDuration() != 0 &&
+                mCurrentState != LiveViewState.STATE_IDLE)
+        {
+            return (int) (mIjkMediaPlayer.getCurrentPosition() * 100 / mIjkMediaPlayer.getDuration());
+        }
+        return -1;
+    }
+
+    /**
+     * 获取总时长
+     * @return
+     */
+    public long getTotalDuration() {
         if (mIjkMediaPlayer != null &&
                 mCurrentState != LiveViewState.STATE_ERROR &&
                 mCurrentState != LiveViewState.STATE_IDLE)
         {
-            Log.e(TAG, "getCurrentProgress: 当前"+mIjkMediaPlayer.getCurrentPosition() );
-            Log.e(TAG, "getCurrentProgress: 总共"+mIjkMediaPlayer.getDuration() );
-            return (int) (mIjkMediaPlayer.getCurrentPosition()*100/mIjkMediaPlayer.getDuration());
+            return mIjkMediaPlayer.getDuration();
         }
         return -1;
     }
@@ -266,6 +303,16 @@ public class LiveVideoView
         }
     }
 
+    @Override
+    public void seekTo(int progress) {
+        seekTo(getTotalDuration()*progress/100L,true);
+    }
+
+    @Override
+    public void seekTo(int progress, boolean autoPlay) {
+        seekTo(getTotalDuration()*progress/100L,autoPlay);
+    }
+
     /**
      * 暂停
      */
@@ -276,7 +323,7 @@ public class LiveVideoView
                 mIjkMediaPlayer.pause();
             }
             mCurrentState = LiveViewState.STATE_PAUSED;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
         }
         mTargetState = LiveViewState.STATE_PAUSED;
     }
@@ -305,9 +352,21 @@ public class LiveVideoView
             mIjkMediaPlayer.release();
             mIjkMediaPlayer = null;
             mCurrentState = STATE_STOP;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
             mTargetState = STATE_STOP;
         }
+    }
+
+    /**
+     * 释放资源
+     */
+    public void destroy() {
+        stop();
+        mIjkMediaPlayer = null;
+        //        mStateOnNext=null;
+        //        mStateObservable=null;
+        mStateListener = null;
+
     }
 
     /**
@@ -331,7 +390,7 @@ public class LiveVideoView
             mIjkMediaPlayer.release();
             mIjkMediaPlayer = null;
             mCurrentState = LiveViewState.STATE_IDLE;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
             if (clearTargetState) {
                 mTargetState = LiveViewState.STATE_IDLE;
             }
@@ -369,7 +428,7 @@ public class LiveVideoView
         @Override
         public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
             mCurrentState = LiveViewState.STATE_ERROR;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
             mTargetState = LiveViewState.STATE_ERROR;
             return true;
         }
@@ -382,7 +441,7 @@ public class LiveVideoView
         @Override
         public void onPrepared(IMediaPlayer iMediaPlayer) {
             mCurrentState = STATE_PREPARED;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
             if (mTargetState == LiveViewState.STATE_PLAYING) {
                 play();
             }
@@ -398,7 +457,7 @@ public class LiveVideoView
         public void onCompletion(IMediaPlayer iMediaPlayer) {
             mCurrentState = STATE_PLAYBACK_COMPLETED;
             mTargetState = STATE_PLAYBACK_COMPLETED;
-            notifyListenerCurrentState();
+            notifyListenerCurrentStateChange();
         }
     };
     /**
@@ -407,7 +466,10 @@ public class LiveVideoView
     private IjkMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-
+            Log.e(TAG, "onBufferingUpdate: " + i);
+            //            if (mIjkMediaPlayer.isPlaying()){
+            //                Log.e(TAG, "onBufferingUpdate: 正在播放状态" );
+            //            }
         }
 
     };

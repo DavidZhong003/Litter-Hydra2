@@ -44,8 +44,8 @@ public interface LiveViewState {
         //准备完成状态
         void onPrepared();
 
-        //播放状态
-        void onPlaying();
+        //播放状态, TODO: 2017/5/8  播放进度回调
+        void onPlaying(int progress);
 
         //暂停状态
         void onPause();
