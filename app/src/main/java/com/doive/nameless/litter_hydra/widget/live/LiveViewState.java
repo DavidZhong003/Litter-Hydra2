@@ -1,4 +1,4 @@
-package com.doive.nameless.litter_hydra.widget;
+package com.doive.nameless.litter_hydra.widget.live;
 
 import android.support.annotation.IntDef;
 
@@ -12,13 +12,14 @@ import android.support.annotation.IntDef;
  */
 public interface LiveViewState {
     int STATE_ERROR              = -1;
-    int STATE_IDLE               = 0;
-    int STATE_PREPARING          = 1;
-    int STATE_PREPARED           = 1 << 1;
-    int STATE_PLAYING            = 3;
-    int STATE_PAUSED             = 1 << 2;
-    int STATE_PLAYBACK_COMPLETED = 5;
-    int STATE_STOP               = 6;
+    int STATE_NULL               = 0; //播放器为空未创建
+    int STATE_IDLE               = 1;
+    int STATE_PREPARING          = 1<<1;
+    int STATE_PREPARED           = 3;
+    int STATE_PLAYING            = 1<<2;
+    int STATE_PAUSED             = 5;
+    int STATE_PLAYBACK_COMPLETED = 6;
+    int STATE_STOP               = 7;
 
     @IntDef(flag = true,
             value = {STATE_ERROR,
@@ -28,13 +29,15 @@ public interface LiveViewState {
                      STATE_PLAYING,
                      STATE_PAUSED,
                      STATE_PLAYBACK_COMPLETED,
-                     STATE_STOP})
+                     STATE_STOP,
+                     STATE_NULL})
     @interface State {}
 
     /**
      * 播放状态监听
      */
     interface onLiveStateListener {
+        void onNull();
         //Idle状态
         void onIdle();
 
@@ -45,7 +48,7 @@ public interface LiveViewState {
         void onPrepared();
 
         //播放状态, TODO: 2017/5/8  播放进度回调
-        void onPlaying(int progress);
+        void onPlaying();
 
         //暂停状态
         void onPause();

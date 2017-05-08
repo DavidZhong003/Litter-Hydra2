@@ -1,4 +1,4 @@
-package com.doive.nameless.litter_hydra.widget;
+package com.doive.nameless.litter_hydra.widget.live;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,14 +18,15 @@ import java.util.Map;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_ERROR;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_IDLE;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_PAUSED;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_PLAYBACK_COMPLETED;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_PLAYING;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_PREPARED;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_PREPARING;
-import static com.doive.nameless.litter_hydra.widget.LiveViewState.STATE_STOP;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_ERROR;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_IDLE;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_NULL;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PAUSED;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PLAYBACK_COMPLETED;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PLAYING;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PREPARED;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PREPARING;
+import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_STOP;
 
 /*
  *  @项目名：  Litter-Hydra2 
@@ -50,29 +51,6 @@ public class LiveVideoView
     private IjkMediaPlayer      mIjkMediaPlayer;
     private String              mLivePath;//直播路径
     private Map<String, String> mLiveHeaders;//播直播请求头
-    //    //播放状态观察者
-    //    private Observable<Integer> mStateObservable= Observable.interval(1, TimeUnit.SECONDS)
-    //                                                            .map(new Func1<Long, Integer>() {
-    //                                                                @Override
-    //                                                                public Integer call(Long aLong) {
-    //                                                                    return mCurrentState;
-    //                                                                }
-    //                                                            })
-    //                                                            .filter(new Func1<Integer, Boolean>() {
-    //                                                                @Override
-    //                                                                public Boolean call(Integer integer) {
-    //                                                                    //过滤没有状态改变情况(播放状态依然有)
-    //                                                                    return integer == STATE_PLAYING || mCurrentState != integer;
-    //                                                                }
-    //                                                            })
-    //                                                            .observeOn(AndroidSchedulers.mainThread());;
-    //    private Action1<Integer> mStateOnNext= new Action1<Integer>() {
-    //        @Override
-    //        public void call(Integer integer) {
-    //            notifyListenerCurrentStateChange(integer);
-    //        }
-    //    };
-
 
     public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
@@ -90,9 +68,9 @@ public class LiveVideoView
 
     public LiveVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //添加surfaceview
         mContext = context;
         initSurfaceView();
+        notifyListenerCurrentStateChange();
     }
 
     @Override
@@ -187,6 +165,9 @@ public class LiveVideoView
     private void notifyListenerCurrentStateChange() {
         if (mStateListener != null) {
             switch (mCurrentState) {
+                case STATE_NULL:
+                    mStateListener.onNull();
+                    break;
                 case STATE_ERROR:
                     mStateListener.onError();
                     break;
@@ -200,7 +181,7 @@ public class LiveVideoView
                     mStateListener.onPrepared();
                     break;
                 case STATE_PLAYING:
-                    mStateListener.onPlaying(getCurrentProgress());
+                    mStateListener.onPlaying();
                     break;
                 case STATE_PAUSED:
                     mStateListener.onPause();
@@ -235,7 +216,7 @@ public class LiveVideoView
                     mStateListener.onPrepared();
                     break;
                 case STATE_PLAYING:
-                    mStateListener.onPlaying(getCurrentProgress());
+                    mStateListener.onPlaying();
                     break;
                 case STATE_PAUSED:
                     mStateListener.onPause();
@@ -260,7 +241,23 @@ public class LiveVideoView
                 mIjkMediaPlayer.getDuration() != 0 &&
                 mCurrentState != LiveViewState.STATE_IDLE)
         {
-            return (int) (mIjkMediaPlayer.getCurrentPosition() * 100 / mIjkMediaPlayer.getDuration());
+            Log.e(TAG, "getCurrentProgress: 当前时长:"+mIjkMediaPlayer.getCurrentPosition()/mIjkMediaPlayer.getDuration());
+            return (int) (100f*mIjkMediaPlayer.getCurrentPosition()/ mIjkMediaPlayer.getDuration());
+        }
+        return -1;
+    }
+
+    /**
+     * 获取当前播放位置
+     * @return
+     */
+    public long getCurrentPosition() {
+        if (mIjkMediaPlayer != null &&
+                mCurrentState != LiveViewState.STATE_ERROR &&
+                mIjkMediaPlayer.getDuration() != 0 &&
+                mCurrentState != LiveViewState.STATE_IDLE)
+        {
+            return mIjkMediaPlayer.getCurrentPosition();
         }
         return -1;
     }
@@ -363,8 +360,6 @@ public class LiveVideoView
     public void destroy() {
         stop();
         mIjkMediaPlayer = null;
-        //        mStateOnNext=null;
-        //        mStateObservable=null;
         mStateListener = null;
 
     }
@@ -467,10 +462,9 @@ public class LiveVideoView
         @Override
         public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
             Log.e(TAG, "onBufferingUpdate: " + i);
-            //            if (mIjkMediaPlayer.isPlaying()){
-            //                Log.e(TAG, "onBufferingUpdate: 正在播放状态" );
-            //            }
+
         }
 
     };
+
 }
