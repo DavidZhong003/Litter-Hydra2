@@ -30,9 +30,11 @@ public class VideoLiveActivity extends BaseMvpActivity {
     private Button        mStart , mPause, mStop , mRecovery;
     private SeekBar mSeekBar;
     private boolean mCanSeekTo;
+    private String mLiveURL;
 
     @Override
     protected void initView() {
+        mLiveURL = getIntent().getStringExtra("test_url");
         mLiveView = getViewbyId(R.id.lv_video);
         mStart = getViewbyId(R.id.btn_start);
         mPause =getViewbyId(R.id.btn_pause);
@@ -74,7 +76,7 @@ public class VideoLiveActivity extends BaseMvpActivity {
         mStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLiveView.setLivePath("http://ips.ifeng.com/video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
+                mLiveView.setLivePath(mLiveURL);
                 mLiveView.play();
             }
         });
