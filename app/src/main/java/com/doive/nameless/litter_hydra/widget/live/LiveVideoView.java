@@ -2,10 +2,12 @@ package com.doive.nameless.litter_hydra.widget.live;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -39,7 +41,7 @@ import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_ST
  */
 public class LiveVideoView
         extends FrameLayout
-        implements ILiveViewOperation {
+        implements ILiveViewPlayOperation {
     private static final String TAG = "LiveVideoView";
     private Context       mContext;
     private SurfaceView   mSurfaceView;
@@ -51,6 +53,9 @@ public class LiveVideoView
     private IjkMediaPlayer      mIjkMediaPlayer;
     private String              mLivePath;//直播路径
     private Map<String, String> mLiveHeaders;//播直播请求头
+
+    public boolean  canMove;
+    private boolean mCanSeekTo;
 
     public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
@@ -69,6 +74,7 @@ public class LiveVideoView
     public LiveVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+        setBackgroundColor(Color.BLACK);
         initSurfaceView();
         notifyListenerCurrentStateChange();
     }
@@ -76,7 +82,8 @@ public class LiveVideoView
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.e(TAG, "onDetachedFromWindow: 从窗口移除了");
+        //资源释放
+//        destroy();
     }
 
     private void initSurfaceView() {
@@ -84,8 +91,11 @@ public class LiveVideoView
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mSurfaceView, 0, params);
-        mSurfaceView.getHolder()
-                    .addCallback(mSFHCallback);
+        setClickable(true);
+        mSurfaceView.getHolder().addCallback(mSFHCallback);
+//        mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        setFocusable(true);
+        requestFocus();
     }
 
     private void openLive() {
@@ -101,6 +111,7 @@ public class LiveVideoView
             mIjkMediaPlayer.setOnPreparedListener(mPreparedListener);
             mIjkMediaPlayer.setOnCompletionListener(mCompletionListener);
             mIjkMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
+            mIjkMediaPlayer.setOnInfoListener(mInfoListener);
             //设置地址
             mIjkMediaPlayer.setDataSource(mContext, Uri.parse(mLivePath), mLiveHeaders);
             //设置播放时候保持常亮
@@ -153,6 +164,7 @@ public class LiveVideoView
      */
     @Override
     public void play() {
+        Log.e(TAG, "play: "+mCurrentState );
         if (isInPlaybackState()) {
             mIjkMediaPlayer.start();
             //设置状态
@@ -160,6 +172,15 @@ public class LiveVideoView
             notifyListenerCurrentStateChange();
         }
         mTargetState = LiveViewState.STATE_PLAYING;
+    }
+
+    /**
+     * 是否允许拖动进度
+     * @param able
+     */
+    @Override
+    public void enableSeekTo(boolean able) {
+        this.mCanSeekTo = able;
     }
 
     private void notifyListenerCurrentStateChange() {
@@ -241,7 +262,7 @@ public class LiveVideoView
                 mIjkMediaPlayer.getDuration() != 0 &&
                 mCurrentState != LiveViewState.STATE_IDLE)
         {
-            Log.e(TAG, "getCurrentProgress: 当前时长:"+mIjkMediaPlayer.getCurrentPosition()/mIjkMediaPlayer.getDuration());
+//            Log.e(TAG, "getCurrentProgress: 当前时长:"+mIjkMediaPlayer.getCurrentPosition()+"总时长:"+mIjkMediaPlayer.getDuration());
             return (int) (100f*mIjkMediaPlayer.getCurrentPosition()/ mIjkMediaPlayer.getDuration());
         }
         return -1;
@@ -292,7 +313,7 @@ public class LiveVideoView
      */
     @Override
     public void seekTo(long msec, boolean autoPlay) {
-        if (isInPlaybackState()) {
+        if (isInPlaybackState()&& mCanSeekTo) {
             mIjkMediaPlayer.seekTo(msec);
             if (autoPlay) {
                 play();
@@ -358,10 +379,8 @@ public class LiveVideoView
      * 释放资源
      */
     public void destroy() {
-        stop();
-        mIjkMediaPlayer = null;
+        release(true);
         mStateListener = null;
-
     }
 
     /**
@@ -400,6 +419,9 @@ public class LiveVideoView
         public void surfaceCreated(SurfaceHolder holder) {
             Log.e(TAG, "surfaceCreated: 创建了");
             mSurfaceHolder = holder;
+            if (mCurrentState==STATE_NULL){
+                openLive();
+            }
             if (mCurrentState == LiveViewState.STATE_PLAYING) {
                 //如果是播放状态,设置图像
                 mIjkMediaPlayer.setDisplay(holder);
@@ -408,12 +430,14 @@ public class LiveVideoView
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+            Log.e(TAG, "surfaceChanged: "+holder+"format:"+format+"width"+width+"height"+height );
         }
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
-
+            Log.e(TAG, "surfaceDestroyed: 销毁了" );
+            mSurfaceView = null;
+//            release(true);
         }
     };
     /**
@@ -467,4 +491,98 @@ public class LiveVideoView
 
     };
 
+    private IjkMediaPlayer.OnInfoListener mInfoListener = new IMediaPlayer.OnInfoListener(){
+        @Override
+        public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
+            Log.e(TAG, "onInfo: "+i+"////"+i1 );
+            return false;
+        }
+    };
+
+    //=====================================================
+    float startX = 0;
+    float startY = 0;
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                //获取落下的坐标
+                startX = event.getX();
+                startY = event.getY();
+                long downTime = event.getDownTime();
+                Log.e(TAG, "dispatchTouchEvent: 落下<<<<<<<<<<<<<"+startX+" y:"+ startY+" time:"+downTime );
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float moveX = event.getX();
+                float moveY = event.getY();
+                //获取移动的距离
+                float movedX = moveX - startX;
+                float movedY = moveY - startY;
+                startX = moveX;
+                startY =moveY;
+                Log.e(TAG, "dispatchTouchEvent: 移动距离<<<<<<<<<<<<<"+movedX+" y:"+ movedY );
+//                mSurfaceView.getLayoutParams().width =(int) moveX;
+//                mSurfaceView.getLayoutParams().height = (int) moveY;
+//                mSurfaceView.requestLayout();
+                if (!canMove){
+                    ViewGroup.LayoutParams layoutParams = getLayoutParams();
+                    layoutParams.width = (int) moveX;
+                    layoutParams.height = (int) moveY;
+                    setLayoutParams(layoutParams);
+                    requestLayout();
+                }
+                if (canMove){
+                    this.setTranslationX(100);
+                    this.setTranslationX(100);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                float upX = event.getX();
+                float upY = event.getY();
+                Log.e(TAG, "dispatchTouchEvent: 起来>>>>>>>>>>>>>"+upX+" y:"+ upY+" time:");
+
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                //多点
+                break;
+        }
+        return true;
+//        return super.dispatchTouchEvent(event);
+    }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+        Log.e(TAG, "onMeasure: "+widthSpecMode+"?"+heightSpecMode );
+        if (heightSpecMode==MeasureSpec.EXACTLY){
+            Log.e(TAG, "onMeasure: EXACTLY" );
+        }
+        if (heightSpecMode==MeasureSpec.AT_MOST){
+            Log.e(TAG, "onMeasure: AT_MOST" );
+        }
+        if (heightSpecMode==MeasureSpec.UNSPECIFIED){
+            Log.e(TAG, "onMeasure: UNSPECIFIED" );
+        }
+        if (widthSpecMode == MeasureSpec.EXACTLY && heightSpecMode == MeasureSpec.EXACTLY) {
+
+        } else if (widthSpecMode == MeasureSpec.EXACTLY) {
+
+        } else if (heightSpecMode == MeasureSpec.EXACTLY) {
+
+        } else {
+            // neither the width nor the height are fixed, try to use actual video size
+
+        }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
 }

@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<ScrollView-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/ll_test"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+
+
+
+
 
     <com.doive.nameless.litter_hydra.widget.live.LiveVideoView
         android:id="@+id/lv_video"
         android:layout_width="match_parent"
         android:layout_height="220dp">
+        <SeekBar
+            android:id="@+id/sb_seek_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </com.doive.nameless.litter_hydra.widget.live.LiveVideoView>
+
+    <VideoView
+        android:visibility="gone"
+        android:id="@+id/vv_test"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"/>
 
     <Button
         android:id="@+id/btn_start"
@@ -33,10 +52,11 @@
         android:text="结束"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <SeekBar
-        android:id="@+id/sb_seek_to"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
+    <TextView
+        android:background="@color/Yellow"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"/>
 
 </LinearLayout>
+<!--</ScrollView>-->
