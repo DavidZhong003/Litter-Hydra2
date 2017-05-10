@@ -1,21 +1,15 @@
 package com.doive.nameless.litter_hydra.ui.video.live;
 
-import android.content.Context;
-import android.graphics.PixelFormat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SeekBar;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
-import com.doive.nameless.litter_hydra.rxbus.RxBus;
 import com.doive.nameless.litter_hydra.widget.live.BaseLiveStateListener;
 import com.doive.nameless.litter_hydra.widget.live.LiveVideoView;
 
@@ -24,9 +18,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-
-import static android.R.attr.button;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by Administrator on 2017/5/2.
@@ -45,6 +36,7 @@ public class VideoLiveActivity extends BaseMvpActivity {
     private String mLiveURL;
     private WindowManager mWindowManager;
     private ViewGroup.LayoutParams mLayoutParams;
+    private LiveVideoView mCloneView;
 
     @Override
     protected void initView() {
@@ -117,43 +109,53 @@ public class VideoLiveActivity extends BaseMvpActivity {
             @Override
             public void onClick(View v) {
 //                mLiveView.recovery();
-                mWindowManager.removeView(mLiveView);
-                mLiveView.setLayoutParams(mLayoutParams);
-                mLinearLayout.addView(mLiveView,0);
+//                mWindowManager.removeViewImmediate(mLiveView);
+//                mLiveView.setVisibility(View.VISIBLE);
+//                mLiveView.setLayoutParams(mLayoutParams);
+//                mLinearLayout.addView(mLiveView,0);
+                mLiveView.switchLayoutMode();
             }
         });
         mStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mLiveView.switchSuspendedWindowMode();
 //                mLiveView.stop();
 //                startActivity(new Intent(VideoLiveActivity.this, MainActivity.class));
-                mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+//                mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+//                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+//
+//                // 靠手机屏幕的左边居中显示
+//                params.gravity = Gravity.CENTER | Gravity.LEFT;
+//
+//                params.type = WindowManager.LayoutParams.TYPE_PHONE;
+//                params.format = PixelFormat.RGBA_8888;
+//
+//                // 如果设置以下属性，那么该悬浮窗口将不可触摸，不接受输入事件，不影响其他窗口事件的传递和分发
+//                // params.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL
+//                // |LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
+//
+//                // 可以设定坐标
+//                // params.x=xxxx
+//                // params.y=yyyy
+//
+//                params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+//
+//                // 透明度
+//                // params.alpha=0.8f;
+//
+//
+//                params.width = mLayoutParams.width;
+//                params.height = mLayoutParams.height;
+//                mLinearLayout.removeView(mLiveView);
+////                mLiveView.setVisibility(View.GONE);
+////                try {
+////                    mCloneView = mLiveView.clone();
+//                    mWindowManager.addView(mLiveView, params);
+////                } catch (CloneNotSupportedException e) {
+////                    e.printStackTrace();
+////                }
 
-                // 靠手机屏幕的左边居中显示
-                params.gravity = Gravity.CENTER | Gravity.LEFT;
-
-                params.type = WindowManager.LayoutParams.TYPE_PHONE;
-                params.format = PixelFormat.RGBA_8888;
-
-                // 如果设置以下属性，那么该悬浮窗口将不可触摸，不接受输入事件，不影响其他窗口事件的传递和分发
-                // params.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL
-                // |LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
-
-                // 可以设定坐标
-                // params.x=xxxx
-                // params.y=yyyy
-
-                params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-
-                // 透明度
-                // params.alpha=0.8f;
-
-
-                params.width = mLayoutParams.width;
-                params.height = mLayoutParams.height;
-                mLinearLayout.removeView(mLiveView);
-                mWindowManager.addView(mLiveView, params);
 
             }
         });
@@ -182,7 +184,7 @@ public class VideoLiveActivity extends BaseMvpActivity {
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        Log.e(TAG, "call: "+mLiveView.getCurrentProgress() );
+//                        Log.e(TAG, "call: "+mLiveView.getCurrentProgress() );
                         mSeekBar.setProgress(mLiveView.getCurrentProgress());
                     }
                 });
