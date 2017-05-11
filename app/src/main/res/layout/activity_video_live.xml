@@ -22,6 +22,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_start"
+                android:text="开始"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btn_pause"
+                android:text="暂停"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btn_recovery"
+                android:text="恢复"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btn_end"
+                android:text="结束"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
     </com.doive.nameless.litter_hydra.widget.live.LiveVideoView>
 
     <VideoView
@@ -30,28 +62,28 @@
         android:layout_width="match_parent"
         android:layout_height="220dp"/>
 
-    <Button
-        android:id="@+id/btn_start"
-        android:text="开始"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_start"-->
+        <!--android:text="开始"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"/>-->
 
-    <Button
-        android:id="@+id/btn_pause"
-        android:text="暂停"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_pause"-->
+        <!--android:text="暂停"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"/>-->
 
-    <Button
-        android:id="@+id/btn_recovery"
-        android:text="恢复"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/btn_end"
-        android:text="结束"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_recovery"-->
+        <!--android:text="恢复"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"/>-->
+    <!--<Button-->
+        <!--android:id="@+id/btn_end"-->
+        <!--android:text="结束"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"/>-->
 
     <TextView
         android:background="@color/Yellow"
