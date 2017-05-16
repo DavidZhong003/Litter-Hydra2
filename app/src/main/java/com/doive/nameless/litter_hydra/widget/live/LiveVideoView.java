@@ -6,18 +6,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.IntDef;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import java.io.IOException;
 import java.util.Map;
@@ -41,7 +39,7 @@ import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_ST
  *  @文件名:   LiveVideoView
  *  @创建者:   zhong
  *  @创建时间:  2017/5/7 14:05
- *  @描述：    TODO 播放进度回调 ,定制底部控制栏,小窗口模式,全屏模式切换
+ *  @描述：    TODO 播放进度回调 ,定制底部控制栏
  *
  */
 public class LiveVideoView
@@ -60,6 +58,8 @@ public class LiveVideoView
 
     public boolean canMove;
     private boolean mCanSeekTo = true;
+    private GestureDetector mGestureDetector;
+    private ScaleGestureDetector mScaleGestureDetector;
 
     public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
@@ -81,6 +81,9 @@ public class LiveVideoView
         setBackgroundColor(Color.BLACK);
         initSurfaceView();
         notifyListenerCurrentStateChange();
+        mGestureDetector = new GestureDetector(context, mGestureListener );
+        mScaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
+
     }
 
     @Override
@@ -97,7 +100,7 @@ public class LiveVideoView
         setLongClickable(true);
         setClickable(true);
         surfaceView.getHolder()
-                    .addCallback(mSFHCallback);
+                   .addCallback(mSFHCallback);
         setFocusable(true);
         requestFocus();
     }
@@ -460,12 +463,79 @@ public class LiveVideoView
     /**
      * 信息监听
      */
-    private IjkMediaPlayer.OnInfoListener mInfoListener = new IMediaPlayer.OnInfoListener() {
+    private IjkMediaPlayer.OnInfoListener            mInfoListener            = new IMediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-            Log.e(TAG, "onInfo: " + i + "////" + i1 + "////" + iMediaPlayer.isPlaying());
+            // TODO: 2017/5/14  进行缓冲回调
             return false;
         }
     };
+
+    /**
+     * 手势监听
+     */
+    private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        /**
+         * 长按触发
+         * @param e
+         */
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            mCurrentMode = MOVE_LAYOUT_MODE;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.e(TAG, "onScroll: "+distanceX+"/////"+distanceY );
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+    };
+
+    private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+        /**
+         *
+         * @param detector
+         * @return
+         */
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            Log.e(TAG, "onScale: "+(detector.getCurrentSpanX()-detector.getPreviousSpanX()) );
+            return super.onScale(detector);
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return super.onScaleBegin(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            super.onScaleEnd(detector);
+        }
+    };
+
+    /**
+     *
+     * @param event
+     * @return
+     */
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mGestureDetector.onTouchEvent(event);
+        mScaleGestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    public static final int FIX_LAYOUT_MODE  = 0;
+    public static final int MOVE_LAYOUT_MODE = 1;
+    public static final int ZOOM_LAYOUT_MODE = 1<<2;
+    public  @LayoutMode int mCurrentMode = FIX_LAYOUT_MODE;
+    @IntDef(flag = true,
+            value = {FIX_LAYOUT_MODE,
+                     MOVE_LAYOUT_MODE,
+                     ZOOM_LAYOUT_MODE})
+    public  @interface LayoutMode { }
 
 }

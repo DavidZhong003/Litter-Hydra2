@@ -2,15 +2,11 @@ package com.doive.nameless.litter_hydra.widget.live;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.support.v4.widget.ViewDragHelper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 /*
  *  @项目名：  Litter-Hydra2 
@@ -39,11 +35,10 @@ public class VideoViewModeHelp {
             value = {FIX_LAYOUT_MODE,
                      MOVE_LAYOUT_MODE,
                      ZOOM_LAYOUT_MODE})
-    private @interface LayoutMode { }
+    public  @interface LayoutMode { }
 
     public VideoViewModeHelp(View view) {
         this.mCurrentView = view;
-        //初始化对象
         if (mWindowManager == null) {
             mWindowManager = (WindowManager) mCurrentView.getContext().getSystemService(Context.WINDOW_SERVICE);
         }
@@ -53,34 +48,21 @@ public class VideoViewModeHelp {
         if (mWMLayoutParams == null) {
             mWMLayoutParams = new WindowManager.LayoutParams();
         }
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mCurrentMode = MOVE_LAYOUT_MODE;
-                return false;
-            }
-        });
-        ViewDragHelper help = ViewDragHelper.create((ViewGroup)view.getParent(),1.0f,mCallback);
     }
 
-    private ViewDragHelper.Callback mCallback = new ViewDragHelper.Callback() {
-        @Override
-        public boolean tryCaptureView(View child, int pointerId) {
-            return child==mCurrentView;
-        }
-    };
+
     public void dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = event.getX();
-                mDownY = event.getY();
+                mDownX = event.getRawX();
+                mDownY = event.getRawY();
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                //todo 支持双手放大缩小
+                // TODO: 2017/5/14 多点按下
                 break;
             case MotionEvent.ACTION_MOVE:
-                float moveX = event.getX();
-                float moveY = event.getY();
+                float moveX = event.getRawX();
+                float moveY = event.getRawY();
                 //获取移动的距离int
                 int movedX = (int) (moveX - mDownX);
                 int movedY = (int) (moveY - mDownY);
@@ -95,6 +77,8 @@ public class VideoViewModeHelp {
                 // TODO: 2017/5/11  越界回弹
                 mCurrentMode=FIX_LAYOUT_MODE;
                 break;
+            case MotionEvent.ACTION_POINTER_UP:
+                // TODO: 2017/5/14 多点抬起
         }
     }
 
@@ -169,10 +153,14 @@ public class VideoViewModeHelp {
      * @return
      */
     public boolean switchLayoutMode() {
+        return switchLayoutMode(0);
+    }
+
+    public boolean switchLayoutMode(int position) {
         boolean isSuccess = false;
         if (isWmMode) {
             mWindowManager.removeViewImmediate(mCurrentView);
-            mViewParent.addView(mCurrentView, 0, mCurrentView.getLayoutParams());
+            mViewParent.addView(mCurrentView, position, mCurrentView.getLayoutParams());
             isSuccess = true;
             isWmMode = false;
         }

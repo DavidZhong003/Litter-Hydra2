@@ -1,94 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/ll_test"
+<LinearLayout android:id="@+id/ll_test"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-
-
-
-
+    <!--直播的view-->
     <com.doive.nameless.litter_hydra.widget.live.LiveVideoView
         android:id="@+id/lv_video"
         android:layout_width="match_parent"
         android:layout_height="220dp">
-        <SeekBar
-            android:id="@+id/sb_seek_to"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/btn_start"
-                android:text="开始"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btn_pause"
-                android:text="暂停"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btn_recovery"
-                android:text="恢复"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/btn_end"
-                android:text="结束"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-
-        </LinearLayout>
-
+        <!--头部-->
+        <!--中部,缓冲和错误时候展示-->
+        <!--底部 控制全屏等-->
     </com.doive.nameless.litter_hydra.widget.live.LiveVideoView>
 
-    <VideoView
-        android:visibility="gone"
-        android:id="@+id/vv_test"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"/>
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_start"-->
-        <!--android:text="开始"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_pause"-->
-        <!--android:text="暂停"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_recovery"-->
-        <!--android:text="恢复"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"/>-->
-    <!--<Button-->
-        <!--android:id="@+id/btn_end"-->
-        <!--android:text="结束"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-    <TextView
-        android:background="@color/Yellow"
-        android:layout_width="match_parent"
-        android:layout_height="1000dp"/>
+    <!--下面内容区-->
 
 </LinearLayout>
-<!--</ScrollView>-->
