@@ -13,6 +13,12 @@
         <!--头部-->
         <!--中部,缓冲和错误时候展示-->
         <!--底部 控制全屏等-->
+        <Button
+            android:id="@+id/button_test"
+            android:text="窗口/固定"
+            android:layout_width="wrap_content"
+            android:gravity="left|center"
+            android:layout_height="wrap_content"/>
     </com.doive.nameless.litter_hydra.widget.live.LiveVideoView>
 
     <!--下面内容区-->

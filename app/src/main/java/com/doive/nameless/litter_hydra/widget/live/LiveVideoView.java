@@ -1,14 +1,17 @@
 package com.doive.nameless.litter_hydra.widget.live;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
@@ -56,10 +59,28 @@ public class LiveVideoView
     private String              mLivePath;//直播路径
     private Map<String, String> mLiveHeaders;//播直播请求头
 
-    public boolean canMove;
     private boolean mCanSeekTo = true;
-    private GestureDetector mGestureDetector;
-    private ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector            mGestureDetector;
+    private ScaleGestureDetector       mScaleGestureDetector;
+    public boolean                    isWmMode;//是否是窗口模式判断位
+    private WindowManager.LayoutParams mWMLayoutParams;
+    private WindowManager              mWindowManager;
+    private ViewGroup                  mViewParent;
+
+    public static final int FIX_LAYOUT_MODE  = 0;
+    public static final int MOVE_LAYOUT_MODE = 1;
+    public static final int ZOOM_LAYOUT_MODE = 1 << 2;
+    public
+    @LayoutMode
+    int mCurrentMode = FIX_LAYOUT_MODE;
+    private int mLastX;
+    private int mLastY;
+
+    @IntDef(flag = true,
+            value = {FIX_LAYOUT_MODE,
+                     MOVE_LAYOUT_MODE,
+                     ZOOM_LAYOUT_MODE})
+    public @interface LayoutMode {}
 
     public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
@@ -81,8 +102,10 @@ public class LiveVideoView
         setBackgroundColor(Color.BLACK);
         initSurfaceView();
         notifyListenerCurrentStateChange();
-        mGestureDetector = new GestureDetector(context, mGestureListener );
+        mGestureDetector = new GestureDetector(context, mGestureListener);
         mScaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
+        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mWMLayoutParams = new WindowManager.LayoutParams();
 
     }
 
@@ -483,16 +506,15 @@ public class LiveVideoView
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
             mCurrentMode = MOVE_LAYOUT_MODE;
+            //震动提示
+            Vibrator vib = (Vibrator) LiveVideoView.this.getContext()
+                                                        .getSystemService(Service.VIBRATOR_SERVICE);
+            vib.vibrate(100);
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.e(TAG, "onScroll: "+distanceX+"/////"+distanceY );
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
     };
 
-    private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+    private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         /**
          *
          * @param detector
@@ -500,20 +522,52 @@ public class LiveVideoView
          */
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            Log.e(TAG, "onScale: "+(detector.getCurrentSpanX()-detector.getPreviousSpanX()) );
+            int offX = (int) (detector.getCurrentSpanX() - detector.getPreviousSpanX());
+            int offY = (int) (detector.getCurrentSpanY() - detector.getPreviousSpanY());
+            zoom(offX, offY);
             return super.onScale(detector);
         }
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mCurrentMode = ZOOM_LAYOUT_MODE;
             return super.onScaleBegin(detector);
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+            mCurrentMode = FIX_LAYOUT_MODE;
             super.onScaleEnd(detector);
         }
     };
+
+    /**
+     * 缩放
+     * @param offX  x方向缩放距离
+     * @param offY  y方向缩放距离
+     */
+    private void zoom(int offX, int offY) {
+        //当前屏幕坐标
+        int[] locationOnScreen = getViewLocationOnScreen();
+        if (mCurrentMode == ZOOM_LAYOUT_MODE) {
+            if (isWmMode) {
+                mWMLayoutParams.width += offX;
+                mWMLayoutParams.height += offY;
+                mWMLayoutParams.x = locationOnScreen[0]-offX/2;
+                mWMLayoutParams.y = locationOnScreen[1]-offY/2;
+                mWindowManager.updateViewLayout(this, mWMLayoutParams);
+            } else {
+                // TODO: 2017/5/17  解决设置lay 恢复原位置
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(getLayoutParams());
+                Log.e(TAG, "zoom: "+offX+"///"+offY );
+                params.width =getWidth()+10;
+                params.height =getHeight()+10;
+                Log.e(TAG, "zoom: "+locationOnScreen[0]+"/////"+locationOnScreen[1] );
+                Log.e(TAG, "zoom: "+getLeft()+"^^^"+getTop()+">>>"+getRight()+"vvv"+getBottom() );
+                setLayoutParams(params);
+            }
+        }
+    }
 
     /**
      *
@@ -525,17 +579,105 @@ public class LiveVideoView
     public boolean onTouchEvent(MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
         mScaleGestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
+        int         x      = (int) event.getRawX();
+        int         y      = (int) event.getRawY();
+        MotionEvent obtain = MotionEvent.obtain(event);
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastX = x;
+                mLastY = y;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int offx = x - mLastX;
+                int offy = y - mLastY;
+                if (mCurrentMode == MOVE_LAYOUT_MODE) {
+                    move(offx, offy);
+                }
+                mLastX = x;
+                mLastY = y;
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mCurrentMode == MOVE_LAYOUT_MODE) {
+                    mCurrentMode = FIX_LAYOUT_MODE;
+                }
+                break;
+        }
+        return super.onTouchEvent(obtain);
     }
 
-    public static final int FIX_LAYOUT_MODE  = 0;
-    public static final int MOVE_LAYOUT_MODE = 1;
-    public static final int ZOOM_LAYOUT_MODE = 1<<2;
-    public  @LayoutMode int mCurrentMode = FIX_LAYOUT_MODE;
-    @IntDef(flag = true,
-            value = {FIX_LAYOUT_MODE,
-                     MOVE_LAYOUT_MODE,
-                     ZOOM_LAYOUT_MODE})
-    public  @interface LayoutMode { }
+    private void move(int offx, int offy) {
+        if (isWmMode) {
+            mWMLayoutParams.x += offx;
+            mWMLayoutParams.y += offy;
+            mWindowManager.updateViewLayout(this, mWMLayoutParams);
+        } else {
+            layout(getLeft() + offx, getTop() + offy, getRight() + offx, getBottom() + offy);
+        }
+    }
+
+
+    //================================窗口模式=======================================================
+
+    /**
+     * 切换到窗口模式
+     * @return
+     */
+    public boolean switchSuspendedWindowMode() {
+        boolean isSuccess = false;
+        //获取窗口管理器
+        if (!isWmMode) {
+            //配置参数
+            mWMLayoutParams.gravity = Gravity.TOP | Gravity.START;
+            mWMLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+            mWMLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            //获取当前view在屏幕的绝对坐标
+            int[] location = getViewLocationOnScreen();
+            mWMLayoutParams.x = location[0];
+            mWMLayoutParams.y = location[1];
+            //设置大小
+            mWMLayoutParams.width = getLayoutParams().width - 100;
+            mWMLayoutParams.height = getLayoutParams().height - 100;
+            //替换view
+            if (getParent() != null) {
+                mViewParent = (ViewGroup) getParent();
+                mViewParent.removeView(this);
+            }
+            mWindowManager.addView(this, mWMLayoutParams);
+            //更改标志位
+            isSuccess = true;
+            isWmMode = true;
+        }
+
+        return isSuccess;
+    }
+
+    /**
+     * 获取实际坐标
+     * @return
+     */
+    private int[] getViewLocationOnScreen() {
+        int[] location = new int[2];
+        getLocationOnScreen(location);
+        return location;
+    }
+
+    /**
+     * 切换回layout模式
+     * @return
+     */
+    public boolean switchLayoutMode() {
+        return switchLayoutMode(0);
+    }
+
+    public boolean switchLayoutMode(int position) {
+        boolean isSuccess = false;
+        if (isWmMode) {
+            mWindowManager.removeViewImmediate(this);
+            mViewParent.addView(this, position, getLayoutParams());
+            isSuccess = true;
+            isWmMode = false;
+        }
+        return isSuccess;
+    }
 
 }

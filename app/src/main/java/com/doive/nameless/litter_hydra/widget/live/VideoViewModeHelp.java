@@ -74,11 +74,9 @@ public class VideoViewModeHelp {
             case MotionEvent.ACTION_UP:
                 float upX = event.getX();
                 float upY = event.getY();
-                // TODO: 2017/5/11  越界回弹
                 mCurrentMode=FIX_LAYOUT_MODE;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                // TODO: 2017/5/14 多点抬起
         }
     }
 

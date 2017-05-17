@@ -63,12 +63,15 @@ public class FragmentHelper {
             {
                 //取出保存的Fragment put到集合
                 for (Fragment fra : mFm.getFragments()) {
-                    Log.e(TAG, "initFragments: " + fra.getTag());
+                    Log.e(TAG, "initFragments: ////" + fra.getTag());
                     try {
+                        if (fra.getTag().endsWith("com.bumptech.glide.manager")){
+                            return;
+                        }
                         mFragments.put(Integer.parseInt(fra.getTag()),fra);
                     }catch (NumberFormatException e){
                         //处理在使用Glide时候,创建相关的FrameLayout时候string TAG无法转为int类型
-                        Log.e(TAG, "initFragments: ",e );
+                        Log.e(TAG, "initFragments: ????",e );
                     }
 
                 }

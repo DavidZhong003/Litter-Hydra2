@@ -17,12 +17,13 @@ import rx.subjects.Subject;
  * 单例
  */
 
-public class RxBus  implements BusInterface {
+public class RxBus
+        implements BusInterface {
     private static volatile RxBus sInstance;
 
     private final Subject<Object, Object> mSubject;
     //处理Sticky事件
-    private final Map<Object, Object>   mStickyEventMap;
+    private final Map<Object, Object>     mStickyEventMap;
 
 
     private RxBus() {
@@ -48,14 +49,13 @@ public class RxBus  implements BusInterface {
 
     @Override
     public void send(int key, Object object) {
-        mSubject.onNext(new MyEvents(key,object));
+        mSubject.onNext(new MyEvents(key, object));
     }
 
     @Override
     public void send(String key, Object object) {
-        mSubject.onNext(new MyEvents(key,object));
+        mSubject.onNext(new MyEvents(key, object));
     }
-
 
 
     @Override
@@ -65,32 +65,36 @@ public class RxBus  implements BusInterface {
 
     @Override
     public Observable<Object> toObservable(final int key) {
-        return mSubject.ofType(MyEvents.class).filter(new Func1<MyEvents, Boolean>() {
-            @Override
-            public Boolean call(MyEvents myEvents) {
-                return myEvents.mIntKey==key;
-            }
-        }).map(new Func1<MyEvents, Object>() {
-            @Override
-            public Object call(MyEvents myEvents) {
-                return myEvents.obj;
-            }
-        });
+        return mSubject.ofType(MyEvents.class)
+                       .filter(new Func1<MyEvents, Boolean>() {
+                           @Override
+                           public Boolean call(MyEvents myEvents) {
+                               return myEvents.mIntKey == key;
+                           }
+                       })
+                       .map(new Func1<MyEvents, Object>() {
+                           @Override
+                           public Object call(MyEvents myEvents) {
+                               return myEvents.obj;
+                           }
+                       });
     }
 
     @Override
     public Observable<Object> toObservable(final String key) {
-        return mSubject.ofType(MyEvents.class).filter(new Func1<MyEvents, Boolean>() {
-            @Override
-            public Boolean call(MyEvents myEvents) {
-                return TextUtils.equals(key,myEvents.mStringKey);
-            }
-        }).map(new Func1<MyEvents, Object>() {
-            @Override
-            public Object call(MyEvents myEvents) {
-                return myEvents.obj;
-            }
-        });
+        return mSubject.ofType(MyEvents.class)
+                       .filter(new Func1<MyEvents, Boolean>() {
+                           @Override
+                           public Boolean call(MyEvents myEvents) {
+                               return TextUtils.equals(key, myEvents.mStringKey);
+                           }
+                       })
+                       .map(new Func1<MyEvents, Object>() {
+                           @Override
+                           public Object call(MyEvents myEvents) {
+                               return myEvents.obj;
+                           }
+                       });
     }
 
     @Override
@@ -121,7 +125,7 @@ public class RxBus  implements BusInterface {
     @Override
     public void sendSticky(int key, Object object) {
         synchronized (mStickyEventMap) {
-            mStickyEventMap.put(key,object);
+            mStickyEventMap.put(key, object);
         }
         send(object);
     }
@@ -144,7 +148,7 @@ public class RxBus  implements BusInterface {
         synchronized (mStickyEventMap) {
             final Object event = mStickyEventMap.get(key);
             if (event != null) {
-                return mSubject.mergeWith(Observable.create(new Observable.OnSubscribe<Object>(){
+                return mSubject.mergeWith(Observable.create(new Observable.OnSubscribe<Object>() {
                     @Override
                     public void call(Subscriber<? super Object> subscriber) {
                         subscriber.onNext(event);
@@ -161,7 +165,7 @@ public class RxBus  implements BusInterface {
         synchronized (mStickyEventMap) {
             final Object event = mStickyEventMap.get(key);
             if (event != null) {
-                return mSubject.mergeWith(Observable.create(new Observable.OnSubscribe<Object>(){
+                return mSubject.mergeWith(Observable.create(new Observable.OnSubscribe<Object>() {
                     @Override
                     public void call(Subscriber<? super Object> subscriber) {
                         subscriber.onNext(event);
@@ -177,7 +181,7 @@ public class RxBus  implements BusInterface {
     public <T> Observable<T> toObservableSticky(final Class<T> eventType) {
         synchronized (mStickyEventMap) {
             Observable<T> observable = mSubject.ofType(eventType);
-            final Object event = mStickyEventMap.get(eventType);
+            final Object  event      = mStickyEventMap.get(eventType);
             if (event != null) {
                 return observable.mergeWith(Observable.create(new Observable.OnSubscribe<T>() {
                     @Override
@@ -206,7 +210,7 @@ public class RxBus  implements BusInterface {
     }
 
     public Object removeStickyEvent(Object key) {
-        synchronized (mStickyEventMap){
+        synchronized (mStickyEventMap) {
             return mStickyEventMap.remove(key);
         }
     }
