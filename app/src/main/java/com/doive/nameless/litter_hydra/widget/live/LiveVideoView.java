@@ -635,8 +635,8 @@ public class LiveVideoView
             mWMLayoutParams.x = location[0];
             mWMLayoutParams.y = location[1];
             //设置大小
-            mWMLayoutParams.width = getLayoutParams().width - 100;
-            mWMLayoutParams.height = getLayoutParams().height - 100;
+            mWMLayoutParams.width = getLayoutParams().width ;
+            mWMLayoutParams.height = getLayoutParams().height ;
             //替换view
             if (getParent() != null) {
                 mViewParent = (ViewGroup) getParent();

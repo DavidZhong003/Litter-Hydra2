@@ -13,6 +13,8 @@ import com.doive.nameless.litter_hydra.widget.live.LiveVideoView;
  *
  * 直播Activity
  *
+ * todo 解决缩放bug ,先获取原始视频大小,缩放比,设置宽高
+ *
  */
 
 public class VideoLiveActivity extends BaseMvpActivity {
@@ -20,7 +22,7 @@ public class VideoLiveActivity extends BaseMvpActivity {
     @Override
     protected void initView() {
         final LiveVideoView liveVideoView = getViewbyId(R.id.lv_video);
-        liveVideoView.setLivePath("http://183.61.62.144/vlive.qqvideo.tc.qq.com/c00103TzXqT.p202.1.mp4?sdtfrom=v1010&guid=0297d3336807e77fa02651dc41e5689e&vkey=4FBE319CF4CEF9C9FB624544E6CD4A8D952EF2BBF03175A6D4D252C624B437659BEFE2B3E2D17E93C7E11C3EB9165DBFB81E6F4EE85EDE88C14747A66D4EB4BAD02E2D07A6850868A130749A6741CA6FFBD06CC38C87A503D601661FD5D9B5FD0C4D3F3845D1D6FB74D0D5BFC8E737E4&locid=8004c570-362b-4bc6-bd18-e8ea4aa5c509&size=15348464&ocid=311762860");
+        liveVideoView.setLivePath("http://video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
         liveVideoView.setStateListener(new BaseLiveStateListener() {
             @Override
             public void onPrepared() {
