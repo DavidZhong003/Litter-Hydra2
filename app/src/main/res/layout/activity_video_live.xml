@@ -6,7 +6,7 @@
               android:orientation="vertical">
 
     <!--直播的view-->
-    <com.doive.nameless.litter_hydra.widget.live.LiveVideoView
+    <com.doive.nameless.litter_hydra.widget.video.IjkVideoView
         android:id="@+id/lv_video"
         android:layout_width="match_parent"
         android:layout_height="220dp">
@@ -17,9 +17,15 @@
             android:id="@+id/button_test"
             android:text="窗口/固定"
             android:layout_width="wrap_content"
-            android:gravity="left|center"
+            android:layout_gravity="left"
             android:layout_height="wrap_content"/>
-    </com.doive.nameless.litter_hydra.widget.live.LiveVideoView>
+        <Button
+            android:id="@+id/button_test1"
+            android:text="放缩开关"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:layout_height="wrap_content"/>
+    </com.doive.nameless.litter_hydra.widget.video.IjkVideoView>
 
     <!--下面内容区-->
 

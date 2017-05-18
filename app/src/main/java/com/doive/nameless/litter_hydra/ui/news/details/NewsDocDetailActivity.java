@@ -257,6 +257,7 @@ public class NewsDocDetailActivity
 
     @Override
     protected void onDestroy() {
+        Log.e(TAG, "onDestroy: 新闻详情页销毁了" );
         super.onDestroy();
         if (mWvNewsDetails != null) {
             mWvNewsDetails.clearHistory();

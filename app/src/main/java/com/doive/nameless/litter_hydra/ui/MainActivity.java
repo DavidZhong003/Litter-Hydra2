@@ -95,6 +95,7 @@ public class MainActivity
      */
     @Override
     protected void onDestroy() {
+        Log.e(TAG, "onDestroy: 主页销毁了" );
         super.onDestroy();
         mHelper = null;
     }

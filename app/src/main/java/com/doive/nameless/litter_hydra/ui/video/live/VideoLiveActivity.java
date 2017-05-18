@@ -1,12 +1,14 @@
 package com.doive.nameless.litter_hydra.ui.video.live;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
-import com.doive.nameless.litter_hydra.widget.live.BaseLiveStateListener;
-import com.doive.nameless.litter_hydra.widget.live.LiveVideoView;
+import com.doive.nameless.litter_hydra.widget.video.SimpleLiveStateListener;
+import com.doive.nameless.litter_hydra.widget.video.IjkVideoView;
+import com.doive.nameless.litter_hydra.widget.video.ViewModeHelp;
 
 /**
  * Created by Administrator on 2017/5/2.
@@ -21,22 +23,35 @@ public class VideoLiveActivity extends BaseMvpActivity {
 
     @Override
     protected void initView() {
-        final LiveVideoView liveVideoView = getViewbyId(R.id.lv_video);
+        final IjkVideoView liveVideoView = getViewbyId(R.id.lv_video);
         liveVideoView.setLivePath("http://video19.ifeng.com/video09/2017/04/28/3407826-280-100-155451.mp4");
-        liveVideoView.setStateListener(new BaseLiveStateListener() {
+        liveVideoView.setStateListener(new SimpleLiveStateListener() {
             @Override
             public void onPrepared() {
                 liveVideoView.play();
             }
         });
-        Button button = getViewbyId(R.id.button_test);
+        final ViewModeHelp vh = new ViewModeHelp(liveVideoView);
+        vh.setCanMove(true).setCanZoom(true);
+        vh.setCanScaleZoom(true);
+        Button                  button = getViewbyId(R.id.button_test);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!liveVideoView.isWmMode){
-                    liveVideoView.switchSuspendedWindowMode();
+                if (vh.isWmMode()){
+                    vh.switchLayoutMode();
                 }else {
-                    liveVideoView.switchLayoutMode();
+                    vh.switchSuspendedWindowMode();
+                }
+            }
+        });
+        getViewbyId(R.id.button_test1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (vh.getCurrentMode()== ViewModeHelp.ZOOM_LAYOUT_MODE){
+                    vh.setCurrentMode(ViewModeHelp.FIX_LAYOUT_MODE);
+                }else if (vh.getCurrentMode()== ViewModeHelp.FIX_LAYOUT_MODE){
+                    vh.setCurrentMode(ViewModeHelp.ZOOM_LAYOUT_MODE);
                 }
             }
         });
@@ -45,4 +60,5 @@ public class VideoLiveActivity extends BaseMvpActivity {
     protected int setLayoutId() {
         return R.layout.activity_video_live;
     }
+
 }

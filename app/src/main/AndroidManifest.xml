@@ -21,8 +21,8 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleTask">
-
+            android:launchMode="singleTask"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -32,11 +32,7 @@
         </activity>
 
         <activity android:name=".ui.news.details.NewsDocDetailActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN"/>-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
         </activity>
 
         <activity android:name=".ui.news.details.NewWebActivity">
@@ -50,18 +46,10 @@
         <activity android:name=".ui.news.pic.PictureDetailActivity"/>
 
         <activity android:name=".ui.video.test.TvActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN"/>-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
         </activity>
         <activity android:name=".ui.video.live.VideoLiveActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
         </activity>
 
     </application>

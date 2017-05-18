@@ -1,19 +1,12 @@
-package com.doive.nameless.litter_hydra.widget.live;
+package com.doive.nameless.litter_hydra.widget.video;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Vibrator;
-import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -26,15 +19,15 @@ import java.util.Map;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_ERROR;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_IDLE;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_NULL;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PAUSED;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PLAYBACK_COMPLETED;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PLAYING;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PREPARED;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_PREPARING;
-import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_STOP;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_ERROR;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_IDLE;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_NULL;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_PAUSED;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_PLAYBACK_COMPLETED;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_PLAYING;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_PREPARED;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_PREPARING;
+import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_STOP;
 
 /*
  *  @项目名：  Litter-Hydra2 
@@ -45,13 +38,13 @@ import static com.doive.nameless.litter_hydra.widget.live.LiveViewState.STATE_ST
  *  @描述：    TODO 播放进度回调 ,定制底部控制栏
  *
  */
-public class LiveVideoView
+public class IjkVideoView
         extends FrameLayout
-        implements ILiveViewPlayOperation {
+        implements IIjkOperation {
     private static final String TAG = "LiveVideoView";
     private Context       mContext;
     private SurfaceHolder mSurfaceHolder;
-    @LiveViewState.State
+    @VideoViewState.State
     private int           mCurrentState, mTargetState;//当前状态,目标状态
 
 
@@ -60,53 +53,28 @@ public class LiveVideoView
     private Map<String, String> mLiveHeaders;//播直播请求头
 
     private boolean mCanSeekTo = true;
-    private GestureDetector            mGestureDetector;
-    private ScaleGestureDetector       mScaleGestureDetector;
-    public boolean                    isWmMode;//是否是窗口模式判断位
-    private WindowManager.LayoutParams mWMLayoutParams;
-    private WindowManager              mWindowManager;
-    private ViewGroup                  mViewParent;
 
-    public static final int FIX_LAYOUT_MODE  = 0;
-    public static final int MOVE_LAYOUT_MODE = 1;
-    public static final int ZOOM_LAYOUT_MODE = 1 << 2;
-    public
-    @LayoutMode
-    int mCurrentMode = FIX_LAYOUT_MODE;
-    private int mLastX;
-    private int mLastY;
 
-    @IntDef(flag = true,
-            value = {FIX_LAYOUT_MODE,
-                     MOVE_LAYOUT_MODE,
-                     ZOOM_LAYOUT_MODE})
-    public @interface LayoutMode {}
-
-    public void setStateListener(LiveViewState.onLiveStateListener stateListener) {
+    public void setStateListener(VideoViewState.onLiveStateListener stateListener) {
         mStateListener = stateListener;
     }
 
-    private LiveViewState.onLiveStateListener mStateListener; //状态监听
+    private VideoViewState.onLiveStateListener mStateListener; //状态监听
 
-    public LiveVideoView(Context context) {
+    public IjkVideoView(Context context) {
         this(context, null, 0);
     }
 
-    public LiveVideoView(Context context, AttributeSet attrs) {
+    public IjkVideoView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LiveVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IjkVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         setBackgroundColor(Color.BLACK);
         initSurfaceView();
         notifyListenerCurrentStateChange();
-        mGestureDetector = new GestureDetector(context, mGestureListener);
-        mScaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
-        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        mWMLayoutParams = new WindowManager.LayoutParams();
-
     }
 
     @Override
@@ -197,10 +165,10 @@ public class LiveVideoView
         if (isInPlaybackState()) {
             mIjkMediaPlayer.start();
             //设置状态
-            mCurrentState = LiveViewState.STATE_PLAYING;
+            mCurrentState = VideoViewState.STATE_PLAYING;
             notifyListenerCurrentStateChange();
         }
-        mTargetState = LiveViewState.STATE_PLAYING;
+        mTargetState = VideoViewState.STATE_PLAYING;
     }
 
     /**
@@ -252,9 +220,9 @@ public class LiveVideoView
      */
     public int getCurrentProgress() {
         if (mIjkMediaPlayer != null &&
-                mCurrentState != LiveViewState.STATE_ERROR &&
+                mCurrentState != VideoViewState.STATE_ERROR &&
                 mIjkMediaPlayer.getDuration() != 0 &&
-                mCurrentState != LiveViewState.STATE_IDLE)
+                mCurrentState != VideoViewState.STATE_IDLE)
         {
             return (int) (100f * mIjkMediaPlayer.getCurrentPosition() / mIjkMediaPlayer.getDuration());
         }
@@ -267,9 +235,9 @@ public class LiveVideoView
      */
     public long getCurrentPosition() {
         if (mIjkMediaPlayer != null &&
-                mCurrentState != LiveViewState.STATE_ERROR &&
+                mCurrentState != VideoViewState.STATE_ERROR &&
                 mIjkMediaPlayer.getDuration() != 0 &&
-                mCurrentState != LiveViewState.STATE_IDLE)
+                mCurrentState != VideoViewState.STATE_IDLE)
         {
             return mIjkMediaPlayer.getCurrentPosition();
         }
@@ -282,8 +250,8 @@ public class LiveVideoView
      */
     public long getTotalDuration() {
         if (mIjkMediaPlayer != null &&
-                mCurrentState != LiveViewState.STATE_ERROR &&
-                mCurrentState != LiveViewState.STATE_IDLE)
+                mCurrentState != VideoViewState.STATE_ERROR &&
+                mCurrentState != VideoViewState.STATE_IDLE)
         {
             return mIjkMediaPlayer.getDuration();
         }
@@ -333,10 +301,10 @@ public class LiveVideoView
             if (mIjkMediaPlayer.isPlaying()) {
                 mIjkMediaPlayer.pause();
             }
-            mCurrentState = LiveViewState.STATE_PAUSED;
+            mCurrentState = VideoViewState.STATE_PAUSED;
             notifyListenerCurrentStateChange();
         }
-        mTargetState = LiveViewState.STATE_PAUSED;
+        mTargetState = VideoViewState.STATE_PAUSED;
     }
 
     /**
@@ -345,12 +313,12 @@ public class LiveVideoView
     @Override
     public void recovery() {
         if (isInPlaybackState()) {
-            if (mCurrentState == LiveViewState.STATE_PAUSED) {
+            if (mCurrentState == VideoViewState.STATE_PAUSED) {
                 mIjkMediaPlayer.start();
-                mCurrentState = LiveViewState.STATE_PLAYING;
+                mCurrentState = VideoViewState.STATE_PLAYING;
             }
         }
-        mTargetState = LiveViewState.STATE_PLAYING;
+        mTargetState = VideoViewState.STATE_PLAYING;
     }
 
     /**
@@ -384,8 +352,8 @@ public class LiveVideoView
      */
     private boolean isInPlaybackState() {
         return (mIjkMediaPlayer != null &&
-                mCurrentState != LiveViewState.STATE_ERROR &&
-                mCurrentState != LiveViewState.STATE_IDLE &&
+                mCurrentState != VideoViewState.STATE_ERROR &&
+                mCurrentState != VideoViewState.STATE_IDLE &&
                 mCurrentState != STATE_PREPARING);
     }
 
@@ -398,10 +366,10 @@ public class LiveVideoView
             mIjkMediaPlayer.reset();
             mIjkMediaPlayer.release();
             mIjkMediaPlayer = null;
-            mCurrentState = LiveViewState.STATE_IDLE;
+            mCurrentState = VideoViewState.STATE_IDLE;
             notifyListenerCurrentStateChange();
             if (clearTargetState) {
-                mTargetState = LiveViewState.STATE_IDLE;
+                mTargetState = VideoViewState.STATE_IDLE;
             }
         }
     }
@@ -417,7 +385,7 @@ public class LiveVideoView
             if (mCurrentState == STATE_NULL) {
                 openLive();
             }
-            if (mCurrentState == LiveViewState.STATE_PLAYING) {
+            if (mCurrentState == VideoViewState.STATE_PLAYING) {
                 //如果是播放状态,设置图像
                 mIjkMediaPlayer.setDisplay(holder);
             }
@@ -439,9 +407,9 @@ public class LiveVideoView
     private IjkMediaPlayer.OnErrorListener           mErrorListener           = new IMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-            mCurrentState = LiveViewState.STATE_ERROR;
+            mCurrentState = VideoViewState.STATE_ERROR;
             notifyListenerCurrentStateChange();
-            mTargetState = LiveViewState.STATE_ERROR;
+            mTargetState = VideoViewState.STATE_ERROR;
             return true;
         }
     };
@@ -454,7 +422,7 @@ public class LiveVideoView
         public void onPrepared(IMediaPlayer iMediaPlayer) {
             mCurrentState = STATE_PREPARED;
             notifyListenerCurrentStateChange();
-            if (mTargetState == LiveViewState.STATE_PLAYING) {
+            if (mTargetState == VideoViewState.STATE_PLAYING) {
                 play();
             }
 
@@ -478,7 +446,7 @@ public class LiveVideoView
     private IjkMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-            //            Log.e(TAG, "onBufferingUpdate: " + i);
+
 
         }
 
@@ -493,191 +461,5 @@ public class LiveVideoView
             return false;
         }
     };
-
-    /**
-     * 手势监听
-     */
-    private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        /**
-         * 长按触发
-         * @param e
-         */
-        @Override
-        public void onLongPress(MotionEvent e) {
-            super.onLongPress(e);
-            mCurrentMode = MOVE_LAYOUT_MODE;
-            //震动提示
-            Vibrator vib = (Vibrator) LiveVideoView.this.getContext()
-                                                        .getSystemService(Service.VIBRATOR_SERVICE);
-            vib.vibrate(100);
-        }
-
-    };
-
-    private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        /**
-         *
-         * @param detector
-         * @return
-         */
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            int offX = (int) (detector.getCurrentSpanX() - detector.getPreviousSpanX());
-            int offY = (int) (detector.getCurrentSpanY() - detector.getPreviousSpanY());
-            zoom(offX, offY);
-            return super.onScale(detector);
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            mCurrentMode = ZOOM_LAYOUT_MODE;
-            return super.onScaleBegin(detector);
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            mCurrentMode = FIX_LAYOUT_MODE;
-            super.onScaleEnd(detector);
-        }
-    };
-
-    /**
-     * 缩放
-     * @param offX  x方向缩放距离
-     * @param offY  y方向缩放距离
-     */
-    private void zoom(int offX, int offY) {
-        //当前屏幕坐标
-        int[] locationOnScreen = getViewLocationOnScreen();
-        if (mCurrentMode == ZOOM_LAYOUT_MODE) {
-            if (isWmMode) {
-                mWMLayoutParams.width += offX;
-                mWMLayoutParams.height += offY;
-                mWMLayoutParams.x = locationOnScreen[0]-offX/2;
-                mWMLayoutParams.y = locationOnScreen[1]-offY/2;
-                mWindowManager.updateViewLayout(this, mWMLayoutParams);
-            } else {
-                // TODO: 2017/5/17  解决设置lay 恢复原位置
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(getLayoutParams());
-                Log.e(TAG, "zoom: "+offX+"///"+offY );
-                params.width =getWidth()+10;
-                params.height =getHeight()+10;
-                Log.e(TAG, "zoom: "+locationOnScreen[0]+"/////"+locationOnScreen[1] );
-                Log.e(TAG, "zoom: "+getLeft()+"^^^"+getTop()+">>>"+getRight()+"vvv"+getBottom() );
-                setLayoutParams(params);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param event
-     * @return
-     */
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        mGestureDetector.onTouchEvent(event);
-        mScaleGestureDetector.onTouchEvent(event);
-        int         x      = (int) event.getRawX();
-        int         y      = (int) event.getRawY();
-        MotionEvent obtain = MotionEvent.obtain(event);
-        switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastX = x;
-                mLastY = y;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int offx = x - mLastX;
-                int offy = y - mLastY;
-                if (mCurrentMode == MOVE_LAYOUT_MODE) {
-                    move(offx, offy);
-                }
-                mLastX = x;
-                mLastY = y;
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mCurrentMode == MOVE_LAYOUT_MODE) {
-                    mCurrentMode = FIX_LAYOUT_MODE;
-                }
-                break;
-        }
-        return super.onTouchEvent(obtain);
-    }
-
-    private void move(int offx, int offy) {
-        if (isWmMode) {
-            mWMLayoutParams.x += offx;
-            mWMLayoutParams.y += offy;
-            mWindowManager.updateViewLayout(this, mWMLayoutParams);
-        } else {
-            layout(getLeft() + offx, getTop() + offy, getRight() + offx, getBottom() + offy);
-        }
-    }
-
-
-    //================================窗口模式=======================================================
-
-    /**
-     * 切换到窗口模式
-     * @return
-     */
-    public boolean switchSuspendedWindowMode() {
-        boolean isSuccess = false;
-        //获取窗口管理器
-        if (!isWmMode) {
-            //配置参数
-            mWMLayoutParams.gravity = Gravity.TOP | Gravity.START;
-            mWMLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-            mWMLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-            //获取当前view在屏幕的绝对坐标
-            int[] location = getViewLocationOnScreen();
-            mWMLayoutParams.x = location[0];
-            mWMLayoutParams.y = location[1];
-            //设置大小
-            mWMLayoutParams.width = getLayoutParams().width ;
-            mWMLayoutParams.height = getLayoutParams().height ;
-            //替换view
-            if (getParent() != null) {
-                mViewParent = (ViewGroup) getParent();
-                mViewParent.removeView(this);
-            }
-            mWindowManager.addView(this, mWMLayoutParams);
-            //更改标志位
-            isSuccess = true;
-            isWmMode = true;
-        }
-
-        return isSuccess;
-    }
-
-    /**
-     * 获取实际坐标
-     * @return
-     */
-    private int[] getViewLocationOnScreen() {
-        int[] location = new int[2];
-        getLocationOnScreen(location);
-        return location;
-    }
-
-    /**
-     * 切换回layout模式
-     * @return
-     */
-    public boolean switchLayoutMode() {
-        return switchLayoutMode(0);
-    }
-
-    public boolean switchLayoutMode(int position) {
-        boolean isSuccess = false;
-        if (isWmMode) {
-            mWindowManager.removeViewImmediate(this);
-            mViewParent.addView(this, position, getLayoutParams());
-            isSuccess = true;
-            isWmMode = false;
-        }
-        return isSuccess;
-    }
 
 }

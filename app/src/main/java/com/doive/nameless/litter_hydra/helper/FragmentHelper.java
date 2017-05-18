@@ -62,6 +62,7 @@ public class FragmentHelper {
         if (savedInstanceState != null) {
             {
                 //取出保存的Fragment put到集合
+                Log.e(TAG, "initFragments: 执行了/////////////" );
                 for (Fragment fra : mFm.getFragments()) {
                     Log.e(TAG, "initFragments: ////" + fra.getTag());
                     try {

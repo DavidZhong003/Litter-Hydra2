@@ -1,16 +1,16 @@
-package com.doive.nameless.litter_hydra.widget.live;
+package com.doive.nameless.litter_hydra.widget.video;
 
 import android.support.annotation.IntDef;
 
 /*
  *  @项目名：  Litter-Hydra2 
  *  @包名：    com.doive.nameless.litter_hydra.widget
- *  @文件名:   LiveViewState
+ *  @文件名:   VideoViewState
  *  @创建者:   zhong
  *  @创建时间:  2017/5/7 13:22
  *  @描述：    liveView相关状态接口
  */
-public interface LiveViewState {
+public interface VideoViewState {
     int STATE_ERROR              = -1;
     int STATE_NULL               = 0; //播放器为空未创建
     int STATE_IDLE               = 1;
