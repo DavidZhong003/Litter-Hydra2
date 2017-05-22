@@ -35,7 +35,7 @@ import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_
  *  @文件名:   LiveVideoView
  *  @创建者:   zhong
  *  @创建时间:  2017/5/7 14:05
- *  @描述：    TODO 播放进度回调 ,定制底部控制栏
+ *  @描述：    TODO 播放进度回调 ,自动播放
  *
  */
 public class IjkVideoView
@@ -53,6 +53,7 @@ public class IjkVideoView
     private Map<String, String> mLiveHeaders;//播直播请求头
 
     private boolean mCanSeekTo = true;
+    private boolean mAutoPlayAfterPrepared;//自动播放
 
 
     public void setStateListener(VideoViewState.onLiveStateListener stateListener) {
@@ -155,6 +156,12 @@ public class IjkVideoView
         this.mLivePath = path;
         this.mLiveHeaders = headers;
         openLive();
+    }
+
+    @Override
+    public void setLivePathAndAutoPlay(String path) {
+        setLivePath(path);
+        this.mAutoPlayAfterPrepared = true;
     }
 
     /**
@@ -425,8 +432,9 @@ public class IjkVideoView
             if (mTargetState == VideoViewState.STATE_PLAYING) {
                 play();
             }
-
-            Log.e(TAG, "onPrepared: 总时长" + mIjkMediaPlayer.getDuration());
+            if (mAutoPlayAfterPrepared){
+                play();
+            }
         }
     };
     /**

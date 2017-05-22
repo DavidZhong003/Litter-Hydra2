@@ -18,6 +18,7 @@ public interface IIjkOperation {
     //载入资源
     void setLivePath(String path);
     void setLiveUri(String path,  Map<String, String> headers);
+    void setLivePathAndAutoPlay(String path);
     //播放
     void play();
     //拖动到某个时间点
