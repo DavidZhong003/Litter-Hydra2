@@ -19,6 +19,8 @@ public interface IBannerViewPager {
     IBannerViewPager startLoop();
     //暂停轮播
     IBannerViewPager pauseLoop();
+    //设置适配器
+    IBannerViewPager setBannerAdapter(BannerViewPager.InnerPagerAdapter adapter);
     //设置过度效果
 
     //设置适配器
