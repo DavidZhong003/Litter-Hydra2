@@ -10,15 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.model.bean.TopNewsBean;
 import com.doive.nameless.litter_hydra.recyclerview.BaseViewHolder;
 import com.doive.nameless.litter_hydra.utils.GlideManager;
 
 import java.util.List;
-
-import static com.doive.nameless.litter_hydra.R.id.container;
 
 /**
  * Created by Administrator on 2017/4/27.
@@ -42,11 +39,9 @@ public class TopSliderVH
                 int pageHeight = view.getHeight();
 
                 if (position < -1) { // [-Infinity,-1)
-                    // This page is way off-screen to the left.
                     view.setAlpha(0);
 
                 } else if (position <= 1) { // [-1,1]
-                    // Modify the default slide transition to shrink the page as well
                     float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
                     float vertMargin = pageHeight * (1 - scaleFactor) / 2;
                     float horzMargin = pageWidth * (1 - scaleFactor) / 2;
@@ -56,17 +51,14 @@ public class TopSliderVH
                         view.setTranslationX(-horzMargin + vertMargin / 2);
                     }
 
-                    // Scale the page down (between MIN_SCALE and 1)
                     view.setScaleX(scaleFactor);
                     view.setScaleY(scaleFactor);
 
-                    // Fade the page relative to its size.
                     view.setAlpha(MIN_ALPHA +
                                           (scaleFactor - MIN_SCALE) /
                                                   (1 - MIN_SCALE) * (1 - MIN_ALPHA));
 
-                } else { // (1,+Infinity]
-                    // This page is way off-screen to the right.
+                } else {
                     view.setAlpha(0);
                 }
             }
@@ -77,7 +69,6 @@ public class TopSliderVH
     public void bindData(TopNewsBean.BodyBean.SubjectsBean subjectsBean) {
         super.bindData(subjectsBean);
         List<TopNewsBean.BodyBean.SubjectsBean.Poditems> podItems = subjectsBean.getPodItems();
-        Log.e(TAG, "bindData: "+podItems );
         mViewPager.setAdapter(new SliderViewPagerAdapter(podItems));
     }
 

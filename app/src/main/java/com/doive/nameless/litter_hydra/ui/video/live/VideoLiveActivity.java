@@ -15,7 +15,7 @@ import com.doive.nameless.litter_hydra.widget.video.ViewModeHelp;
  *
  * 直播Activity
  *
- * todo 解决缩放bug ,先获取原始视频大小,缩放比,设置宽高
+ *
  *
  */
 
