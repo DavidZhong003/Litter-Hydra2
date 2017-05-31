@@ -9,4 +9,21 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
+    <EditText
+        android:id="@+id/et_test"
+        android:hint="视频播放地址"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_test"
+        android:text="播放"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.doive.nameless.litter_hydra.widget.video.IjkVideoView
+        android:id="@+id/ijk_test"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
 </LinearLayout>

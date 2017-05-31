@@ -432,7 +432,9 @@ public class IjkVideoView
             if (mTargetState == VideoViewState.STATE_PLAYING) {
                 play();
             }
-            if (mAutoPlayAfterPrepared){
+            if (
+
+                    mAutoPlayAfterPrepared){
                 play();
             }
         }

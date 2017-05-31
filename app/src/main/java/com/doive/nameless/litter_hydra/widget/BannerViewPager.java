@@ -1,25 +1,31 @@
 package com.doive.nameless.litter_hydra.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.widget.Scroller;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static com.doive.nameless.litter_hydra.R.id.container;
 
 /*
  *  @项目名：  Litter-Hydra2 
@@ -28,7 +34,7 @@ import static com.doive.nameless.litter_hydra.R.id.container;
  *  @创建者:   zhong
  *  @创建时间:  2017/5/20 15:04
  *  @描述：    轮播图
- *             todo 定时器 无限轮播
+ *             todo 当前页面回调
  */
 public class BannerViewPager<T>
         extends ViewPager
@@ -40,10 +46,11 @@ public class BannerViewPager<T>
     private static long sAutoLoopTimes = 2000;//自动轮播间隔时间,默认一秒
 
 
-    private Subscriber<Integer> mLoopSubscriber;
-    private boolean             isLoopPause;
+    private          Subscriber<Integer> mLoopSubscriber;
+    private volatile boolean             isAutoLoopPause;//自动循环停止
 
     private Observable<Integer> mLoopObservable;
+    private int mScrollerSecond = 1000;
 
     public BannerViewPager(Context context) {
         super(context);
@@ -62,10 +69,9 @@ public class BannerViewPager<T>
             @Override
             public void onPageSelected(int position) {
                 if (sCanBundlessLoop) {
-                    if (position == 0) {
-                        setCurrentItem(getAdapter().getCount() - 2, false);
-                    } else if (position == getAdapter().getCount() - 1) {
-                        setCurrentItem(1, false);
+                    if (position == 0 || position == getAdapter().getCount() - 1) {
+                        removeCallbacks(mLoopRunnable);
+                        postDelayed(mLoopRunnable, 0);
                     }
                 }
             }
@@ -75,31 +81,40 @@ public class BannerViewPager<T>
 
             }
         });
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG, "onClick: " + getCurrentItem());
-            }
-        });
     }
+
+    private final Runnable mLoopRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (sCanBundlessLoop) {
+                int position = getCurrentItem();
+                if (position == 0) {
+                    setCurrentItem(getAdapter().getCount() - 2, false);
+                } else if (position == getAdapter().getCount() - 1) {
+                    setCurrentItem(1, false);
+                }
+            }
+
+
+        }
+    };
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (sCanBundlessLoop) { setCurrentItem(1); }
         initLoop();
-        mLoopObservable.subscribe(mLoopSubscriber);
+
     }
 
     private void initLoop() {
         if (sCanAutoLoop) {
-            //开启定时任务
             if (mLoopObservable == null) {
                 mLoopObservable = Observable.interval(sAutoLoopTimes, TimeUnit.MILLISECONDS)
                                             .filter(new Func1<Long, Boolean>() {
                                                 @Override
                                                 public Boolean call(Long aLong) {
-                                                    return !isLoopPause;
+                                                    return !isAutoLoopPause;
                                                 }
                                             })
                                             .map(new Func1<Long, Integer>() {
@@ -126,13 +141,13 @@ public class BannerViewPager<T>
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext: 执行中...." );
+                        Log.e(TAG, "onNext: 执行中....");
                         setCurrentItem(integer);
                     }
                 };
 
             }
-
+            mLoopObservable.subscribe(mLoopSubscriber);
         }
     }
 
@@ -152,23 +167,13 @@ public class BannerViewPager<T>
         }
     }
 
-    /**
-     * 看不见时候暂停
-     * @param visibility
-     */
-    @Override
-    protected void onWindowVisibilityChanged(int visibility) {
-        super.onWindowVisibilityChanged(visibility);
-        isLoopPause = visibility==VISIBLE;
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         int actionMasked = ev.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
-            isLoopPause = true;
+            isAutoLoopPause = true;
         } else if (actionMasked == MotionEvent.ACTION_UP) {
-            isLoopPause = false;
+            isAutoLoopPause = false;
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -193,19 +198,59 @@ public class BannerViewPager<T>
     }
 
     @Override
-    public IBannerViewPager startLoop() {
+    public IBannerViewPager resumeLoop() {
+        isAutoLoopPause = true;
         return this;
     }
 
     @Override
     public IBannerViewPager pauseLoop() {
-        isLoopPause = true;
+        isAutoLoopPause = false;
         return this;
     }
 
     @Override
     public IBannerViewPager setBannerAdapter(InnerPagerAdapter adapter) {
         this.setAdapter(adapter);
+        return this;
+    }
+
+    @Override
+    public IBannerViewPager setDefaultTransformer() {
+        setPageTransformer(true, new ScalePageTransformer());
+        return this;
+    }
+
+    @Override
+    public IBannerViewPager setDefaultTransformer(boolean reverseDrawingOrder,
+                                                  PageTransformer transformer)
+    {
+        setPageTransformer(reverseDrawingOrder, transformer);
+        return this;
+    }
+
+    @Override
+    public IBannerViewPager setScrollerSpeed(int millisecond) {
+        this.mScrollerSecond = millisecond;
+        try {
+            Class clazz = Class.forName("android.support.v4.view.ViewPager");
+            Field f     = clazz.getDeclaredField("mScroller");
+            FixedSpeedScroller fixedSpeedScroller = new FixedSpeedScroller(getContext(),
+                                                                           new LinearOutSlowInInterpolator(),
+                                                                           millisecond);
+            f.setAccessible(true);
+            f.set(this, fixedSpeedScroller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    @Override
+    public IBannerViewPager setOnItemClickListener(InnerPagerAdapter.OnItemClickListener l) {
+        if (getAdapter() instanceof InnerPagerAdapter) {
+            ((InnerPagerAdapter) getAdapter()).setItemClickListener(l);
+        }
         return this;
     }
 
@@ -217,6 +262,12 @@ public class BannerViewPager<T>
 
         private Boundless<E> mData;
 
+        public void setItemClickListener(OnItemClickListener itemClickListener) {
+            mItemClickListener = itemClickListener;
+        }
+
+        private OnItemClickListener mItemClickListener;
+
         public InnerPagerAdapter(List<E> EList) {
             mData = new Boundless<E>(EList);
         }
@@ -225,7 +276,7 @@ public class BannerViewPager<T>
         public int getCount() {
             int count;
             if (sCanBundlessLoop) {
-                count = 3 * mData.getLength() + 2;
+                count = mData.getLength() + 2;
                 mData.setMappingLength(count);
             } else {
                 count = mData.getLength();
@@ -239,10 +290,22 @@ public class BannerViewPager<T>
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
             View view = createViewWithData(mData.getPositionData(position));
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onClick(v, mData.getTransPosition(position));
+                    }
+                }
+            });
             container.addView(view);
             return view;
+        }
+
+        public interface OnItemClickListener {
+            void onClick(View view, int position);
         }
 
         public abstract View createViewWithData(E positionData);
@@ -260,41 +323,29 @@ public class BannerViewPager<T>
      */
     private static class Boundless<T> {
         //初始数据
-        private T[] mArray;
         private int mMappingLength;
+
 
         public int getLength() {
             return mLength;
         }
 
-        private int mLength;
-
-        public Boundless(T[] array) {
-            if (array == null || array.length == 0) {
-                throw new NullPointerException("Array not be null or length=0");
-            }
-            mArray = array;
-            mLength = array.length;
-            mMappingLength = mLength;
-        }
+        private int     mLength;
+        private List<T> mList;
 
         public Boundless(List<T> list) {
-            this((T[]) list.toArray());
+            if (list == null || list.size() == 0) {
+                throw new NullPointerException("Array not be null or length=0");
+            }
+            this.mList = list;
+            this.mLength = list.size();
         }
 
         public T getPositionData(int position) {
-            return mArray[transPosition3(position)];
+            return mList.get(getTransPosition(position));
         }
 
-        private int transPosition(int position) {
-            if (position >= 0) {
-                return position % mLength;
-            } else {
-                return (position % mLength + mLength);
-            }
-        }
-
-        private int transPosition3(int position) {
+        public int getTransPosition(int position) {
             if (sCanBundlessLoop) {
                 if (position == 0) {
                     return mLength - 1;
@@ -310,6 +361,126 @@ public class BannerViewPager<T>
 
         public void setMappingLength(int mappingLength) {
             mMappingLength = mappingLength;
+        }
+
+    }
+
+    /**
+     * 过渡效果
+     */
+    public static class DepthPageTransformer
+            implements PageTransformer {
+        private static float MIN_SCALE = 0.75f;
+
+        @SuppressLint("NewApi")
+        @Override
+        public void transformPage(View view, float position) {
+            int pageWidth = view.getWidth();
+            if (position < -1) { // [-Infinity,-1)
+                // 左边不可见时候
+                view.setAlpha(1);
+            } else if (position <= 0) { // [-1,0]
+                //从左到中间时候
+                view.setAlpha(1);
+                view.setTranslationX(0);
+                view.setScaleX(1);
+                view.setScaleY(1);
+            } else if (position <= 1) { // (0,1]
+                //中间到右边
+                view.setAlpha(1 - position);
+                view.setTranslationX(pageWidth * -position);
+                float scaleFactor = MIN_SCALE + (1 - MIN_SCALE) * (1 - Math.abs(position));
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+            } else { // (1,+Infinity]
+                //右边不可见
+                view.setAlpha(0);
+
+            }
+        }
+
+    }
+
+    public static class ZoomOutPageTransformer
+            implements PageTransformer {
+        private static float MIN_SCALE = 0.85f;
+
+        private static float MIN_ALPHA = 0.5f;
+
+        @Override
+        public void transformPage(View view, float position) {
+            int pageWidth  = view.getWidth();
+            int pageHeight = view.getHeight();
+
+            if (position < -1) { // [-Infinity,-1)
+                view.setAlpha(1);
+            } else if (position <= 1) { // [-1,1]
+                // Modify the default slide transition to
+                // shrink the page as well
+                float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+                float vertMargin  = pageHeight * (1 - scaleFactor) / 2;
+                float horzMargin  = pageWidth * (1 - scaleFactor) / 2;
+                if (position < 0) {
+                    view.setTranslationX(horzMargin - vertMargin / 2);
+                } else {
+                    view.setTranslationX(-horzMargin + vertMargin / 2);
+                }
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+                view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE) / (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+            } else { // (1,+Infinity]
+                view.setAlpha(0);
+            }
+        }
+    }
+
+    public static class ScalePageTransformer
+            implements PageTransformer {
+        @Override
+        public void transformPage(View view, float position) {
+            int pageWidth  = view.getWidth();
+            int pageHeight = view.getHeight();
+            if (position < -1) { // [-Infinity,-1)
+                // 左边不可见时候
+                view.setAlpha(1);
+                view.setScaleX(1);
+                view.setScaleY(1);
+            } else if (position <= 1) { // [-1,0]
+                //从左到中间时候
+                view.setAlpha(1);
+                view.setTranslationX(1 - Math.abs(position));
+                view.setScaleX(1 - Math.abs(position));
+                view.setScaleY(1 - Math.abs(position));
+            } else { // (1,+Infinity]
+                //右边不可见
+                view.setAlpha(0);
+            }
+        }
+    }
+
+
+    private static class FixedSpeedScroller
+            extends Scroller {
+        private int mDuration = 600;
+
+        public FixedSpeedScroller(Context context, Interpolator interpolator, int duration) {
+            super(context, interpolator);
+            this.mDuration = duration;
+        }
+
+        public FixedSpeedScroller(Context context, Interpolator interpolator, boolean flywheel) {
+            super(context, interpolator, flywheel);
+        }
+
+        @Override
+        public void startScroll(int startX, int startY, int dx, int dy) {
+            startScroll(startX, startY, dx, dy, mDuration);
+        }
+
+        @Override
+        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+            //直接忽略传递过来的duration
+            super.startScroll(startX, startY, dx, dy, mDuration);
         }
     }
 

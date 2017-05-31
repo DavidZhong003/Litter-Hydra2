@@ -1,5 +1,7 @@
 package com.doive.nameless.litter_hydra.widget;
 
+import android.support.v4.view.ViewPager;
+
 /*
  *  @项目名：  Litter-Hydra2 
  *  @包名：    com.doive.nameless.litter_hydra.widget
@@ -15,18 +17,18 @@ public interface IBannerViewPager {
     IBannerViewPager allowAutoLoop(boolean auto);
     //设置自动轮播间隔时间
     IBannerViewPager setLoopIntervalTime(long millisecond);
-    //开始轮播
-    IBannerViewPager startLoop();
+    //恢复轮播
+    IBannerViewPager resumeLoop();
     //暂停轮播
     IBannerViewPager pauseLoop();
     //设置适配器
     IBannerViewPager setBannerAdapter(BannerViewPager.InnerPagerAdapter adapter);
-    //设置过度效果
+    //设置过渡效果
+    IBannerViewPager setDefaultTransformer();
+    IBannerViewPager setDefaultTransformer(boolean reverseDrawingOrder,
+                                           ViewPager.PageTransformer transformer);
+    //设置切换的时间
+    IBannerViewPager setScrollerSpeed(int millisecond);
 
-    //设置适配器
-
-    //条目点击时间
-
-    //获取条目view
-
+    IBannerViewPager setOnItemClickListener(BannerViewPager.InnerPagerAdapter.OnItemClickListener l);
 }
