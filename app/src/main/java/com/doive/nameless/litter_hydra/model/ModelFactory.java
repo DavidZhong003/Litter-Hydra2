@@ -8,16 +8,13 @@ import com.doive.nameless.litter_hydra.net.RetrofitManager;
 import com.doive.nameless.litter_hydra.net.RxOkHttpManager;
 import com.doive.nameless.litter_hydra.net.api.NewsApiService;
 import com.doive.nameless.litter_hydra.recyclerview.ItemType;
-import com.doive.nameless.litter_hydra.utils.TimeUtils;
 import com.doive.nameless.litter_hydra.utils.StringTransformUtils;
+import com.doive.nameless.litter_hydra.utils.TimeUtils;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -73,9 +70,9 @@ public class ModelFactory
                                      : 1;
         return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
                                                                 .getColumnData(columnId,
-                                                                                  mEntertainmentLoadMorePage,
-                                                                                  BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
-                                                                                  BaseApplication.getDeviceId()));
+                                                                               mEntertainmentLoadMorePage,
+                                                                               BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
+                                                                               BaseApplication.getDeviceId()));
     }
 
     /**
@@ -88,18 +85,18 @@ public class ModelFactory
             //获取时间戳
             return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
                                                                     .getMoreData("SYLB10,SYDT10",
-                                                                                    "up",
-                                                                                    StringTransformUtils.getTimestamp(
-                                                                                            mForwardHour++),
-                                                                                    BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
-                                                                                    BaseApplication.getDeviceId()));
+                                                                                 "up",
+                                                                                 StringTransformUtils.getTimestamp(
+                                                                                         mForwardHour++),
+                                                                                 BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
+                                                                                 BaseApplication.getDeviceId()));
         } else {
             return ItemTypeDataConverter.newsTranse(mRetrofitManager.creatNewsApiService()
                                                                     .getData(
-                                                                               "SYLB10,SYDT10,SYRECOMMEND",
-                                                                               "default",
-                                                                               BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
-                                                                               BaseApplication.getDeviceId()));
+                                                                            "SYLB10,SYDT10,SYRECOMMEND",
+                                                                            "default",
+                                                                            BaseApplication.mDeviceWidth + "x" + BaseApplication.mDeviceHeight,
+                                                                            BaseApplication.getDeviceId()));
         }
     }
 
@@ -212,6 +209,7 @@ public class ModelFactory
     }
 
     private Observable<List<ItemType>> getRecommendData() {
+
         return ItemTypeDataConverter.videoRecommendDataTranse(mRetrofitManager.creatVideoApiService()
                                                                               .getRecommendData2(
                                                                                       TimeUtils.getCurrentFormatTime(),
@@ -235,21 +233,22 @@ public class ModelFactory
 
     public Observable<NewsCommentBean> obtainNewsComment(Observable<DocNewsBean> docNewsBeanObservable) {
 
-       return Observable.concat(docNewsBeanObservable.map(new Func1<DocNewsBean, String>() {
+        return Observable.concat(docNewsBeanObservable.map(new Func1<DocNewsBean, String>() {
             @Override
             public String call(DocNewsBean docNewsBean) {
                 return StringTransformUtils.commentUrlTransform(docNewsBean.getBody()
                                                                            .getCommentsUrl());
             }
-        }).map(new Func1<String, Observable<NewsCommentBean>>() {
+        })
+                                                      .map(new Func1<String, Observable<NewsCommentBean>>() {
 
-                                                         @Override
-                                                         public Observable<NewsCommentBean> call(
-                                                                 String s)
-                                                         {
-                                                             return obtainNewsComment(s, "all");
-                                                         }
-                                                     }));
+                                                          @Override
+                                                          public Observable<NewsCommentBean> call(
+                                                                  String s)
+                                                          {
+                                                              return obtainNewsComment(s, "all");
+                                                          }
+                                                      }));
     }
 
     /**
@@ -280,8 +279,7 @@ public class ModelFactory
      */
     public Observable<ItemType> ObtainTopNews(String idUrl) {
         Observable<TopNewsBean> newsBeanObservable = RxOkHttpManager.getInstance()
-                                                                       .get(idUrl,
-                                                                            TopNewsBean.class);
+                                                                    .get(idUrl, TopNewsBean.class);
         return ItemTypeDataConverter.topNewsConver(newsBeanObservable);
     }
 }

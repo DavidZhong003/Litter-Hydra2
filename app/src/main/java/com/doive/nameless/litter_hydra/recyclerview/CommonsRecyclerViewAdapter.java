@@ -32,7 +32,6 @@ public class CommonsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
         if (isAdd){
             //添加
             mList.addAll(list);
-//            Log.e("数据条数", "addAllUpdate: "+mList.size() );
         }else {
             //更新
             if (list!=null)

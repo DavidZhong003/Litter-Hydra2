@@ -1,5 +1,7 @@
 package com.doive.nameless.litter_hydra.ui;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -9,17 +11,15 @@ import android.widget.ImageView;
 import com.doive.nameless.litter_hydra.R;
 import com.doive.nameless.litter_hydra.base.BaseMvpActivity;
 import com.doive.nameless.litter_hydra.widget.BannerViewPager;
+import com.doive.nameless.litter_hydra.widget.IBannerViewPager;
 import com.doive.nameless.litter_hydra.widget.video.IjkVideoView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by Administrator on 2017/5/22.
+ *
  */
 
 public class SplashActivity
@@ -33,10 +33,30 @@ public class SplashActivity
         list.add(R.mipmap.error_64);
         list.add(R.mipmap.item_comment);
         bvp.allowBoundlessLoop(true)
-//           .allowAutoLoop(true)
+           .allowAutoLoop(true)
            .setLoopIntervalTime(4000)
            .setScrollerSpeed(1000)
            .setDefaultTransformer()
+           .setOnLoopPageChangeListener(new IBannerViewPager.OnLoopPageChangeListener() {
+               @Override
+               public void onPageScrolled(int position,
+                                          float positionOffset,
+                                          int positionOffsetPixels)
+               {
+                   Log.e(TAG,
+                         "onPageScrolled: " + position + "///" + positionOffset + "///" + positionOffsetPixels);
+               }
+
+               @Override
+               public void onPageSelected(int position) {
+                   Log.e(TAG, "onPageSelected: " + position);
+               }
+
+               @Override
+               public void onPageScrollStateChanged(int state) {
+
+               }
+           })
            .setBannerAdapter(new BannerViewPager.InnerPagerAdapter<Integer>(list) {
                @Override
                public View createViewWithData(Integer positionData) {
@@ -52,16 +72,16 @@ public class SplashActivity
                }
            });
 
-        //        new Handler().postDelayed(new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                startActivity(new Intent(SplashActivity.this,MainActivity.class));
-        //                SplashActivity.this.finish();
-        //            }
-        //        },5000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                SplashActivity.this.finish();
+            }
+        }, 5000);
 
-        final EditText ed  = getViewbyId(R.id.et_test);
-        Button         btn = getViewbyId(R.id.btn_test);
+        final EditText     ed  = getViewbyId(R.id.et_test);
+        Button             btn = getViewbyId(R.id.btn_test);
         final IjkVideoView ijk = getViewbyId(R.id.ijk_test);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

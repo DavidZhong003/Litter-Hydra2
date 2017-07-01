@@ -13,7 +13,7 @@ import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
 
-public class GzipRequestInterceptor implements Interceptor {
+ class GzipRequestInterceptor implements Interceptor {
     @Override public Response intercept(Chain chain) throws IOException {
       Request originalRequest = chain.request();
       if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {

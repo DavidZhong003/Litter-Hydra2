@@ -1,7 +1,5 @@
 package com.doive.nameless.litter_hydra.net;
 
-import android.util.Log;
-
 import com.doive.nameless.litter_hydra.SettingConfigs;
 import com.doive.nameless.litter_hydra.base.BaseApplication;
 import com.doive.nameless.litter_hydra.utils.NetUtils;
@@ -17,8 +15,7 @@ import okhttp3.Response;
  * 缓存拦截器
  *
  */
-
-public class CacheInterceptor
+ class CacheInterceptor
         implements Interceptor {
 
     private static final String TAG = CacheInterceptor.class.getSimpleName();

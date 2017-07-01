@@ -88,6 +88,7 @@ public class ViewModeHelp {
 
     public ViewModeHelp(View view) {
         this.mCurrentView = view;
+        mCurrentView.requestLayout();
         mLastViewWidth = mCurrentView.getWidth();
         mLastViewHeight = mCurrentView.getHeight();
         mMaxOriViewWidth = (int) (mLastViewWidth * 1.5);

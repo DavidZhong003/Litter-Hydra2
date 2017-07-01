@@ -31,4 +31,12 @@ public interface IBannerViewPager {
     IBannerViewPager setScrollerSpeed(int millisecond);
 
     IBannerViewPager setOnItemClickListener(BannerViewPager.InnerPagerAdapter.OnItemClickListener l);
+    IBannerViewPager setOnLoopPageChangeListener(OnLoopPageChangeListener onLoopPageChangeListener);
+     interface OnLoopPageChangeListener {
+        void onPageScrolled(int position, float positionOffset, int positionOffsetPixels);
+
+        void onPageSelected(int position);
+
+        void onPageScrollStateChanged(int state);
+    }
 }

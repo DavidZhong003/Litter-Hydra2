@@ -35,7 +35,7 @@ import static com.doive.nameless.litter_hydra.widget.video.VideoViewState.STATE_
  *  @文件名:   LiveVideoView
  *  @创建者:   zhong
  *  @创建时间:  2017/5/7 14:05
- *  @描述：    TODO 播放进度回调 ,自动播放
+ *  @描述：
  *
  */
 public class IjkVideoView
@@ -54,6 +54,7 @@ public class IjkVideoView
 
     private boolean mCanSeekTo = true;
     private boolean mAutoPlayAfterPrepared;//自动播放
+    private int     mCurrentBufferPercentage;//当前的缓存进度
 
 
     public void setStateListener(VideoViewState.onLiveStateListener stateListener) {
@@ -139,7 +140,7 @@ public class IjkVideoView
 
     /**
      * 设置播放地址
-     * @param path
+     * @param path 播放路径
      */
     @Override
     public void setLivePath(String path) {
@@ -148,8 +149,8 @@ public class IjkVideoView
 
     /**
      * 设置播放地址以及请求头
-     * @param path
-     * @param headers
+     * @param path 播放路径
+     * @param headers 请求头
      */
     @Override
     public void setLiveUri(String path, Map<String, String> headers) {
@@ -180,7 +181,7 @@ public class IjkVideoView
 
     /**
      * 是否允许拖动进度
-     * @param able
+     * @param able 是否运行拖动
      */
     @Override
     public void enableSeekTo(boolean able) {
@@ -223,7 +224,7 @@ public class IjkVideoView
 
     /**
      * 获取当前播放的百分比
-     * @return
+     * @return 返回当前播放百分比
      */
     public int getCurrentProgress() {
         if (mIjkMediaPlayer != null &&
@@ -238,7 +239,7 @@ public class IjkVideoView
 
     /**
      * 获取当前播放位置
-     * @return
+     * @return 返回当前播放位置
      */
     public long getCurrentPosition() {
         if (mIjkMediaPlayer != null &&
@@ -343,6 +344,14 @@ public class IjkVideoView
         }
     }
 
+    @Override
+    public int getBufferPercentage() {
+        if (mIjkMediaPlayer != null) {
+            return mCurrentBufferPercentage;
+        }
+        return 0;
+    }
+
     /**
      * 释放资源
      */
@@ -413,10 +422,13 @@ public class IjkVideoView
      */
     private IjkMediaPlayer.OnErrorListener           mErrorListener           = new IMediaPlayer.OnErrorListener() {
         @Override
-        public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+        public boolean onError(IMediaPlayer iMediaPlayer, int framework_err, int impl_err) {
             mCurrentState = VideoViewState.STATE_ERROR;
             notifyListenerCurrentStateChange();
             mTargetState = VideoViewState.STATE_ERROR;
+            if (mOnErrorListener!=null){
+                mOnErrorListener.onError(framework_err,impl_err);
+            }
             return true;
         }
     };
@@ -455,9 +467,11 @@ public class IjkVideoView
      */
     private IjkMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
         @Override
-        public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-
-
+        public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int percent) {
+            mCurrentBufferPercentage = percent;
+            if (mOnBufferingListener!=null){
+                mOnBufferingListener.onBufferingUpdate(percent);
+            }
         }
 
     };
@@ -467,9 +481,101 @@ public class IjkVideoView
     private IjkMediaPlayer.OnInfoListener            mInfoListener            = new IMediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-            // TODO: 2017/5/14  进行缓冲回调
-            return false;
+            if (mOnInfoListener!=null){
+                mOnInfoListener.onInfo(i,i1);
+            }
+            switch (i) {
+                case IIjkOperation.MEDIA_INFO_VIDEO_TRACK_LAGGING:
+                    //视频信息滞后
+                    Log.d(TAG, "MEDIA_INFO_VIDEO_TRACK_LAGGING:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                    //视频渲染开始
+                    Log.d(TAG, "MEDIA_INFO_VIDEO_RENDERING_START:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                    //缓冲开始
+                    if (mOnBufferingListener!=null){
+                        mOnBufferingListener.onBufferingStart();
+                    }
+                    Log.d(TAG, "MEDIA_INFO_BUFFERING_START:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                    //缓冲结束
+                    if (mOnBufferingListener!=null){
+                        mOnBufferingListener.onBufferingEnd();
+                    }
+                    Log.d(TAG, "MEDIA_INFO_BUFFERING_END:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
+                    //网络宽频 ,可获取下载速度 i1
+                    Log.d(TAG, "MEDIA_INFO_NETWORK_BANDWIDTH: " + i1);
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
+                    //坏交错?
+                    Log.d(TAG, "MEDIA_INFO_BAD_INTERLEAVING:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+                    //媒体不支持拖动
+                    Log.d(TAG, "MEDIA_INFO_NOT_SEEKABLE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_METADATA_UPDATE:
+                    //元数据开始更新
+                    Log.d(TAG, "MEDIA_INFO_METADATA_UPDATE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE:
+                    //不支持字幕
+                    Log.d(TAG, "MEDIA_INFO_UNSUPPORTED_SUBTITLE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_SUBTITLE_TIMED_OUT:
+                    //媒体信息副标题超时
+                    Log.d(TAG, "MEDIA_INFO_SUBTITLE_TIMED_OUT:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                    //旋转变化 i1
+                    break;
+                case IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+                    //音频媒体开始渲染
+                    Log.d(TAG, "MEDIA_INFO_AUDIO_RENDERING_START:");
+                    break;
+            }
+            return true;
         }
     };
 
+    // TODO: 2017/5/30  添加一些对外回调
+    public interface OnBufferingListener{
+        void onBufferingStart();
+        void onBufferingUpdate(int percent);
+        void onBufferingEnd();
+    }
+
+    public void setOnBufferingListener(OnBufferingListener onBufferingListener) {
+        mOnBufferingListener = onBufferingListener;
+    }
+
+    private OnBufferingListener mOnBufferingListener;
+
+    //错误回调
+    public interface OnErrorListener{
+        void onError(int framework_err, int impl_err);
+    }
+
+    public void setOnErrorListener(OnErrorListener onErrorListener) {
+        mOnErrorListener = onErrorListener;
+    }
+
+    private OnErrorListener mOnErrorListener;
+
+    //info 监听
+
+    public interface OnInfoListener{
+         boolean onInfo(int arg , int arg1) ;
+    }
+
+    public void setOnInfoListener(OnInfoListener onInfoListener) {
+        mOnInfoListener = onInfoListener;
+    }
+
+    private OnInfoListener mOnInfoListener;
 }

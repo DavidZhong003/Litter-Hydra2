@@ -13,10 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,9 +30,9 @@ import rx.schedulers.Schedulers;
  *  @创建者:   zhong
  *  @创建时间:  2017/5/20 15:04
  *  @描述：    轮播图
- *             todo 当前页面回调
+ *
  */
-public class BannerViewPager<T>
+public class BannerViewPager
         extends ViewPager
         implements IBannerViewPager {
     private static final String TAG = "BannerViewPager";
@@ -63,7 +59,19 @@ public class BannerViewPager<T>
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
             {
-
+                if (mOnLoopPageChangeListener != null) {
+                    if (sCanBundlessLoop) {
+                        if (position > 0 && position < getAdapter().getCount() - 1) {
+                            mOnLoopPageChangeListener.onPageScrolled(position - 1,
+                                                                     positionOffset,
+                                                                     positionOffsetPixels);
+                        }
+                    } else {
+                        mOnLoopPageChangeListener.onPageScrolled(position,
+                                                                 positionOffset,
+                                                                 positionOffsetPixels);
+                    }
+                }
             }
 
             @Override
@@ -71,17 +79,38 @@ public class BannerViewPager<T>
                 if (sCanBundlessLoop) {
                     if (position == 0 || position == getAdapter().getCount() - 1) {
                         removeCallbacks(mLoopRunnable);
-                        postDelayed(mLoopRunnable, 0);
+                        postDelayed(mLoopRunnable, mScrollerSecond);
+
+                    }
+                }
+                //监听回调
+                if (mOnLoopPageChangeListener != null) {
+                    if (sCanBundlessLoop) {
+                        if (position > 0 && position < getAdapter().getCount() - 1) {
+                            mOnLoopPageChangeListener.onPageSelected(position - 1);
+                        }
+                    } else {
+                        mOnLoopPageChangeListener.onPageSelected(position);
                     }
                 }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if (mOnLoopPageChangeListener != null) {
+                    mOnLoopPageChangeListener.onPageScrollStateChanged(state);
+                }
             }
         });
     }
+
+
+    public IBannerViewPager setOnLoopPageChangeListener(OnLoopPageChangeListener onLoopPageChangeListener) {
+        mOnLoopPageChangeListener = onLoopPageChangeListener;
+        return this;
+    }
+
+    private OnLoopPageChangeListener mOnLoopPageChangeListener;
 
     private final Runnable mLoopRunnable = new Runnable() {
         @Override
@@ -172,6 +201,11 @@ public class BannerViewPager<T>
         int actionMasked = ev.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
             isAutoLoopPause = true;
+            //解决卡顿
+            if (sCanBundlessLoop && (getCurrentItem() == 0 || getCurrentItem() == getAdapter().getCount() - 1)) {
+                removeCallbacks(mLoopRunnable);
+                postDelayed(mLoopRunnable,0);
+            }
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             isAutoLoopPause = false;
         }
@@ -268,7 +302,7 @@ public class BannerViewPager<T>
 
         private OnItemClickListener mItemClickListener;
 
-        public InnerPagerAdapter(List<E> EList) {
+        protected InnerPagerAdapter(List<E> EList) {
             mData = new Boundless<E>(EList);
         }
 
@@ -318,7 +352,7 @@ public class BannerViewPager<T>
 
 
     /**
-     * 无限容器
+     * 数据容器
      * @param <T>
      */
     private static class Boundless<T> {
@@ -326,14 +360,14 @@ public class BannerViewPager<T>
         private int mMappingLength;
 
 
-        public int getLength() {
+        private int getLength() {
             return mLength;
         }
 
         private int     mLength;
         private List<T> mList;
 
-        public Boundless(List<T> list) {
+        private Boundless(List<T> list) {
             if (list == null || list.size() == 0) {
                 throw new NullPointerException("Array not be null or length=0");
             }
@@ -458,7 +492,9 @@ public class BannerViewPager<T>
         }
     }
 
-
+    /**
+     * 改变滑动速度
+     */
     private static class FixedSpeedScroller
             extends Scroller {
         private int mDuration = 600;

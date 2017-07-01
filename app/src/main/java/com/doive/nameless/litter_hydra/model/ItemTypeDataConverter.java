@@ -22,9 +22,8 @@ import rx.functions.Func1;
  * Created by Administrator on 2017/4/11.
  * 负责把其他类转为ItemType数据类型
  */
-public class ItemTypeDataConverter {
+public class  ItemTypeDataConverter {
     private static final String   TAG   = "ItemTypeDataConverter";
-    private static final String[] sName = {"精彩推荐"};
 
     public static Observable<List<ItemType>> newsTranse(Observable<List<NewsBean>> aDefault) {
         return aDefault.flatMap(new Func1<List<NewsBean>, Observable<NewsBean>>() {
